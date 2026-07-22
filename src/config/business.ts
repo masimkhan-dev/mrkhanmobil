@@ -1,0 +1,42 @@
+// Central config — swap phone, WhatsApp, address, etc. here (Phase 2 = admin-editable).
+export const business = {
+  name: "MR. KHAN",
+  tagline: "Phones, Vapes, Accessories, Repairs & Electronics",
+  legalName: "Khan Mobile and Accessories Liverpool Ltd",
+  phone: "07707 733038",
+  phoneRaw: "+447707733038",
+  whatsapp: "+44 7707 733038",
+  whatsappNumber: "447707733038",
+  email: "Mrkhanphones500@gmail.com",
+  address: {
+    line1: "83/85 London Road, Post Office",
+    city: "Liverpool",
+    region: "Merseyside",
+    postcode: "L3 8JA",
+    country: "United Kingdom",
+  },
+  hours: [
+    { day: "Monday", hours: "9:00 – 19:00" },
+    { day: "Tuesday", hours: "9:00 – 19:00" },
+    { day: "Wednesday", hours: "9:00 – 19:00" },
+    { day: "Thursday", hours: "9:00 – 19:00" },
+    { day: "Friday", hours: "9:00 – 19:00" },
+    { day: "Saturday", hours: "10:00 – 18:00" },
+    { day: "Sunday", hours: "11:00 – 16:00" },
+  ],
+  social: {
+    facebook: "https://facebook.com/mr.khan.phones",
+    instagram: "https://instagram.com/mr.khan.phones",
+    tiktok: "https://tiktok.com/",
+    google: "https://maps.app.goo.gl/uUpSAAnJL8WzDKUi6",
+  },
+  googleReviewUrl: "https://maps.app.goo.gl/uUpSAAnJL8WzDKUi6",
+  googleMapsEmbed:
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2378.435741634586!2d-2.9742342!3d53.4094083!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487b21f2fa508cc7%3A0x3699e39984da20b0!2sKhan%20Mobile%20and%20Accessories%20Liverpool%20Ltd!5e0!3m2!1sen!2suk!4v1710000000000!5m2!1sen!2suk",
+  rating: { stars: 4.9, reviews: 847 },
+} as const;
+
+export const whatsappLink = (msg = "Hi, I'd like to book a repair.") =>
+  `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+
+export const telLink = () => `tel:${business.phoneRaw}`;
