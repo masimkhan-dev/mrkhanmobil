@@ -53,6 +53,16 @@
     oklch(0.12 0.03 260 / 0) 0%,
     oklch(0.12 0.03 260 / 0.85) 100%
   );
+
+  --font-space: "Space Grotesk", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-ink-navy: #1c2333;
+  --color-signal-blue: #2f6fed;
+  --color-attention-amber: #f5a623;
+  --color-success-mint: #1fae7a;
+  --color-slate-gray: #6b7280;
+  --color-soft-white: #f7f8fa;
 }
 
 :root {

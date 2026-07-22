@@ -37,7 +37,7 @@ export const Route = createFileRoute("/services/$slug")({
     return s;
   },
   head: ({ loaderData, params }) => {
-    const siteUrl = process.env.SITE_URL || "https://mrkhan-repairs.co.uk";
+    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: loaderData
         ? [

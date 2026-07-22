@@ -17,7 +17,7 @@ const servicesQuery = {
 export const Route = createFileRoute("/services")({
   loader: ({ context }) => context.queryClient.ensureQueryData(servicesQuery),
   head: () => {
-    const siteUrl = process.env.SITE_URL || "https://mrkhan-repairs.co.uk";
+    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
         { title: `Repair Services | ${business.name}` },

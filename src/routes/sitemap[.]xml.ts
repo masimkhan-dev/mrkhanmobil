@@ -4,7 +4,9 @@ import { services } from "@/config/services";
 import { blogPosts } from "./blog";
 import { listPublishedCities } from "@/lib/city-pages.functions";
 
-const BASE_URL = process.env.SITE_URL || "https://mrkhan-repairs.co.uk";
+import { business } from "@/config/business";
+
+const BASE_URL = process.env.SITE_URL || business.url;
 
 const staticPaths = [
   "/",

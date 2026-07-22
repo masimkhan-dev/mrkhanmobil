@@ -7,13 +7,23 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { createLead } from "@/lib/booking.functions";
+import { trackFunnelEvent } from "@/lib/funnel-analytics";
 
 export function QuoteForm({ source = "quote_form" }: { source?: string }) {
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+  const [started, setStarted] = useState(false);
   const submit = useServerFn(createLead);
+
+  const handleStart = () => {
+    if (!started) {
+      setStarted(true);
+      trackFunnelEvent("quote_start", { source });
+    }
+  };
+
   return (
-    <Card className="border-border/70 shadow-[var(--shadow-soft)]">
+    <Card className="border-border/70 shadow-[var(--shadow-soft)]" id="quote">
       <CardContent className="p-8">
         {sent ? (
           <div className="text-center py-8">
@@ -40,12 +50,14 @@ export function QuoteForm({ source = "quote_form" }: { source?: string }) {
                   },
                 });
                 toast.success("Quote request sent");
+                trackFunnelEvent("quote_submit", { source });
                 setSent(true);
               } catch {
                 toast.error("Please check your details and try again.");
               }
               setBusy(false);
             }}
+            onFocus={handleStart}
             className="space-y-4"
           >
             <div className="grid sm:grid-cols-2 gap-4">

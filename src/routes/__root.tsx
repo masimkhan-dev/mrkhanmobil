@@ -5,6 +5,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  useLocation,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -99,12 +100,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap",
       },
     ],
     scripts: [
@@ -168,14 +169,28 @@ import { useServerFn } from "@tanstack/react-start";
 import { getPublicSiteSettings } from "@/lib/cms.functions";
 
 function AppLayout() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   const getSettings = useServerFn(getPublicSiteSettings);
   const { data: settings } = useQuery({
     queryKey: ["public-site-settings"],
     queryFn: () => getSettings(),
     staleTime: 1000 * 60 * 10, // Cache settings for 10 minutes
+    enabled: !isAdminRoute,
   });
 
   const announcement = settings?.announcement;
+
+  if (isAdminRoute) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <main className="flex-1">
+          <Outlet />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -201,11 +216,14 @@ function AppLayout() {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   return (
     <QueryClientProvider client={queryClient}>
       <AppLayout />
-      <StickyMobileBar />
-      <FloatingWhatsApp />
+      {!isAdminRoute && <StickyMobileBar />}
+      {!isAdminRoute && <FloatingWhatsApp />}
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );

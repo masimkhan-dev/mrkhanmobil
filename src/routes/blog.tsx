@@ -29,7 +29,7 @@ const posts = [
 
 export const Route = createFileRoute("/blog")({
   head: () => {
-    const siteUrl = process.env.SITE_URL || "https://mrkhan-repairs.co.uk";
+    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
         { title: `Repair Blog | ${business.name}` },

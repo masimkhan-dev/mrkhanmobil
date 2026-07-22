@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { business } from "@/config/business";
 import techImg from "@/assets/technician.jpg";
 import devicesImg from "@/assets/devices.jpg";
-import heroImg from "@/assets/hero-workshop.jpg";
+import heroImg from "@/assets/heroimage.jpg";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({

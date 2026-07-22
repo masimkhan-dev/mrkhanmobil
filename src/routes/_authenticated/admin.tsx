@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate, useLocation, Outlet } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { z } from "zod";
 import {
   getMyRole,
   getDashboardStats,
@@ -52,10 +53,21 @@ import {
   CheckCircle2,
   Circle,
   MessageCircle,
+  Menu,
+  Bell,
+  ArrowRight,
 } from "lucide-react";
 import { toast } from "sonner";
+import { business } from "@/config/business";
+
+const adminSearchSchema = z.object({
+  tab: z.enum(["dashboard", "bookings", "leads", "subs"]).optional(),
+  status: z.string().optional(),
+  q: z.string().optional(),
+});
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  validateSearch: adminSearchSchema,
   head: () => ({
     meta: [
       { title: "Admin Dashboard — MR KHAN" },
@@ -184,6 +196,165 @@ const printJobSheet = (booking: any) => {
   w.document.close();
 };
 
+interface SidebarProps {
+  me: { email: string; isAdmin: boolean };
+  activeTab: string;
+  onSignOut: () => void;
+  onLinkClick?: () => void;
+}
+
+function AdminSidebar({ me, activeTab, onSignOut, onLinkClick }: SidebarProps) {
+  const location = useLocation();
+
+  const coreLinks = [
+    { value: "dashboard", label: "Overview", icon: LayoutDashboard, adminOnly: false },
+    { value: "bookings", label: "Bookings", icon: Wrench, adminOnly: false },
+    { value: "leads", label: "Leads", icon: Mail, adminOnly: false },
+    { value: "subs", label: "Subscribers", icon: Users, adminOnly: true },
+  ] as const;
+
+  const cmsLinks = [
+    { to: "/admin/settings", label: "Site Settings", icon: Settings, adminOnly: true },
+    { to: "/admin/services", label: "Services", icon: Wrench, adminOnly: true },
+    { to: "/admin/devices", label: "Devices", icon: Smartphone, adminOnly: true },
+    { to: "/admin/repair-types", label: "Repair Types", icon: Wrench, adminOnly: true },
+    { to: "/admin/reviews", label: "Reviews", icon: Star, adminOnly: true },
+    { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, adminOnly: true },
+    { to: "/admin/gallery", label: "Gallery", icon: ImageIcon, adminOnly: true },
+    { to: "/admin/cities", label: "Location Pages", icon: MapPin, adminOnly: true },
+  ];
+
+  const isMainAdminRoute = location.pathname === "/admin" || location.pathname === "/admin/";
+
+  return (
+    <div className="flex flex-col h-full bg-ink-navy text-white font-sans">
+      {/* Brand logo */}
+      <div className="flex h-20 items-center px-6 border-b border-white/10 gap-3">
+        <div className="h-9 w-9 rounded-xl bg-signal-blue flex items-center justify-center p-1.5 font-space font-black text-white text-base shadow-sm shrink-0">
+          MK
+        </div>
+        <div className="leading-tight flex-1">
+          <div className="font-space font-bold text-sm tracking-tight text-white flex items-center gap-1.5">
+            {business.name}
+            <span className="inline-block h-2 w-2 rounded-full bg-success-mint animate-pulse" />
+          </div>
+          <div className="text-[9px] uppercase tracking-widest text-white/50 font-bold">
+            Admin Portal
+          </div>
+        </div>
+      </div>
+
+      {/* User profile info */}
+      <div className="px-5 py-4 border-b border-white/5 bg-white/2 pt-5 pb-5">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center font-space font-bold text-xs text-white uppercase shadow-inner shrink-0">
+            {me.email.slice(0, 2)}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-white truncate">{me.email}</p>
+            <p className="text-[9px] text-white/40 mt-1 font-bold uppercase tracking-wider">
+              {me.isAdmin ? "Administrator" : "Staff"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation list */}
+      <div className="flex-1 overflow-y-auto pr-4 pl-0 py-6 space-y-7">
+        {/* Main dashboard tabs */}
+        <div className="space-y-1">
+          <div className="pl-5 text-[9px] uppercase tracking-widest font-bold text-white/40 mb-3">
+            Main Portal
+          </div>
+          {coreLinks.map((link) => {
+            if (link.adminOnly && !me.isAdmin) return null;
+            const isTabActive = isMainAdminRoute && activeTab === link.value;
+
+            return (
+              <Link
+                key={link.value}
+                to="/admin"
+                search={{ tab: link.value }}
+                onClick={onLinkClick}
+                className={`group relative flex items-center gap-3.5 pl-5 pr-3 py-2 rounded-r-xl text-xs font-medium transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue ${
+                  isTabActive
+                    ? "bg-white/10 text-white font-semibold shadow-xs"
+                    : "text-white/60 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {isTabActive && (
+                  <span className="absolute left-0 top-0 bottom-0 w-1 bg-signal-blue rounded-r-md" />
+                )}
+                <div
+                  className={`p-1.5 rounded-lg flex items-center justify-center transition-all ${
+                    isTabActive
+                      ? "bg-signal-blue/20 text-white shadow-xs"
+                      : "bg-white/5 text-white/60 group-hover:bg-white/10 group-hover:text-white"
+                  }`}
+                >
+                  <link.icon className="h-4 w-4 shrink-0" />
+                </div>
+                <span>{link.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* CMS Configuration Links */}
+        {me.isAdmin && (
+          <div className="space-y-1">
+            <div className="pl-5 text-[9px] uppercase tracking-widest font-bold text-white/40 mb-3">
+              Content Management
+            </div>
+            {cmsLinks.map((link) => {
+              const isRouteActive = location.pathname === link.to;
+
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  onClick={onLinkClick}
+                  className={`group relative flex items-center gap-3.5 pl-5 pr-3 py-2 rounded-r-xl text-xs font-medium transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue ${
+                    isRouteActive
+                      ? "bg-white/10 text-white font-semibold shadow-xs"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {isRouteActive && (
+                    <span className="absolute left-0 top-0 bottom-0 w-1 bg-signal-blue rounded-r-md" />
+                  )}
+                  <div
+                    className={`p-1.5 rounded-lg flex items-center justify-center transition-all ${
+                      isRouteActive
+                        ? "bg-signal-blue/20 text-white shadow-xs"
+                        : "bg-white/5 text-white/60 group-hover:bg-white/10 group-hover:text-white"
+                    }`}
+                  >
+                    <link.icon className="h-4 w-4 shrink-0" />
+                  </div>
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Logout button */}
+      <div className="p-4 border-t border-white/5 mt-auto">
+        <Button
+          variant="outline"
+          className="w-full justify-start border-white/10 text-rose-400 hover:text-rose-300 hover:bg-white/5 text-xs py-2.5 rounded-xl gap-2.5 font-medium transition-colors cursor-pointer"
+          onClick={onSignOut}
+        >
+          <LogOut className="h-4 w-4" />
+          Sign out
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function AdminPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -194,10 +365,39 @@ function AdminPage() {
     staleTime: 30_000,
   });
 
+  const { tab, status, q } = Route.useSearch();
+  const activeTab = tab ?? "dashboard";
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState(q ?? "");
+
+  const bookingsFn = useServerFn(listBookings);
+  const {
+    data: bookings,
+    isLoading: isBookingsLoading,
+    refetch: refetchBookings,
+    isFetching: isFetchingBookings,
+  } = useQuery({
+    queryKey: ["admin", "bookings"],
+    queryFn: () => bookingsFn(),
+  });
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedBooking = bookings?.find((b: any) => b.id === selectedId) ?? null;
+
   async function signOut() {
     await supabase.auth.signOut();
     navigate({ to: "/auth" });
   }
+
+  const handleGlobalSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (globalSearch.trim()) {
+      navigate({
+        to: "/admin",
+        search: { tab: "bookings", q: globalSearch.trim() },
+      });
+    }
+  };
 
   if (isLoading)
     return (
@@ -210,7 +410,7 @@ function AdminPage() {
     return (
       <div className="max-w-xl mx-auto py-20 px-4">
         <Card className="p-8 text-center space-y-4">
-          <h1 className="font-display font-bold text-2xl">Awaiting Approval</h1>
+          <h1 className="font-space font-bold text-2xl">Awaiting Approval</h1>
           <p className="text-sm text-muted-foreground">
             Your account <span className="font-mono">{me?.email}</span> is signed in but doesn't
             have admin or staff access yet.
@@ -227,124 +427,142 @@ function AdminPage() {
     );
   }
 
-  const cmsLinks = [
-    { to: "/admin", label: "Dashboard", icon: LayoutDashboard, adminOnly: false },
-    { to: "/admin/settings", label: "Site Settings", icon: Settings, adminOnly: true },
-    { to: "/admin/services", label: "Services", icon: Wrench, adminOnly: true },
-    { to: "/admin/devices", label: "Devices", icon: Smartphone, adminOnly: true },
-    { to: "/admin/repair-types", label: "Repair Types", icon: Wrench, adminOnly: true },
-    { to: "/admin/reviews", label: "Reviews", icon: Star, adminOnly: true },
-    { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, adminOnly: true },
-    { to: "/admin/gallery", label: "Gallery", icon: ImageIcon, adminOnly: true },
-    { to: "/admin/cities", label: "Location Pages", icon: MapPin, adminOnly: true },
-  ];
-
   const isChildRoute = location.pathname !== "/admin" && location.pathname !== "/admin/";
 
   return (
-    <div className="container-x py-8 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="font-display font-bold text-3xl">Admin Dashboard</h1>
-          <p className="text-sm text-muted-foreground">
-            Signed in as {me.email} · {me.isAdmin ? "Admin" : "Staff"}
-          </p>
+    <div className="min-h-screen bg-soft-white font-sans text-ink-navy">
+      {/* Mobile Header Bar */}
+      <header className="md:hidden flex h-16 items-center justify-between px-4 border-b border-white/10 bg-ink-navy text-white sticky top-0 z-40">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="h-10 w-10 rounded-full hover:bg-white/10 flex items-center justify-center border border-white/10"
+            aria-label="Open sidebar"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <span className="font-space font-bold text-base tracking-tight">MR. KHAN Admin</span>
         </div>
-        <Button variant="outline" onClick={signOut}>
-          <LogOut className="h-4 w-4 mr-2" />
-          Sign out
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-rose-400 text-xs px-2 hover:bg-white/5"
+          onClick={signOut}
+        >
+          <LogOut className="h-4 w-4" />
         </Button>
+      </header>
+
+      {/* Sidebar for Desktop */}
+      <aside className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 z-40 border-r border-border/40 bg-ink-navy">
+        <AdminSidebar me={me} activeTab={activeTab} onSignOut={signOut} />
+      </aside>
+
+      {/* Sidebar for Mobile (Sheet) */}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent side="left" className="p-0 w-72 bg-ink-navy border-r-0 text-white">
+          <AdminSidebar
+            me={me}
+            activeTab={activeTab}
+            onSignOut={signOut}
+            onLinkClick={() => setMobileOpen(false)}
+          />
+        </SheetContent>
+      </Sheet>
+
+      {/* Main Content Area */}
+      <div className="md:pl-64 flex flex-col flex-1 min-h-screen">
+        <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto space-y-8">
+          {/* Top Info Bar / Header inside main */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-6">
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <h1 className="font-space font-bold text-2xl md:text-3xl text-ink-navy tracking-tight">
+                  {isChildRoute ? "CMS Content Editor" : "MR. KHAN Admin Portal"}
+                </h1>
+                <div className="flex items-center gap-1.5 bg-success-mint/10 border border-success-mint/20 text-success-mint px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide">
+                  <span className="h-1.5 w-1.5 rounded-full bg-success-mint animate-pulse" />
+                  System Active
+                </div>
+              </div>
+              <p className="text-xs text-slate-gray font-medium">
+                Welcome back, <span className="font-semibold text-ink-navy">{me.email}</span>
+              </p>
+            </div>
+
+            {/* Header Right Actions */}
+            <div className="flex flex-wrap items-center gap-3">
+              <form
+                onSubmit={handleGlobalSearch}
+                className="relative flex-1 sm:flex-initial min-w-[200px]"
+              >
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-gray" />
+                <Input
+                  value={globalSearch}
+                  onChange={(e) => setGlobalSearch(e.target.value)}
+                  placeholder="Search bookings..."
+                  className="pl-9.5 pr-4 py-1.5 bg-white border border-border/80 rounded-xl text-xs text-ink-navy placeholder:text-slate-gray/70 focus-visible:ring-signal-blue w-full sm:w-60 shadow-xs focus-visible:outline-2"
+                />
+              </form>
+              <button
+                className="relative h-9 w-9 rounded-xl border border-border/80 bg-white hover:bg-slate-50 transition grid place-items-center text-ink-navy shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+                title="Notifications"
+              >
+                <Bell className="h-4 w-4" />
+                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-attention-amber animate-pulse" />
+              </button>
+            </div>
+          </div>
+
+          {/* Content panels */}
+          {isChildRoute ? (
+            <Outlet />
+          ) : (
+            <div className="space-y-8">
+              {activeTab === "dashboard" && (
+                <OverviewPanel
+                  onSelectBooking={setSelectedId}
+                  bookings={bookings}
+                  isBookingsLoading={isBookingsLoading}
+                />
+              )}
+              {activeTab === "bookings" && (
+                <BookingsPanel
+                  selectedId={selectedId}
+                  onSelectBooking={setSelectedId}
+                  bookings={bookings ?? []}
+                  isLoading={isBookingsLoading}
+                  refetch={refetchBookings}
+                  isFetching={isFetchingBookings}
+                />
+              )}
+              {activeTab === "leads" && <LeadsPanel isAdmin={me.isAdmin} />}
+              {activeTab === "subs" && me.isAdmin && <SubscribersPanel />}
+            </div>
+          )}
+        </main>
       </div>
-
-      {/* CMS Nav */}
-      {me.isAdmin && (
-        <Card className="p-3">
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground px-2 pb-2 font-semibold">
-            Content Management
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {cmsLinks.map((l) => {
-              const isActive = location.pathname === l.to;
-              return (
-                <Button key={l.to} asChild size="sm" variant={isActive ? "default" : "outline"}>
-                  <Link to={l.to}>
-                    <l.icon className="h-3.5 w-3.5 mr-1.5" />
-                    {l.label}
-                  </Link>
-                </Button>
-              );
-            })}
-          </div>
-        </Card>
-      )}
-
-      {isChildRoute ? (
-        <Outlet />
-      ) : (
-        <Tabs defaultValue="dashboard">
-          <TabsList className="grid w-full grid-cols-4 max-w-2xl">
-            <TabsTrigger value="dashboard">
-              <LayoutDashboard className="h-4 w-4 mr-2" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="bookings">
-              <Wrench className="h-4 w-4 mr-2" />
-              Bookings
-            </TabsTrigger>
-            <TabsTrigger value="leads">
-              <Mail className="h-4 w-4 mr-2" />
-              Leads
-            </TabsTrigger>
-            <TabsTrigger value="subs" disabled={!me.isAdmin}>
-              <Users className="h-4 w-4 mr-2" />
-              Subscribers
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="dashboard" className="mt-6">
-            <OverviewPanel />
-          </TabsContent>
-          <TabsContent value="bookings" className="mt-6">
-            <BookingsPanel />
-          </TabsContent>
-          <TabsContent value="leads" className="mt-6">
-            <LeadsPanel isAdmin={me.isAdmin} />
-          </TabsContent>
-          <TabsContent value="subs" className="mt-6">
-            <SubscribersPanel />
-          </TabsContent>
-        </Tabs>
-      )}
+      <BookingDrawer booking={selectedBooking} onClose={() => setSelectedId(null)} />
     </div>
   );
 }
 
-function StatCard({
-  label,
-  value,
-  hint,
-  tone,
+function OverviewPanel({
+  onSelectBooking,
+  bookings,
+  isBookingsLoading,
 }: {
-  label: string;
-  value: number | string;
-  hint?: string;
-  tone?: string;
+  onSelectBooking: (id: string | null) => void;
+  bookings: any[] | undefined;
+  isBookingsLoading: boolean;
 }) {
-  return (
-    <Card className="p-5">
-      <div className="text-xs uppercase tracking-widest text-muted-foreground">{label}</div>
-      <div className={`mt-2 font-display font-bold text-3xl ${tone ?? ""}`}>{value}</div>
-      {hint && <div className="text-xs text-muted-foreground mt-1">{hint}</div>}
-    </Card>
-  );
-}
-
-function OverviewPanel() {
+  const navigate = useNavigate();
   const fn = useServerFn(getDashboardStats);
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ["admin", "stats"],
     queryFn: () => fn(),
   });
+
   if (isLoading)
     return (
       <div className="grid place-items-center py-16">
@@ -352,43 +570,320 @@ function OverviewPanel() {
       </div>
     );
   if (!data) return null;
+
+  const recentBookings = (bookings ?? []).slice(0, 5);
+
   return (
-    <div className="space-y-5">
-      <div className="flex justify-end">
-        <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`h-4 w-4 mr-2 ${isFetching ? "animate-spin" : ""}`} />
-          Refresh
+    <div className="space-y-8">
+      {/* Aligned Subheader Actions */}
+      <div className="flex justify-end items-center">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="rounded-xl border-border/80 bg-white hover:bg-slate-50 transition text-xs font-semibold px-4 cursor-pointer"
+        >
+          <RefreshCw className={`h-3.5 w-3.5 mr-2 ${isFetching ? "animate-spin" : ""}`} />
+          Refresh Stats
         </Button>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Bookings Today" value={data.bookings.today} />
-        <StatCard label="This Week" value={data.bookings.week} />
-        <StatCard label="Total Bookings" value={data.bookings.total} />
-        <StatCard label="Leads" value={data.leads} />
+
+      {/* 1. Needs Your Attention Row */}
+      <div className="bg-attention-amber/5 border border-attention-amber/25 rounded-2xl p-6 shadow-xs">
+        <h2 className="font-space font-bold text-sm text-ink-navy mb-4 tracking-wide uppercase">
+          Needs Your Attention
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button
+            onClick={() =>
+              navigate({ to: "/admin", search: { tab: "bookings", status: "pending" } })
+            }
+            className="w-full text-left p-5 bg-white border border-attention-amber/20 hover:border-attention-amber/50 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+          >
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-gray mb-1">
+              Pending Bookings
+            </div>
+            <div className="text-3xl font-mono font-bold tracking-tight text-attention-amber">
+              {data.bookings.pending}
+            </div>
+            <div className="text-[11px] text-slate-gray mt-1">
+              New bookings awaiting confirmation
+            </div>
+          </button>
+
+          <button
+            onClick={() => navigate({ to: "/admin", search: { tab: "leads" } })}
+            className="w-full text-left p-5 bg-white border border-attention-amber/20 hover:border-attention-amber/50 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+          >
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-gray mb-1">
+              New Leads
+            </div>
+            <div className="text-3xl font-mono font-bold tracking-tight text-attention-amber">
+              {data.leads}
+            </div>
+            <div className="text-[11px] text-slate-gray mt-1">
+              Unresolved customer contact inquiries
+            </div>
+          </button>
+        </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Pending" value={data.bookings.pending} tone="text-amber-600" />
-        <StatCard label="In Progress" value={data.bookings.inProgress} tone="text-purple-600" />
-        <StatCard label="Ready" value={data.bookings.ready} tone="text-cyan-600" />
-        <StatCard label="Completed" value={data.bookings.completed} tone="text-emerald-600" />
+
+      {/* 2. Repair Pipeline Tracker */}
+      <div className="space-y-4">
+        <h2 className="font-space font-bold text-base text-ink-navy tracking-tight">
+          Repair Pipeline
+        </h2>
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
+          {/* Stage 1: Pending */}
+          <button
+            onClick={() =>
+              navigate({ to: "/admin", search: { tab: "bookings", status: "pending" } })
+            }
+            className="flex-1 text-left p-5 bg-white border border-border/60 hover:border-signal-blue/30 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className="h-2 w-2 rounded-full bg-attention-amber" />
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-gray">
+                Pending
+              </div>
+            </div>
+            <div className="text-3xl font-mono font-bold tracking-tight text-ink-navy">
+              {data.bookings.pending}
+            </div>
+            <div className="text-[10px] text-slate-gray mt-1.5 font-medium">Awaiting action</div>
+          </button>
+
+          <div className="hidden lg:flex shrink-0 items-center justify-center text-slate-gray/30">
+            <ArrowRight className="h-5 w-5 animate-pulse" />
+          </div>
+
+          {/* Stage 2: In Progress */}
+          <button
+            onClick={() =>
+              navigate({ to: "/admin", search: { tab: "bookings", status: "in_progress" } })
+            }
+            className="flex-1 text-left p-5 bg-white border border-border/60 hover:border-signal-blue/30 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className="h-2 w-2 rounded-full bg-indigo-500" />
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-gray">
+                In Progress
+              </div>
+            </div>
+            <div className="text-3xl font-mono font-bold tracking-tight text-ink-navy">
+              {data.bookings.inProgress}
+            </div>
+            <div className="text-[10px] text-slate-gray mt-1.5 font-medium">Under repair</div>
+          </button>
+
+          <div className="hidden lg:flex shrink-0 items-center justify-center text-slate-gray/30">
+            <ArrowRight className="h-5 w-5 animate-pulse" />
+          </div>
+
+          {/* Stage 3: Ready */}
+          <button
+            onClick={() =>
+              navigate({
+                to: "/admin",
+                search: { tab: "bookings", status: "ready_for_collection" },
+              })
+            }
+            className="flex-1 text-left p-5 bg-white border border-border/60 hover:border-signal-blue/30 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className="h-2 w-2 rounded-full bg-sky-500" />
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-gray">
+                Ready for Collection
+              </div>
+            </div>
+            <div className="text-3xl font-mono font-bold tracking-tight text-ink-navy">
+              {data.bookings.ready}
+            </div>
+            <div className="text-[10px] text-slate-gray mt-1.5 font-medium">Awaiting pickup</div>
+          </button>
+
+          <div className="hidden lg:flex shrink-0 items-center justify-center text-slate-gray/30">
+            <ArrowRight className="h-5 w-5 animate-pulse" />
+          </div>
+
+          {/* Stage 4: Completed */}
+          <button
+            onClick={() =>
+              navigate({ to: "/admin", search: { tab: "bookings", status: "completed" } })
+            }
+            className="flex-1 text-left p-5 bg-white border border-border/60 hover:border-signal-blue/30 rounded-2xl shadow-xs hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className="h-2 w-2 rounded-full bg-success-mint" />
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-gray">
+                Completed
+              </div>
+            </div>
+            <div className="text-3xl font-mono font-bold tracking-tight text-ink-navy">
+              {data.bookings.completed}
+            </div>
+            <div className="text-[10px] text-slate-gray mt-1.5 font-medium">Done & collected</div>
+          </button>
+        </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Cancelled" value={data.bookings.cancelled} />
-        <StatCard label="Newsletter" value={data.subscribers} />
+
+      {/* 3. Secondary Muted Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+        <button
+          onClick={() => navigate({ to: "/admin", search: { tab: "bookings" } })}
+          className="p-4 bg-white border border-border/40 rounded-2xl hover:border-slate-300 hover:shadow-xs transition text-left cursor-pointer transform hover:scale-[1.005] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+        >
+          <div className="text-[10px] font-bold text-slate-gray uppercase tracking-wider">
+            Bookings Today
+          </div>
+          <div className="text-xl font-mono font-bold mt-1 text-ink-navy">
+            {data.bookings.today}
+          </div>
+        </button>
+
+        <button
+          onClick={() => navigate({ to: "/admin", search: { tab: "bookings" } })}
+          className="p-4 bg-white border border-border/40 rounded-2xl hover:border-slate-300 hover:shadow-xs transition text-left cursor-pointer transform hover:scale-[1.005] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+        >
+          <div className="text-[10px] font-bold text-slate-gray uppercase tracking-wider">
+            This Week
+          </div>
+          <div className="text-xl font-mono font-bold mt-1 text-ink-navy">{data.bookings.week}</div>
+        </button>
+
+        <button
+          onClick={() => navigate({ to: "/admin", search: { tab: "bookings" } })}
+          className="p-4 bg-white border border-border/40 rounded-2xl hover:border-slate-300 hover:shadow-xs transition text-left cursor-pointer transform hover:scale-[1.005] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+        >
+          <div className="text-[10px] font-bold text-slate-gray uppercase tracking-wider">
+            Cancelled
+          </div>
+          <div className="text-xl font-mono font-bold mt-1 text-ink-navy">
+            {data.bookings.cancelled}
+          </div>
+        </button>
+
+        <button
+          onClick={() => navigate({ to: "/admin", search: { tab: "subs" } })}
+          className="p-4 bg-white border border-border/40 rounded-2xl hover:border-slate-300 hover:shadow-xs transition text-left cursor-pointer transform hover:scale-[1.005] focus-visible:outline focus-visible:outline-2 focus-visible:outline-signal-blue"
+        >
+          <div className="text-[10px] font-bold text-slate-gray uppercase tracking-wider">
+            Subscribers
+          </div>
+          <div className="text-xl font-mono font-bold mt-1 text-ink-navy">{data.subscribers}</div>
+        </button>
+      </div>
+
+      {/* 4. Recent Activity Section */}
+      <div className="bg-white border border-border/60 rounded-2xl shadow-xs overflow-hidden">
+        <div className="px-6 py-5 border-b border-border/60 flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h3 className="font-space font-bold text-base text-ink-navy">Recent Activity</h3>
+            <p className="text-xs text-slate-gray mt-0.5">The 5 most recently created bookings</p>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate({ to: "/admin", search: { tab: "bookings" } })}
+            className="text-xs text-signal-blue hover:text-signal-blue/80 hover:bg-signal-blue/5 rounded-xl cursor-pointer"
+          >
+            View All Bookings
+          </Button>
+        </div>
+
+        {isBookingsLoading ? (
+          <div className="p-10 grid place-items-center">
+            <Loader2 className="h-5 w-5 animate-spin text-slate-gray" />
+          </div>
+        ) : recentBookings.length === 0 ? (
+          <div className="p-10 text-center text-xs text-slate-gray">No activity found.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-border/60 text-slate-gray font-semibold">
+                  <th className="px-6 py-3">Ref</th>
+                  <th className="px-6 py-3">Customer</th>
+                  <th className="px-6 py-3">Device</th>
+                  <th className="px-6 py-3">Received</th>
+                  <th className="px-6 py-3">Status</th>
+                  <th className="px-6 py-3"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/40">
+                {recentBookings.map((b: any) => {
+                  const meta = STATUS_META[b.status] ?? {
+                    label: b.status,
+                    className: "",
+                    short: b.status,
+                  };
+                  return (
+                    <tr key={b.id} className="hover:bg-slate-50/50 transition">
+                      <td className="px-6 py-3.5 font-mono font-bold text-ink-navy">
+                        #{b.booking_ref}
+                      </td>
+                      <td className="px-6 py-3.5 font-semibold text-ink-navy">
+                        {b.first_name} {b.last_name}
+                      </td>
+                      <td className="px-6 py-3.5 text-slate-gray">
+                        {b.brand} {b.model}
+                      </td>
+                      <td className="px-6 py-3.5 text-slate-gray">
+                        {new Date(b.created_at).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </td>
+                      <td className="px-6 py-3.5">
+                        <span
+                          className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${meta.className}`}
+                        >
+                          {meta.label}
+                        </span>
+                      </td>
+                      <td className="px-6 py-3.5 text-right">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onSelectBooking(b.id)}
+                          className="h-7 text-[10px] px-3 rounded-lg border-border bg-white hover:bg-slate-50 text-ink-navy cursor-pointer"
+                        >
+                          View Detail
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function BookingsPanel() {
-  const listFn = useServerFn(listBookings);
-  const { data, isLoading, refetch, isFetching } = useQuery({
-    queryKey: ["admin", "bookings"],
-    queryFn: () => listFn(),
-  });
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<string>("all");
-  const [search, setSearch] = useState("");
+function BookingsPanel({
+  selectedId,
+  onSelectBooking,
+  bookings,
+  isLoading,
+  refetch,
+  isFetching,
+}: {
+  selectedId: string | null;
+  onSelectBooking: (id: string | null) => void;
+  bookings: any[];
+  isLoading: boolean;
+  refetch: () => void;
+  isFetching: boolean;
+}) {
+  const { status, q } = Route.useSearch();
+  const [filter, setFilter] = useState<string>(status ?? "all");
+  const [search, setSearch] = useState(q ?? "");
 
   const updateFn = useServerFn(updateBookingStatus);
   const qc = useQueryClient();
@@ -403,24 +898,41 @@ function BookingsPanel() {
     onError: (e: any) => toast.error(e?.message ?? "Update failed"),
   });
 
-  const bookings = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return (data ?? []).filter((b: any) => {
-      if (filter !== "all" && b.status !== filter) return false;
-      if (!q) return true;
+  // Sync state with URL parameter changes:
+  useEffect(() => {
+    if (status) {
+      setFilter(status);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (q !== undefined) {
+      setSearch(q);
+    }
+  }, [q]);
+
+  const filteredBookings = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return bookings.filter((b: any) => {
+      // Custom filters for In Progress grouping
+      if (filter === "in_progress") {
+        if (!["diagnosing", "waiting_parts", "repair_started"].includes(b.status)) return false;
+      } else if (filter !== "all" && b.status !== filter) {
+        return false;
+      }
+
+      if (!query) return true;
       return (
-        (b.booking_ref ?? "").toLowerCase().includes(q) ||
-        (b.first_name ?? "").toLowerCase().includes(q) ||
-        (b.last_name ?? "").toLowerCase().includes(q) ||
-        (b.email ?? "").toLowerCase().includes(q) ||
-        (b.phone ?? "").toLowerCase().includes(q) ||
-        (b.model ?? "").toLowerCase().includes(q) ||
-        (b.brand ?? "").toLowerCase().includes(q)
+        (b.booking_ref ?? "").toLowerCase().includes(query) ||
+        (b.first_name ?? "").toLowerCase().includes(query) ||
+        (b.last_name ?? "").toLowerCase().includes(query) ||
+        (b.email ?? "").toLowerCase().includes(query) ||
+        (b.phone ?? "").toLowerCase().includes(query) ||
+        (b.model ?? "").toLowerCase().includes(query) ||
+        (b.brand ?? "").toLowerCase().includes(query)
       );
     });
-  }, [data, filter, search]);
-
-  const selected = bookings.find((b: any) => b.id === selectedId) ?? null;
+  }, [bookings, filter, search]);
 
   const exportCsv = () => {
     const rows = [
@@ -436,7 +948,7 @@ function BookingsPanel() {
         "Service",
         "Status",
       ],
-      ...bookings.map((b: any) => [
+      ...filteredBookings.map((b: any) => [
         b.booking_ref,
         b.created_at,
         `${b.first_name} ${b.last_name}`,
@@ -486,30 +998,47 @@ function BookingsPanel() {
       </div>
 
       <div className="flex gap-2 flex-wrap">
-        {(["all", ...STATUSES] as const).map((s) => (
-          <Button
-            key={s}
-            size="sm"
-            variant={filter === s ? "default" : "outline"}
-            onClick={() => setFilter(s)}
-            className="rounded-full"
-          >
-            {s === "all" ? "All" : STATUS_META[s].short}
-          </Button>
-        ))}
+        {(
+          [
+            "all",
+            "pending",
+            "in_progress",
+            "ready_for_collection",
+            "completed",
+            "cancelled",
+          ] as const
+        ).map((s) => {
+          const label =
+            s === "all"
+              ? "All"
+              : s === "in_progress"
+                ? "In Progress"
+                : (STATUS_META[s]?.short ?? s);
+          return (
+            <Button
+              key={s}
+              size="sm"
+              variant={filter === s ? "default" : "outline"}
+              onClick={() => setFilter(s)}
+              className="rounded-full"
+            >
+              {label}
+            </Button>
+          );
+        })}
       </div>
 
       {isLoading ? (
         <div className="p-16 grid place-items-center">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
-      ) : bookings.length === 0 ? (
+      ) : filteredBookings.length === 0 ? (
         <div className="p-16 text-center text-muted-foreground text-sm bg-card border rounded-xl">
           No bookings match.
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {bookings.map((b: any) => {
+          {filteredBookings.map((b: any) => {
             const meta = STATUS_META[b.status] ?? {
               label: b.status,
               className: "",
@@ -526,7 +1055,7 @@ function BookingsPanel() {
               >
                 <div
                   className="p-5 cursor-pointer hover:bg-muted/30 transition flex-1"
-                  onClick={() => setSelectedId(b.id)}
+                  onClick={() => onSelectBooking(b.id)}
                 >
                   <div className="flex items-center justify-between gap-2 mb-3.5">
                     <span className="font-mono font-bold text-xs bg-muted text-foreground px-2 py-0.5 rounded border border-border">
@@ -626,8 +1155,6 @@ function BookingsPanel() {
           })}
         </div>
       )}
-
-      <BookingDrawer booking={selected} onClose={() => setSelectedId(null)} />
     </div>
   );
 }

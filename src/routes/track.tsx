@@ -53,7 +53,7 @@ type Booking = {
 
 export const Route = createFileRoute("/track")({
   head: () => {
-    const siteUrl = process.env.SITE_URL || "https://mrkhan-repairs.co.uk";
+    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
         { title: `Track Your Repair | ${business.name}` },

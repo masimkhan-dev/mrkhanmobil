@@ -25,7 +25,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/book")({
   head: () => {
-    const siteUrl = process.env.SITE_URL || "https://mrkhan-repairs.co.uk";
+    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
         { title: `Book a Repair | ${business.name}` },

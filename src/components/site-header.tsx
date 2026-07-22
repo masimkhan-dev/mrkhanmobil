@@ -18,6 +18,16 @@ const nav = [
   { to: "/contact", label: "Contact" },
 ];
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, Wrench, Home as HomeIcon, Package, Smartphone, Battery, Droplets, Zap, Camera, ShieldCheck as ShieldIcon } from "lucide-react";
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
@@ -55,24 +65,135 @@ export function SiteHeader() {
 
         {/* Desktop Nav Items */}
         <nav className="hidden lg:flex items-center gap-1 text-sm font-medium">
-          {nav.map((n) => (
-            <Link
-              key={n.to}
-              to={n.to}
-              className="px-3.5 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all duration-200"
-              activeProps={{ className: "text-foreground bg-muted font-semibold shadow-xs" }}
-              activeOptions={{ exact: n.to === "/" }}
-            >
-              {n.label === "Track Repair" ? (
-                <span className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                  {n.label}
-                </span>
-              ) : (
-                n.label
-              )}
-            </Link>
-          ))}
+          <Link
+            to="/"
+            className="px-3 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all"
+            activeProps={{ className: "text-foreground bg-muted font-semibold" }}
+            activeOptions={{ exact: true }}
+          >
+            Home
+          </Link>
+
+          {/* Services Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="inline-flex items-center gap-1 px-3 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all outline-none">
+              <span>Services</span>
+              <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 p-2 rounded-2xl shadow-xl">
+              <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold px-2 py-1">
+                Popular Repairs
+              </DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link to="/services/$slug" params={{ slug: "screen-repair" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl">
+                  <Smartphone className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <span>Screen Replacement</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/services/$slug" params={{ slug: "battery-replacement" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl">
+                  <Battery className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <span>Battery Replacement</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/services/$slug" params={{ slug: "water-damage" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl">
+                  <Droplets className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <span>Water Damage Diagnostics</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/services/$slug" params={{ slug: "charging-port" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl">
+                  <Zap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <span>Charging Port Fix</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/services/$slug" params={{ slug: "rear-camera" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl">
+                  <Camera className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <span>Camera Repair</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="my-1" />
+              <DropdownMenuItem asChild>
+                <Link to="/services" className="font-semibold text-blue-600 dark:text-blue-400 cursor-pointer rounded-xl">
+                  Browse All Services →
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Service Ways Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="inline-flex items-center gap-1 px-3 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all outline-none">
+              <span>Repair Options</span>
+              <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-60 p-2 rounded-2xl shadow-xl">
+              <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold px-2 py-1">
+                How We Serve You
+              </DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link to="/book" search={{ service: "walk_in" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
+                  <Wrench className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <div className="font-semibold text-xs">Walk-in Repair</div>
+                    <div className="text-[10px] text-muted-foreground">Liverpool Workshop (30-60 mins)</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/home-repair" className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
+                  <HomeIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <div className="font-semibold text-xs">Home Service</div>
+                    <div className="text-[10px] text-muted-foreground">Doorstep or office repair</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/mail-in" className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
+                  <Package className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <div className="font-semibold text-xs">Mail-in Repair</div>
+                    <div className="text-[10px] text-muted-foreground">Free return UK courier</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Link
+            to="/locations"
+            className="px-3 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all"
+            activeProps={{ className: "text-foreground bg-muted font-semibold" }}
+          >
+            Locations
+          </Link>
+          <Link
+            to="/track"
+            className="px-3 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all"
+            activeProps={{ className: "text-foreground bg-muted font-semibold" }}
+          >
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              Track Repair
+            </span>
+          </Link>
+          <Link
+            to="/reviews"
+            className="px-3 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all"
+            activeProps={{ className: "text-foreground bg-muted font-semibold" }}
+          >
+            Reviews
+          </Link>
+          <Link
+            to="/contact"
+            className="px-3 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all"
+            activeProps={{ className: "text-foreground bg-muted font-semibold" }}
+          >
+            Contact
+          </Link>
         </nav>
 
         {/* Desktop Action Buttons */}

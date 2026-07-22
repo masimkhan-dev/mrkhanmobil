@@ -21,7 +21,7 @@ export const Route = createFileRoute("/repairs/$city")({
     return c as CityPage;
   },
   head: ({ loaderData, params }) => {
-    const siteUrl = process.env.SITE_URL || "https://mrkhan-repairs.co.uk";
+    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: loaderData
         ? [
