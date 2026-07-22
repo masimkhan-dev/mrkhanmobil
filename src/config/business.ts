@@ -10,7 +10,7 @@ export const business = {
   whatsappNumber: "447707733038",
   email: "Mrkhanphones500@gmail.com",
   address: {
-    line1: "83/85 London Road, Post Office",
+    line1: "83, 85 London Rd",
     city: "Liverpool",
     region: "Merseyside",
     postcode: "L3 8JA",
