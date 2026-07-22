@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /auth
 
-Sitemap: https://mrkhan-repairs.co.uk/sitemap.xml
+Sitemap: https://www.mrkhanmobiles.co.uk/sitemap.xml
