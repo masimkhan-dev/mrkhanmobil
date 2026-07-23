@@ -65,6 +65,37 @@ export const Route = createFileRoute("/")({
         { rel: "canonical", href: `${siteUrl}/` },
         { rel: "preload", href: heroImg, as: "image", type: "image/jpeg" },
       ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "MobilePhoneRepairShop",
+            name: `${business.name} Repair Experts`,
+            url: siteUrl,
+            telephone: business.phoneRaw,
+            priceRange: "££",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: business.address.line1,
+              addressLocality: business.address.city,
+              addressRegion: business.address.region,
+              postalCode: business.address.postcode,
+              addressCountry: "GB",
+            },
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: 53.4094083,
+              longitude: -2.9742342,
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: String(business.rating.stars),
+              reviewCount: String(business.rating.reviews),
+            },
+          }),
+        },
+      ],
     };
   },
   component: Home,
