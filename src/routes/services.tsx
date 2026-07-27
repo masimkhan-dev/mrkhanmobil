@@ -20,14 +20,18 @@ export const Route = createFileRoute("/services")({
     const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
-        { title: `Repair Services | ${business.name}` },
+        { title: "Mobile Phone Repair Services Liverpool | Screen, Battery & Diagnostics | MR KHAN" },
         {
           name: "description",
           content:
-            "Complete list of mobile phone repair services — iPhone, Samsung, Google Pixel, Android — battery, screen, charging port, water damage and more. 12-month warranty on every repair.",
+            "Explore all mobile phone repair services at MR KHAN Liverpool. iPhone, Samsung & Pixel screen replacement, battery repair, charging port fix & water damage diagnosis with a 12-month warranty.",
         },
-        { property: "og:title", content: "All Repair Services" },
-        { property: "og:description", content: "Every device, every issue — one warranty." },
+        { property: "og:title", content: "Mobile Phone Repair Services Liverpool | MR KHAN" },
+        {
+          property: "og:description",
+          content:
+            "Screen replacement, battery repair, charging port fix & water damage diagnosis in Liverpool with a 12-month warranty.",
+        },
         { property: "og:url", content: `${siteUrl}/services` },
       ],
       links: [{ rel: "canonical", href: `${siteUrl}/services` }],

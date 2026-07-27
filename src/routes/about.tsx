@@ -24,17 +24,16 @@ export const Route = createFileRoute("/about")({
             No more mystery pricing, no more "we'll call you", no more disappointing warranties.
           </p>
           <p>
-            We combine certified technicians, OEM-quality parts and a real 12-month warranty into
+            We combine experienced technicians, high-grade parts and a 6-month warranty into
             one honest service — walk-in, home visit or mail-in.
           </p>
           <p>
-            Today we repair over 400 devices a week from our workshops in Liverpool and across the
-            North West, and mail-in from every corner of the UK.
+            Today we repair devices every day from our workshop in Liverpool, and mail-in from across the UK.
           </p>
           <h2 className="font-display font-semibold text-2xl mt-10">Our promise</h2>
           <ul>
             <li>Fixed prices before any repair</li>
-            <li>12-month warranty on parts and labour</li>
+            <li>6-month warranty on parts and labour</li>
             <li>Your data stays private, always</li>
             <li>No fix, no fee — every time</li>
           </ul>

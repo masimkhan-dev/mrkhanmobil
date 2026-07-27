@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertAdmin } from "@/lib/auth-guards";
 import { z } from "zod";
 
 export type CityPage = {
@@ -17,14 +18,6 @@ export type CityPage = {
   created_at: string;
   updated_at: string;
 };
-
-async function assertAdmin(supabase: any, userId: string) {
-  if (userId === "demo-user-id") return;
-  const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId);
-  if (error) throw new Error(error.message);
-  const roles = (data ?? []).map((r: { role: string }) => r.role);
-  if (!roles.includes("admin")) throw new Error("Forbidden: admin only.");
-}
 
 // Public: list all published cities
 export const listPublishedCities = createServerFn({ method: "GET" }).handler(async () => {
@@ -57,7 +50,7 @@ export const getCityBySlug = createServerFn({ method: "GET" })
 export const listCityPagesAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { data, error } = await context.supabase
       .from("city_pages")
       .select("*")
@@ -87,7 +80,7 @@ export const upsertCityPage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => upsertSchema.parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { data: row, error } = await context.supabase
       .from("city_pages")
       .upsert(data, { onConflict: "slug" })
@@ -101,7 +94,7 @@ export const deleteCityPage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { error } = await context.supabase.from("city_pages").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };

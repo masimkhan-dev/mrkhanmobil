@@ -28,11 +28,17 @@ export const Route = createFileRoute("/book")({
     const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
-        { title: `Book a Repair | ${business.name}` },
+        { title: "Book Mobile Phone Repair Liverpool | Same-Day Service | MR KHAN" },
         {
           name: "description",
           content:
-            "Book your mobile phone repair online in 60 seconds. Walk-in, home visit or mail-in. Same-day service across the UK.",
+            "Book your mobile phone repair in Liverpool online in 60 seconds. iPhone, Samsung & Pixel screen, battery & charging port repairs with a 12-month warranty.",
+        },
+        { property: "og:title", content: "Book Mobile Phone Repair Liverpool | MR KHAN" },
+        {
+          property: "og:description",
+          content:
+            "Book your mobile phone repair in Liverpool online in 60 seconds. Same-day service backed by a 12-month warranty.",
         },
         { property: "og:url", content: `${siteUrl}/book` },
       ],
@@ -247,18 +253,18 @@ function BookPage() {
   const estimate = data.problem ? estimateMap[data.problem] : null;
 
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-8 sm:py-12 md:py-16">
       <div className="container-x max-w-3xl">
         <p className="text-xs uppercase tracking-widest text-accent font-semibold">Book a Repair</p>
-        <h1 className="mt-2 font-display font-bold text-3xl md:text-5xl">Fixed in 60 seconds</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="mt-2 font-display font-bold text-2xl sm:text-4xl md:text-5xl">Fixed in 60 seconds</h1>
+        <p className="mt-2 text-muted-foreground text-sm sm:text-base">
           Step {step + 1} of {stepLabels.length}: {stepLabels[step]}
         </p>
 
-        <Progress value={progress} className="mt-6" />
+        <Progress value={progress} className="mt-4 sm:mt-6" />
 
-        <Card className="mt-8">
-          <CardContent className="p-6 md:p-10">
+        <Card className="mt-6 sm:mt-8">
+          <CardContent className="p-4 sm:p-6 md:p-10">
             <AnimatePresence mode="wait">
               <motion.div
                 key={step}
@@ -270,7 +276,7 @@ function BookPage() {
                 {step === 0 && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="font-display font-semibold text-2xl mb-4">1. Choose Brand</h2>
+                      <h2 className="font-display font-semibold text-xl sm:text-2xl mb-3 sm:mb-4">1. Choose Brand</h2>
                       <div className="flex flex-wrap gap-2">
                         {brands.map((b) => {
                           const active = data.brand === b;
@@ -281,7 +287,7 @@ function BookPage() {
                                 update({ brand: b, model: "" });
                                 setCustomModel(false);
                               }}
-                              className={`px-4 py-2.5 rounded-full border text-sm font-medium transition-all ${
+                              className={`px-4 py-2.5 rounded-full border text-xs sm:text-sm font-medium transition-all min-h-[44px] flex items-center justify-center ${
                                 active
                                   ? "border-accent bg-accent text-accent-foreground shadow-sm"
                                   : "border-border hover:border-accent bg-background"
@@ -296,7 +302,7 @@ function BookPage() {
 
                     {data.brand && (
                       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                        <h2 className="font-display font-semibold text-2xl mb-4">
+                        <h2 className="font-display font-semibold text-xl sm:text-2xl mb-3 sm:mb-4">
                           2. Choose Model
                         </h2>
                         {!customModel ? (
@@ -308,7 +314,7 @@ function BookPage() {
                                   <button
                                     key={m}
                                     onClick={() => update({ model: m })}
-                                    className={`p-3 rounded-xl border text-sm font-medium transition-all text-center ${
+                                    className={`p-3 rounded-xl border text-xs sm:text-sm font-medium transition-all text-center min-h-[44px] flex items-center justify-center ${
                                       active
                                         ? "border-accent bg-accent/5 text-accent font-semibold"
                                         : "border-border hover:border-accent bg-background text-foreground/80"
@@ -323,7 +329,7 @@ function BookPage() {
                                   setCustomModel(true);
                                   update({ model: "" });
                                 }}
-                                className="p-3 rounded-xl border border-dashed border-border hover:border-accent hover:bg-accent/5 text-sm font-medium text-muted-foreground transition-all"
+                                className="p-3 rounded-xl border border-dashed border-border hover:border-accent hover:bg-accent/5 text-xs sm:text-sm font-medium text-muted-foreground transition-all min-h-[44px] flex items-center justify-center"
                               >
                                 ✏️ Other Model
                               </button>
@@ -332,7 +338,7 @@ function BookPage() {
                         ) : (
                           <div className="space-y-3">
                             <Label htmlFor="custom-model">Type your Model</Label>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col sm:flex-row gap-2">
                               <Input
                                 id="custom-model"
                                 value={data.model}
@@ -347,6 +353,7 @@ function BookPage() {
                                   setCustomModel(false);
                                   update({ model: "" });
                                 }}
+                                className="min-h-[44px]"
                               >
                                 Cancel
                               </Button>
@@ -361,23 +368,23 @@ function BookPage() {
 
                     {data.model && (
                       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                        <h2 className="font-display font-semibold text-2xl mb-4">
+                        <h2 className="font-display font-semibold text-xl sm:text-2xl mb-3 sm:mb-4">
                           3. Choose Problem
                         </h2>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {problems.map((p) => {
                             const active = data.problem === p;
                             return (
                               <button
                                 key={p}
                                 onClick={() => update({ problem: p })}
-                                className={`p-3.5 rounded-xl border text-left text-sm transition-all ${
+                                className={`p-3.5 rounded-xl border text-left text-xs sm:text-sm transition-all min-h-[44px] flex items-center justify-between ${
                                   active
                                     ? "border-accent bg-accent/5 text-accent font-semibold"
                                     : "border-border hover:border-accent bg-background text-foreground/80"
                                 }`}
                               >
-                                {p}
+                                <span>{p}</span>
                               </button>
                             );
                           })}
@@ -390,22 +397,22 @@ function BookPage() {
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                       >
-                        <div className="p-5 rounded-2xl border border-accent/20 bg-accent/5 flex items-center justify-between gap-4">
+                        <div className="p-4 sm:p-5 rounded-2xl border border-accent/20 bg-accent/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                           <div>
                             <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                               Estimated Price
                             </div>
-                            <div className="mt-1 font-display font-bold text-3xl text-accent">
+                            <div className="mt-1 font-display font-bold text-2xl sm:text-3xl text-accent">
                               {estimate.price}
                             </div>
                           </div>
-                          <div className="text-right text-xs space-y-1.5 text-muted-foreground">
-                            <div className="flex items-center justify-end gap-1.5 font-semibold text-foreground">
-                              <ShieldCheck className="h-4 w-4 text-emerald-500" />{" "}
+                          <div className="text-left sm:text-right text-xs space-y-1.5 text-muted-foreground">
+                            <div className="flex items-center sm:justify-end gap-1.5 font-semibold text-foreground">
+                              <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0" />{" "}
                               {estimate.warranty} Warranty
                             </div>
-                            <div className="flex items-center justify-end gap-1.5">
-                              <Clock className="h-3.5 w-3.5" /> Fix in {estimate.time}
+                            <div className="flex items-center sm:justify-end gap-1.5">
+                              <Clock className="h-3.5 w-3.5 shrink-0" /> Fix in {estimate.time}
                             </div>
                           </div>
                         </div>
@@ -434,20 +441,21 @@ function BookPage() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="mt-10 flex justify-between gap-3">
+            <div className="mt-8 sm:mt-10 flex items-center justify-between gap-3 pt-4 border-t border-border/60">
               <Button
                 variant="outline"
                 onClick={() => setStep((s) => Math.max(0, s - 1))}
                 disabled={step === 0}
+                className="min-h-[44px] px-4"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" /> Back
               </Button>
               {step < stepLabels.length - 1 ? (
-                <Button onClick={() => setStep((s) => s + 1)} disabled={!canNext()}>
+                <Button onClick={() => setStep((s) => s + 1)} disabled={!canNext()} className="min-h-[44px] px-6">
                   Next <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               ) : (
-                <Button onClick={onSubmit} disabled={!canNext() || busy} size="lg" className="px-8">
+                <Button onClick={onSubmit} disabled={!canNext() || busy} size="lg" className="min-h-[48px] px-8 font-semibold">
                   {busy ? "Confirming…" : "Book Repair"}
                 </Button>
               )}

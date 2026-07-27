@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
 import { useState, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { trackBooking } from "@/lib/booking.functions";
@@ -52,6 +53,9 @@ type Booking = {
 };
 
 export const Route = createFileRoute("/track")({
+  validateSearch: z.object({
+    ref: z.string().optional(),
+  }),
   head: () => {
     const siteUrl = process.env.SITE_URL || business.url;
     return {
@@ -71,8 +75,8 @@ export const Route = createFileRoute("/track")({
 });
 
 function TrackPage() {
-  const searchParams = Route.useSearch() as any;
-  const [ref, setRef] = useState(searchParams?.ref || "");
+  const { ref: initialRef } = Route.useSearch();
+  const [ref, setRef] = useState(initialRef ?? "");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ found: false } | { found: true; booking: Booking } | null>(
     null,
@@ -93,10 +97,10 @@ function TrackPage() {
   };
 
   useEffect(() => {
-    if (searchParams?.ref) {
-      go(searchParams.ref);
+    if (initialRef) {
+      go(initialRef);
     }
-  }, [searchParams?.ref]);
+  }, [initialRef]);
 
   const getActiveIndex = (status: string) => {
     switch (status) {
@@ -136,16 +140,16 @@ function TrackPage() {
             e.preventDefault();
             go();
           }}
-          className="mt-8 flex gap-2"
+          className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-2.5"
         >
           <Input
             value={ref}
             onChange={(e) => setRef(e.target.value)}
             placeholder="e.g. MK-XXXXXX"
-            className="text-lg h-12"
+            className="text-base sm:text-lg h-12 flex-1"
             aria-label="Booking reference"
           />
-          <Button type="submit" size="lg" disabled={busy}>
+          <Button type="submit" size="lg" disabled={busy} className="min-h-[48px] px-6">
             <Search className="h-4 w-4 mr-2" />
             {busy ? "Tracking…" : "Track"}
           </Button>
@@ -153,7 +157,7 @@ function TrackPage() {
 
         {result && !result.found && (
           <Card className="mt-8 border-warning/40 bg-warning/5">
-            <CardContent className="p-6">
+            <CardContent className="p-5 sm:p-6">
               <div className="font-semibold">Reference not found</div>
               <p className="text-sm text-muted-foreground mt-1">
                 Double-check the code, or WhatsApp us — we'll find it.
@@ -164,8 +168,8 @@ function TrackPage() {
 
         {result?.found && (
           <Card className="mt-8 overflow-hidden">
-            <CardContent className="p-6 md:p-8 space-y-6">
-              <div className="flex justify-between items-start pb-6 border-b border-border">
+            <CardContent className="p-5 sm:p-8 space-y-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-6 border-b border-border">
                 <div>
                   <div className="text-xs uppercase tracking-wider text-muted-foreground">
                     Reference
@@ -174,7 +178,7 @@ function TrackPage() {
                     {result.booking.booking_ref}
                   </div>
                 </div>
-                <div className="text-right text-sm">
+                <div className="text-left sm:text-right text-sm">
                   <span className="font-semibold text-foreground">
                     {result.booking.brand} {result.booking.model}
                   </span>

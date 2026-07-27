@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /auth
 
-Sitemap: https://www.mrkhanmobiles.co.uk/sitemap.xml
+Disallow: /admin/
+Disallow: /auth/
+
+=
+|,Litemap: https://www.mrkhanmobiles.co.uk/sitemap.xml

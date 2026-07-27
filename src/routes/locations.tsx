@@ -13,18 +13,27 @@ const citiesQuery = {
 
 export const Route = createFileRoute("/locations")({
   loader: ({ context }) => context.queryClient.ensureQueryData(citiesQuery),
-  head: () => ({
-    meta: [
-      { title: `Repair Locations | ${business.name}` },
-      {
-        name: "description",
-        content:
-          "Mobile phone repair across Liverpool, Manchester, Wirral, Bootle, St Helens, Southport and Birkenhead — walk-in, home visit or mail-in.",
-      },
-      { property: "og:url", content: "/locations" },
-    ],
-    links: [{ rel: "canonical", href: "/locations" }],
-  }),
+  head: () => {
+    const siteUrl = process.env.SITE_URL || business.url;
+    return {
+      meta: [
+        { title: "Mobile Repair Locations Liverpool & North West | MR KHAN" },
+        {
+          name: "description",
+          content:
+            "Same-day mobile phone repair across Liverpool, Manchester, Wirral, Bootle, St Helens & Southport. Visit MR KHAN at 83, 85 London Rd, Liverpool L3 8JA or book doorstep repair.",
+        },
+        { property: "og:title", content: "Mobile Repair Locations Liverpool | MR KHAN" },
+        {
+          property: "og:description",
+          content:
+            "Mobile phone repair locations across Liverpool, Manchester & North West with a 12-month warranty.",
+        },
+        { property: "og:url", content: `${siteUrl}/locations` },
+      ],
+      links: [{ rel: "canonical", href: `${siteUrl}/locations` }],
+    };
+  },
   component: LocationsPage,
 });
 

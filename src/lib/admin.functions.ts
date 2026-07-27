@@ -1,107 +1,58 @@
-import { createServerFn } from "@tanstack/react-start";
+﻿import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertAdminOrStaff, assertAdmin } from "@/lib/auth-guards";
 import { z } from "zod";
 
-async function assertAdminOrStaff(supabase: any, userId: string) {
-  if (userId === "demo-user-id") {
-    return { roles: ["admin", "staff"], isAdmin: true };
-  }
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data } = await supabaseAdmin.from("user_roles").select("role").eq("user_id", userId);
-  let roles = (data ?? []).map((r: { role: string }) => r.role);
-  if (roles.length === 0) {
-    await supabaseAdmin.from("user_roles").insert({ user_id: userId, role: "admin" });
-    roles = ["admin"];
-  }
-  return { roles, isAdmin: roles.includes("admin") };
-}
+// --- Role resolver -----------------------------------------------------------
 
 export const getMyRole = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    if (context.userId === "demo-user-id") {
-      return {
-        userId: context.userId,
-        email: "demo@mrkhan-repairs.co.uk",
-        roles: ["admin", "staff"],
-        isAdmin: true,
-        isStaff: true,
-        hasAccess: true,
-      };
-    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("user_roles")
       .select("role")
       .eq("user_id", context.userId);
-    let roles = (data ?? []).map((r) => r.role);
-    if (roles.length === 0) {
-      await supabaseAdmin.from("user_roles").insert({ user_id: context.userId, role: "admin" });
-      roles = ["admin"];
-    }
+
+    const roles = (data ?? []).map((r: { role: string }) => r.role);
+    const hasAccess = roles.includes("admin") || roles.includes("staff");
+
     return {
       userId: context.userId,
-      email: (context.claims as any)?.email ?? null,
+      email: context.claims.email ?? null,
       roles,
       isAdmin: roles.includes("admin"),
       isStaff: roles.includes("staff"),
-      hasAccess: true,
+      // hasAccess is false when the user exists in auth but has no role yet.
+      // The admin UI shows an "Awaiting Approval" screen in this case.
+      hasAccess,
     };
   });
+
+// --- Dashboard stats ---------------------------------------------------------
 
 export const getDashboardStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdminOrStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const startOfWeek = new Date(now.getTime() - 7 * 24 * 3600 * 1000).toISOString();
 
-    const [
-      allB,
-      todayB,
-      weekB,
-      pendingB,
-      inProgressB,
-      readyB,
-      completedB,
-      cancelledB,
-      leads,
-      subs,
-    ] = await Promise.all([
-      supabaseAdmin.from("bookings").select("id", { count: "exact", head: true }),
-      supabaseAdmin
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", startOfDay),
-      supabaseAdmin
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", startOfWeek),
-      supabaseAdmin
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "pending"),
-      supabaseAdmin
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .in("status", ["diagnosing", "waiting_parts", "repair_started"]),
-      supabaseAdmin
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "ready_for_collection"),
-      supabaseAdmin
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .in("status", ["completed", "delivered"]),
-      supabaseAdmin
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "cancelled"),
-      supabaseAdmin.from("leads").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("newsletter_subscribers").select("id", { count: "exact", head: true }),
-    ]);
+    const [allB, todayB, weekB, pendingB, inProgressB, readyB, completedB, cancelledB, leads, subs] =
+      await Promise.all([
+        supabaseAdmin.from("bookings").select("id", { count: "exact", head: true }),
+        supabaseAdmin.from("bookings").select("id", { count: "exact", head: true }).gte("created_at", startOfDay),
+        supabaseAdmin.from("bookings").select("id", { count: "exact", head: true }).gte("created_at", startOfWeek),
+        supabaseAdmin.from("bookings").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabaseAdmin.from("bookings").select("id", { count: "exact", head: true }).in("status", ["diagnosing", "waiting_parts", "repair_started"]),
+        supabaseAdmin.from("bookings").select("id", { count: "exact", head: true }).eq("status", "ready_for_collection"),
+        supabaseAdmin.from("bookings").select("id", { count: "exact", head: true }).in("status", ["completed", "delivered"]),
+        supabaseAdmin.from("bookings").select("id", { count: "exact", head: true }).eq("status", "cancelled"),
+        supabaseAdmin.from("leads").select("id", { count: "exact", head: true }),
+        supabaseAdmin.from("newsletter_subscribers").select("id", { count: "exact", head: true }),
+      ]);
 
     return {
       bookings: {
@@ -119,14 +70,25 @@ export const getDashboardStats = createServerFn({ method: "GET" })
     };
   });
 
+// --- Bookings ----------------------------------------------------------------
+
+/**
+ * List columns projected for the bookings table view.
+ * Full booking detail (notes, address, etc.) is fetched separately via
+ * getBookingById when the admin opens the detail sheet.
+ * This keeps list payload small and avoids transmitting unnecessary PII.
+ */
+const BOOKING_LIST_COLUMNS =
+  "id, booking_ref, first_name, last_name, phone, email, brand, model, problem, service_type, status, status_note, created_at, updated_at";
+
 export const listBookings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdminOrStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("bookings")
-      .select("*")
+      .select(BOOKING_LIST_COLUMNS)
       .order("created_at", { ascending: false })
       .limit(500);
     if (error) throw new Error(error.message);
@@ -137,7 +99,7 @@ export const getBookingById = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdminOrStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("bookings")
@@ -162,11 +124,12 @@ const UpdateBookingSchema = z.object({
   ]),
   status_note: z.string().max(1000).optional().nullable(),
 });
+
 export const updateBookingStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => UpdateBookingSchema.parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdminOrStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("bookings")
@@ -177,21 +140,22 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
       })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
-    // log timeline event
     await supabaseAdmin.from("booking_events").insert({
       booking_id: data.id,
       status: data.status,
       note: data.status_note ?? null,
       author_id: context.userId,
-      author_email: (context.claims as any)?.email ?? null,
+      author_email: context.claims.email ?? null,
     });
     return { ok: true };
   });
 
+// --- Leads -------------------------------------------------------------------
+
 export const listLeads = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdminOrStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("leads")
@@ -207,19 +171,21 @@ export const deleteLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => DeleteLeadSchema.parse(d))
   .handler(async ({ context, data }) => {
-    const { isAdmin } = await assertAdminOrStaff(context.supabase, context.userId);
-    if (!isAdmin) throw new Error("Forbidden: admin only.");
+    // Delete is admin-only; staff can view but not permanently delete leads.
+    await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("leads").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
 
+// --- Newsletter subscribers --------------------------------------------------
+
 export const listSubscribers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { isAdmin } = await assertAdminOrStaff(context.supabase, context.userId);
-    if (!isAdmin) return [];
+    // Subscriber list is admin-only PII.
+    await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("newsletter_subscribers")

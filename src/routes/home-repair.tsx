@@ -5,18 +5,27 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/home-repair")({
-  head: () => ({
-    meta: [
-      { title: `Home Repair Service | ${business.name}` },
-      {
-        name: "description",
-        content:
-          "We come to you. Same-day mobile phone repair at your home across Liverpool, Manchester, Wirral and the North West.",
-      },
-      { property: "og:url", content: "/home-repair" },
-    ],
-    links: [{ rel: "canonical", href: "/home-repair" }],
-  }),
+  head: () => {
+    const siteUrl = process.env.SITE_URL || business.url;
+    return {
+      meta: [
+        { title: "Home Mobile Repair Liverpool | We Come To You | MR KHAN" },
+        {
+          name: "description",
+          content:
+            "Need mobile repair at your doorstep? MR KHAN comes to your home or office in Liverpool, Manchester & North West for same-day mobile repair with a 12-month warranty.",
+        },
+        { property: "og:title", content: "Home Mobile Repair Liverpool | MR KHAN" },
+        {
+          property: "og:description",
+          content:
+            "Doorstep mobile repair at your home or office in Liverpool & North West. 12-month warranty.",
+        },
+        { property: "og:url", content: `${siteUrl}/home-repair` },
+      ],
+      links: [{ rel: "canonical", href: `${siteUrl}/home-repair` }],
+    };
+  },
   component: () => (
     <>
       <section className="py-16 md:py-24 bg-surface border-b border-border">

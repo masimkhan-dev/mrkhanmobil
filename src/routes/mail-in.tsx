@@ -4,18 +4,27 @@ import { Button } from "@/components/ui/button";
 import { business } from "@/config/business";
 
 export const Route = createFileRoute("/mail-in")({
-  head: () => ({
-    meta: [
-      { title: `Mail-in Repair | ${business.name}` },
-      {
-        name: "description",
-        content:
-          "UK-wide mail-in repair service with free tracked & insured return delivery. Book, pack, post — we do the rest.",
-      },
-      { property: "og:url", content: "/mail-in" },
-    ],
-    links: [{ rel: "canonical", href: "/mail-in" }],
-  }),
+  head: () => {
+    const siteUrl = process.env.SITE_URL || business.url;
+    return {
+      meta: [
+        { title: "UK Mail-In Mobile Phone Repair | Tracked Courier | MR KHAN" },
+        {
+          name: "description",
+          content:
+            "Post your phone to MR KHAN Liverpool for expert repair. Free return courier delivery, fully insured and tracked end-to-end across the UK with a 12-month warranty.",
+        },
+        { property: "og:title", content: "UK Mail-In Mobile Phone Repair | MR KHAN" },
+        {
+          property: "og:description",
+          content:
+            "Tracked & insured mail-in mobile repair service across the UK with a 12-month warranty.",
+        },
+        { property: "og:url", content: `${siteUrl}/mail-in` },
+      ],
+      links: [{ rel: "canonical", href: `${siteUrl}/mail-in` }],
+    };
+  },
   component: () => (
     <>
       <section className="py-16 md:py-24 bg-surface border-b border-border">

@@ -10,72 +10,70 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listPublicReviews } from "@/lib/cms.functions";
-
-export const reviews = [
-  {
-    name: "Sarah H.",
-    city: "Liverpool",
-    stars: 5,
-    text: "Cracked my iPhone 14 Pro screen — dropped it off at 10am, back like new by lunchtime. Genuinely brilliant service and the price was exactly what they quoted.",
-  },
-  {
-    name: "James M.",
-    city: "Manchester",
-    stars: 5,
-    text: "Google Pixel wouldn't charge after a spill. They cleaned the board and had it working within a day. Saved me buying a new phone.",
-  },
-  {
-    name: "Priya S.",
-    city: "Wirral",
-    stars: 5,
-    text: "Home visit for my daughter's Samsung — technician arrived on time, replaced the screen at our kitchen table. Couldn't fault it.",
-  },
-  {
-    name: "Tom W.",
-    city: "Bootle",
-    stars: 5,
-    text: "Mail-in from Southport, got it back in 4 days, tracked and insured all the way. Warranty is real too — needed a minor tweak and they sorted it free.",
-  },
-  {
-    name: "Ella J.",
-    city: "St Helens",
-    stars: 5,
-    text: "Battery replaced on my iPhone 12 in under 40 minutes while I had a coffee next door. All-day battery again. Cheers Mr Khan!",
-  },
-  {
-    name: "Ahmed K.",
-    city: "Birkenhead",
-    stars: 5,
-    text: "Data recovery from a totally dead Galaxy — got every photo of my son's first year back. Cannot recommend enough.",
-  },
-];
+import { business } from "@/config/business";
 
 export function ReviewsCarousel() {
   const getReviews = useServerFn(listPublicReviews);
-  const { data: dbReviews } = useQuery({
+  const { data: dbReviews, isLoading } = useQuery({
     queryKey: ["public-reviews"],
     queryFn: () => getReviews(),
-    staleTime: 1000 * 60 * 10, // Cache reviews for 10 minutes
+    staleTime: 1000 * 60 * 10,
   });
 
-  const rawItems = dbReviews && dbReviews.length > 0 ? dbReviews : reviews;
-  const items = rawItems.map((r: any) => ({
+  if (isLoading) {
+    return (
+      <div className="py-10 text-center text-sm text-muted-foreground animate-pulse">
+        Loading verified reviews...
+      </div>
+    );
+  }
+
+  const items = (dbReviews ?? []).map((r: any) => ({
     name: r.author || r.name,
     city: r.location || r.city,
     stars: r.rating !== undefined ? r.rating : r.stars,
     text: r.body || r.text,
   }));
 
+  if (items.length === 0) {
+    return (
+      <div className="p-8 rounded-2xl bg-white border border-[#E6EAF0] text-center space-y-4 shadow-xs max-w-xl mx-auto">
+        <div className="flex items-center justify-center gap-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
+          ))}
+        </div>
+        <h3 className="font-display font-extrabold text-xl text-[#0B1220]">
+          {business.rating.stars} / 5.0 Rating on Google
+        </h3>
+        <p className="text-sm text-[#5B6472]">
+          Read over {business.rating.reviews}+ verified customer reviews directly on Google Reviews.
+        </p>
+        <div>
+          <a
+            href={business.googleReviewUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md transition-all"
+          >
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            Read Verified Reviews on Google →
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Carousel opts={{ align: "start", loop: true }}>
       <CarouselContent className="-ml-4">
         {items.map((r, i) => (
           <CarouselItem key={i} className="pl-4 md:basis-1/2 lg:basis-1/3">
-            <Card className="h-full">
+            <Card className="h-full border border-[#E6EAF0]">
               <CardContent className="p-6">
                 <div className="flex gap-0.5">
                   {Array.from({ length: r.stars }).map((_, k) => (
-                    <Star key={k} className="h-4 w-4 fill-warning text-warning" />
+                    <Star key={k} className="h-4 w-4 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
                 <p className="mt-4 text-sm leading-relaxed text-foreground/90">"{r.text}"</p>

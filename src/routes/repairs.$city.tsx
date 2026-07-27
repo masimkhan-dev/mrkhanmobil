@@ -27,17 +27,17 @@ export const Route = createFileRoute("/repairs/$city")({
         ? [
             {
               title:
-                loaderData.meta_title || `Phone Repair in ${loaderData.name} | ${business.name}`,
+                loaderData.meta_title || `Mobile Phone Repair in ${loaderData.name} | Same-Day Service | MR KHAN`,
             },
             {
               name: "description",
               content:
                 loaderData.meta_description ||
-                `${loaderData.intro} Same-day iPhone, Samsung & Android repair in ${loaderData.name} with a 12-month warranty.`,
+                `${loaderData.intro || ""} Same-day iPhone, Samsung & Android screen and battery repair in ${loaderData.name} with a 12-month warranty by MR KHAN.`,
             },
             {
               property: "og:title",
-              content: loaderData.meta_title || `Repairs in ${loaderData.name}`,
+              content: loaderData.meta_title || `Mobile Phone Repair in ${loaderData.name} | MR KHAN`,
             },
             {
               property: "og:description",
@@ -53,10 +53,22 @@ export const Route = createFileRoute("/repairs/$city")({
               type: "application/ld+json",
               children: JSON.stringify({
                 "@context": "https://schema.org",
-                "@type": "LocalBusiness",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+                  { "@type": "ListItem", position: 2, name: "Locations", item: `${siteUrl}/locations` },
+                  { "@type": "ListItem", position: 3, name: loaderData.name, item: `${siteUrl}/repairs/${params.city}` },
+                ],
+              }),
+            },
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "MobilePhoneRepairShop",
                 name: `${business.name} — ${loaderData.name}`,
                 areaServed: loaderData.name,
-                telephone: business.phone,
+                telephone: business.phoneRaw,
               }),
             },
           ]

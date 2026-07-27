@@ -38,16 +38,31 @@ export const Route = createFileRoute("/services/$slug")({
   },
   head: ({ loaderData, params }) => {
     const siteUrl = process.env.SITE_URL || business.url;
+    const slugTitles: Record<string, string> = {
+      "screen-repair": "Screen Replacement Liverpool | Same-Day Screen Fix | MR KHAN",
+      "battery-replacement": "Phone Battery Replacement Liverpool | Same-Day Service | MR KHAN",
+      "water-damage": "Water Damage Phone Diagnostic Liverpool | MR KHAN",
+      "charging-port": "Phone Charging Port Repair Liverpool | MR KHAN",
+      "rear-camera": "Phone Camera Repair Liverpool | Same-Day Fix | MR KHAN",
+      "back-glass": "Phone Back Glass Replacement Liverpool | MR KHAN",
+    };
+    const pageTitle = loaderData
+      ? slugTitles[params.slug] || `${loaderData.title} Repair Liverpool | MR KHAN`
+      : "Mobile Phone Repair Liverpool | MR KHAN";
+
     return {
       meta: loaderData
         ? [
-            { title: `${loaderData.title} | ${business.name}` },
+            { title: pageTitle },
             {
               name: "description",
-              content: `${loaderData.description || ""} From ${loaderData.priceFrom} · ${loaderData.turnaround || ""}. 12-month warranty.`,
+              content: `Same-day ${loaderData.title} in Liverpool. ${loaderData.short || ""} From ${loaderData.priceFrom} with a 12-month warranty at MR KHAN, 83, 85 London Rd, Liverpool L3 8JA.`,
             },
-            { property: "og:title", content: `${loaderData.title} — ${business.name}` },
-            { property: "og:description", content: loaderData.short || undefined },
+            { property: "og:title", content: pageTitle },
+            {
+              property: "og:description",
+              content: `Same-day ${loaderData.title} in Liverpool with a 12-month warranty.`,
+            },
             { property: "og:url", content: `${siteUrl}/services/${params.slug}` },
             { property: "og:type", content: "product" },
           ]
@@ -55,6 +70,18 @@ export const Route = createFileRoute("/services/$slug")({
       links: [{ rel: "canonical", href: `${siteUrl}/services/${params.slug}` }],
       scripts: loaderData
         ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+                  { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services` },
+                  { "@type": "ListItem", position: 3, name: loaderData.title, item: `${siteUrl}/services/${params.slug}` },
+                ],
+              }),
+            },
             {
               type: "application/ld+json",
               children: JSON.stringify({

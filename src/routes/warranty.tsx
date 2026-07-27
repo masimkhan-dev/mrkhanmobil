@@ -5,11 +5,11 @@ import { business } from "@/config/business";
 export const Route = createFileRoute("/warranty")({
   head: () => ({
     meta: [
-      { title: `12-Month Warranty | ${business.name}` },
+      { title: `6-Month Warranty | ${business.name}` },
       {
         name: "description",
         content:
-          "Every repair backed by our real 12-month warranty on parts and labour. Here's what's covered — and what isn't.",
+          "Every repair backed by our 6-month warranty on parts and labour. Here's what's covered — and what isn't.",
       },
       { property: "og:url", content: "/warranty" },
     ],
@@ -19,9 +19,9 @@ export const Route = createFileRoute("/warranty")({
     <section className="py-16 md:py-24">
       <div className="container-x max-w-3xl">
         <ShieldCheck className="h-12 w-12 text-accent" />
-        <h1 className="mt-4 font-display font-bold text-4xl md:text-6xl">12-month warranty</h1>
+        <h1 className="mt-4 font-display font-bold text-4xl md:text-6xl">6-month warranty</h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          Every repair carried out by {business.name} is covered for 12 months, parts and labour.
+          Every repair carried out by {business.name} is covered for 6 months, parts and labour.
         </p>
 
         <h2 className="mt-14 font-display font-semibold text-2xl">What's covered</h2>

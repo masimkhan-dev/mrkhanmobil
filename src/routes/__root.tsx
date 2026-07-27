@@ -8,6 +8,8 @@ import {
   useLocation,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -16,6 +18,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingWhatsApp } from "@/components/floating-whatsapp";
 import { business } from "@/config/business";
+import { getPublicSiteSettings } from "@/lib/cms.functions";
 
 function NotFoundComponent() {
   return (
@@ -72,35 +75,44 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-const siteName = business.name + " — " + business.tagline;
+const siteName = "MR KHAN | Mobile Phone Repair Liverpool";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${business.name} | Mobile Phone Repair UK` },
+      { title: "Mobile Phone Repair Liverpool | iPhone & Samsung | MR KHAN" },
       {
         name: "description",
         content:
-          "UK mobile phone repair with a 12-month warranty. Same-day iPhone, Samsung and Android repair — walk-in, home visit or mail-in across Liverpool, Manchester, Wirral & the UK.",
+          "Same-day mobile phone repair in Liverpool. iPhone, Samsung, Google Pixel and Android screen, battery and charging port repairs with a 12-month warranty. Visit MR KHAN at 83, 85 London Rd, Liverpool L3 8JA.",
       },
-      { name: "author", content: business.name },
+      { name: "author", content: "MR KHAN" },
       { name: "theme-color", content: "#0F172A" },
-      { property: "og:site_name", content: business.name },
+      { property: "og:site_name", content: "MR KHAN Repair Experts" },
       { property: "og:type", content: "website" },
-      { property: "og:title", content: siteName },
+      { property: "og:title", content: "Mobile Phone Repair Liverpool | iPhone & Samsung | MR KHAN" },
       {
         property: "og:description",
-        content: "Same-day mobile phone repair with a 12-month warranty.",
+        content: "Same-day mobile phone repair in Liverpool with a 12-month warranty. Walk-in, home visit or mail-in.",
       },
-      { property: "og:image", content: "/og-home.png" },
-      { name: "twitter:image", content: "/og-home.png" },
+      { property: "og:image", content: `${business.url}/og-home.png` },
+      { property: "og:url", content: `${business.url}/` },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Mobile Phone Repair Liverpool | iPhone & Samsung | MR KHAN" },
+      {
+        name: "twitter:description",
+        content:
+          "Same-day mobile phone repair in Liverpool. iPhone, Samsung, Google Pixel screen & battery repairs with a 12-month warranty.",
+      },
+      { name: "twitter:image", content: `${business.url}/og-home.png` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "canonical", href: `${business.url}/` },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -113,10 +125,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          name: business.name,
-          telephone: business.phone,
+          "@type": ["LocalBusiness", "MobilePhoneRepairShop"],
+          "@id": `${business.url}/#organization`,
+          name: "MR KHAN Repair Experts",
+          url: `${business.url}/`,
+          logo: `${business.url}/logo.png`,
+          image: `${business.url}/og-home.png`,
+          telephone: business.phoneRaw,
           email: business.email,
+          priceRange: "££",
+          hasMap: business.googleReviewUrl,
+          sameAs: [
+            business.social.facebook,
+            business.social.instagram,
+            business.social.tiktok,
+          ],
           address: {
             "@type": "PostalAddress",
             streetAddress: business.address.line1,
@@ -125,16 +148,42 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             postalCode: business.address.postcode,
             addressCountry: "GB",
           },
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: 53.4094083,
+            longitude: -2.9742342,
+          },
+          openingHoursSpecification: [
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+              opens: "09:00",
+              closes: "19:00",
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: "Saturday",
+              opens: "10:00",
+              closes: "18:00",
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: "Sunday",
+              opens: "11:00",
+              closes: "16:00",
+            },
+          ],
           aggregateRating: {
             "@type": "AggregateRating",
-            ratingValue: business.rating.stars,
-            reviewCount: business.rating.reviews,
+            ratingValue: String(business.rating.stars),
+            reviewCount: String(business.rating.reviews),
           },
           areaServed: [
             "Liverpool",
+            "Merseyside",
+            "Wirral",
             "Manchester",
             "Bootle",
-            "Wirral",
             "St Helens",
             "Southport",
             "Birkenhead",
@@ -164,9 +213,6 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
-import { getPublicSiteSettings } from "@/lib/cms.functions";
 
 function AppLayout() {
   const location = useLocation();
@@ -180,7 +226,9 @@ function AppLayout() {
     enabled: !isAdminRoute,
   });
 
-  const announcement = settings?.announcement;
+  const announcement = settings?.announcement as
+    | { enabled?: boolean; text?: string; link?: string }
+    | undefined;
 
   if (isAdminRoute) {
     return (

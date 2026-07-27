@@ -13,13 +13,13 @@ export function SiteFooter() {
           {/* Logo & About */}
           <div className="space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="h-10 w-10 rounded-xl overflow-hidden bg-white/10 border border-white/20 flex items-center justify-center p-1 shadow-sm">
+              <div className="h-11 w-11 rounded-xl overflow-hidden bg-white border border-white/20 flex items-center justify-center p-0.5 shadow-sm">
                 <img
                   src={logoImg}
-                  alt="MR. KHAN Logo"
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-contain filter brightness-110"
+                  alt="MR. KHAN Repair Experts Logo"
+                  width={44}
+                  height={44}
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div>
@@ -32,7 +32,7 @@ export function SiteFooter() {
               </div>
             </div>
             <p className="text-sm text-primary-foreground/75 leading-relaxed">
-              Same-day professional mobile repair service with a real 12-month warranty.
+              Professional phone repairs in Liverpool with a 6-month warranty.
             </p>
           </div>
 
@@ -116,7 +116,7 @@ export function SiteFooter() {
             <span className="px-2 py-1 rounded bg-white/10 text-[11px]">Cash</span>
           </div>
           <div className="text-xs text-primary-foreground/60">
-            Official UK Repair Centre · 12-Month Warranty Included
+            Liverpool Repair Workshop · 6-Month Warranty Included
           </div>
         </div>
 

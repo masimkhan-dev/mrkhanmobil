@@ -24,7 +24,7 @@ export function QuoteForm({ source = "quote_form" }: { source?: string }) {
 
   return (
     <Card className="border-border/70 shadow-[var(--shadow-soft)]" id="quote">
-      <CardContent className="p-8">
+      <CardContent className="p-5 sm:p-8">
         {sent ? (
           <div className="text-center py-8">
             <div className="text-2xl font-display font-semibold">Thanks — we'll be in touch.</div>
@@ -88,7 +88,7 @@ export function QuoteForm({ source = "quote_form" }: { source?: string }) {
               <Label htmlFor="q-msg">What's wrong?</Label>
               <Textarea id="q-msg" name="message" rows={4} maxLength={1000} className="mt-1.5" />
             </div>
-            <Button type="submit" size="lg" className="w-full" disabled={busy}>
+            <Button type="submit" size="lg" className="w-full min-h-[48px] font-semibold" disabled={busy}>
               {busy ? "Sending…" : "Get free quote"}
             </Button>
             <p className="text-xs text-muted-foreground text-center">

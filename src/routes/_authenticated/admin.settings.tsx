@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getAllSiteSettings, updateSiteSetting } from "@/lib/cms.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,8 +43,12 @@ function SettingsPage() {
   const [analytics, setAnalytics] = useState<any>(null);
   const [announcement, setAnnouncement] = useState<any>(null);
 
-  // Sync when data loads
-  if (data && business === null) {
+  // Initialise local form state once the server data has loaded.
+  // useEffect is the correct place to call setState in response to a prop/query
+  // change — calling setState during render is a React anti-pattern that causes
+  // a double-render and a warning in Strict Mode.
+  useEffect(() => {
+    if (!data) return;
     setBusiness(data.business ?? {});
     setAddress(data.address ?? {});
     setHours(data.hours ?? []);
@@ -52,7 +56,7 @@ function SettingsPage() {
     setBranding(data.branding ?? {});
     setAnalytics(data.analytics ?? {});
     setAnnouncement(data.announcement ?? {});
-  }
+  }, [data]);
 
   if (isLoading || !business) {
     return (

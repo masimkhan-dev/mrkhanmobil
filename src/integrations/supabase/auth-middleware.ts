@@ -55,26 +55,12 @@ export const requireSupabaseAuth = createMiddleware({ type: "function" }).server
     const authHeader = request.headers.get("authorization");
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      return next({
-        context: {
-          supabase: supabaseAdmin as unknown as SupabaseClient<Database>,
-          userId: "demo-user-id",
-          claims: { sub: "demo-user-id", email: "demo@mrkhan-repairs.co.uk" } as any,
-        },
-      });
+      throw new Error("Unauthorized: Missing or invalid Authorization header");
     }
 
     const token = authHeader.replace("Bearer ", "");
     if (!token || token.split(".").length !== 3) {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      return next({
-        context: {
-          supabase: supabaseAdmin as unknown as SupabaseClient<Database>,
-          userId: "demo-user-id",
-          claims: { sub: "demo-user-id", email: "demo@mrkhan-repairs.co.uk" } as any,
-        },
-      });
+      throw new Error("Unauthorized: Invalid token format");
     }
 
     const supabase = createClient<Database>(SUPABASE_URL!, SUPABASE_PUBLISHABLE_KEY!, {
@@ -92,33 +78,22 @@ export const requireSupabaseAuth = createMiddleware({ type: "function" }).server
     });
 
     const { data, error } = await supabase.auth.getClaims(token);
+
+    // Invalid or expired token — reject.
     if (error || !data?.claims) {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      return next({
-        context: {
-          supabase: supabaseAdmin as unknown as SupabaseClient<Database>,
-          userId: "demo-user-id",
-          claims: { sub: "demo-user-id", email: "demo@mrkhan-repairs.co.uk" } as any,
-        },
-      });
+      throw new Error("Unauthorized: invalid or expired token");
     }
 
+    // Token must contain a subject (user ID).
     if (!data.claims.sub) {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      return next({
-        context: {
-          supabase: supabaseAdmin as unknown as SupabaseClient<Database>,
-          userId: "demo-user-id",
-          claims: { sub: "demo-user-id", email: "demo@mrkhan-repairs.co.uk" } as any,
-        },
-      });
+      throw new Error("Unauthorized: missing user identifier in token");
     }
 
     return next({
       context: {
         supabase: supabase as SupabaseClient<Database>,
         userId: data.claims.sub,
-        claims: data.claims as any,
+        claims: data.claims,
       },
     });
   },

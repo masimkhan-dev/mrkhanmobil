@@ -48,11 +48,11 @@ export const Route = createFileRoute("/")({
         {
           name: "description",
           content:
-            "Same-day iPhone, Samsung, Google Pixel & Android repair with a 12-month warranty. Walk-in, home visit or mail-in across the UK. Book in 60 seconds.",
+            "Same-day iPhone, Samsung, Google Pixel & Android repair with a 6-month warranty. Walk-in, home visit or mail-in across the UK. Book in 60 seconds.",
         },
         {
           property: "og:title",
-          content: `${business.name} — Same-Day Mobile Repair with 12-Month Warranty`,
+          content: `${business.name} — Same-Day Mobile Repair with 6-Month Warranty`,
         },
         {
           property: "og:description",
@@ -131,45 +131,90 @@ function Home() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <img src={heroImg} alt="" className="h-full w-full object-cover" width={1800} height={1200} />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/40" />
-      </div>
-      <div className="container-x relative py-24 md:py-32 lg:py-40 text-primary-foreground">
+    <section className="relative bg-[#050B1A] text-white py-14 sm:py-20 lg:py-28 overflow-hidden">
+      <div className="container-x grid gap-8 lg:gap-12 lg:grid-cols-12 lg:items-center">
+        {/* Left Column: Content */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="max-w-3xl"
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="lg:col-span-7 space-y-5 sm:space-y-6"
         >
-          <Badge variant="secondary" className="mb-6 rounded-full py-1.5 px-3 gap-1.5">
-            <Star className="h-3.5 w-3.5 fill-warning text-warning" />
-            <span className="text-xs font-medium">{business.rating.stars} Google rating · {business.rating.reviews}+ reviews</span>
-          </Badge>
-          <h1 className="font-display font-bold text-4xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight">
-            Mobile repair,<br />
-            <span className="bg-gradient-to-r from-white via-white to-accent bg-clip-text text-transparent">done properly.</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-slate-200 text-xs font-semibold max-w-full">
+            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400 shrink-0" />
+            <span className="truncate">{business.rating.stars} Google Rating · {business.rating.reviews}+ Verified Reviews</span>
+          </div>
+
+          <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.1]">
+            Reliable Phone Repairs<br />
+            <span className="text-indigo-400">in Liverpool</span>
           </h1>
-          <p className="mt-6 text-lg md:text-xl text-primary-foreground/80 max-w-2xl leading-relaxed">
-            Same-day iPhone, Samsung, Google Pixel and Android repair — walk-in, home visit or mail-in.
-            Every repair backed by our real 12-month warranty.
+
+          <p className="text-slate-300 text-base sm:text-lg max-w-xl leading-relaxed">
+            Fast phone repairs from experienced technicians in Liverpool. Most screen and battery repairs completed within 60 minutes.
           </p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="rounded-full h-14 px-8 text-base bg-accent text-accent-foreground hover:bg-accent/90 shadow-[var(--shadow-glow)]">
-              <Link to="/book">Book a Repair <ChevronRight className="ml-1 h-4 w-4" /></Link>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+            <Button
+              asChild
+              size="lg"
+              className="rounded-xl h-13 px-7 text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all min-h-[48px]"
+            >
+              <Link to="/book">
+                Book a Repair <ChevronRight className="ml-1.5 h-4 w-4" />
+              </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full h-14 px-8 text-base bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white">
-              <a href={whatsappLink()}><MessageCircle className="mr-2 h-4 w-4" />WhatsApp</a>
-            </Button>
-            <Button asChild size="lg" variant="ghost" className="rounded-full h-14 px-6 text-base text-white hover:bg-white/10 hover:text-white">
-              <a href={telLink()}><Phone className="mr-2 h-4 w-4" />{business.phone}</a>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="rounded-xl h-13 px-6 text-sm font-semibold border-white/20 bg-white/5 hover:bg-white/15 text-white min-h-[48px]"
+            >
+              <a href={telLink()}>
+                <Phone className="mr-2 h-4.5 w-4.5 text-indigo-400" />
+                Call Us: {business.phone}
+              </a>
             </Button>
           </div>
-          <div className="mt-10 flex flex-wrap gap-6 text-sm text-primary-foreground/80">
-            <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> 12-month warranty</div>
-            <div className="flex items-center gap-2"><Clock className="h-4 w-4" /> Same-day service</div>
-            <div className="flex items-center gap-2"><Award className="h-4 w-4" /> No fix, no fee</div>
+
+          <div className="pt-3 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-300 font-medium">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" /> 6-Month Warranty
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-indigo-400 shrink-0" /> Same-Day Repairs
+            </div>
+            <div className="flex items-center gap-2">
+              <Award className="h-4 w-4 text-amber-400 shrink-0" /> Free Diagnosis
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Right Column: Real Technician Image */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="lg:col-span-5 relative"
+        >
+          <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl aspect-[16/10] sm:aspect-[4/3] lg:aspect-[1/1]">
+            <img
+              src={technicianImg}
+              alt="MR. KHAN Repair Technician working on motherboard"
+              className="w-full h-full object-cover"
+              width={800}
+              height={800}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#050B1A]/80 via-transparent to-transparent" />
+            <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-3 sm:p-4 rounded-xl bg-[#050B1A]/90 backdrop-blur-md border border-white/10 flex items-center justify-between gap-2">
+              <div>
+                <div className="text-xs font-bold text-white">Liverpool Repair Workshop</div>
+                <div className="text-[10px] text-slate-400">Located inside Liverpool Post Office on London Road</div>
+              </div>
+              <div className="flex items-center gap-1 text-emerald-400 text-xs font-semibold shrink-0">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Open Now
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -179,24 +224,21 @@ function Hero() {
 
 function TrustBar() {
   const items = [
-    { icon: Clock, label: "Same-Day Repairs", desc: "Most under 60 minutes" },
-    { icon: ShieldCheck, label: "12-Month Warranty", desc: "Parts & labour covered" },
-    { icon: Award, label: "No Fix, No Fee", desc: "Free diagnostic review" },
-    { icon: Wrench, label: "Certified Technicians", desc: "10+ years experience" },
+    { icon: Clock, label: "Same-Day Repairs", desc: "Most repairs completed in 60 minutes" },
+    { icon: ShieldCheck, label: "Parts and Labour Warranty", desc: "Covered by our 6-month warranty" },
+    { icon: Award, label: "Free Diagnosis", desc: "No repair fee if we can't fix it" },
+    { icon: Wrench, label: "Experienced Technicians", desc: "Local repair team on London Road" },
   ];
   return (
-    <section className="border-b border-border bg-card/50 backdrop-blur-md py-6">
+    <section className="border-b border-[#E6EAF0] bg-white py-6 sm:py-8">
       <div className="container-x">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-border/60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
           {items.map((i, idx) => (
-            <div
-              key={idx}
-              className={`flex items-center gap-3.5 ${idx > 1 ? "pt-4 md:pt-0" : ""} md:pl-4 first:pl-0`}
-            >
-              <i.icon className="h-6 w-6 text-blue-600 dark:text-blue-400 shrink-0" />
+            <div key={idx} className="flex items-start gap-3.5">
+              <i.icon className="h-5 w-5 text-indigo-600 shrink-0 mt-0.5" />
               <div>
-                <div className="text-sm font-bold leading-tight">{i.label}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{i.desc}</div>
+                <div className="text-sm font-bold text-[#0B1220] leading-tight">{i.label}</div>
+                <div className="text-xs text-[#5B6472] mt-0.5">{i.desc}</div>
               </div>
             </div>
           ))}
@@ -217,7 +259,7 @@ function BrandsStrip() {
           {brands.map((b) => (
             <div
               key={b}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-card border border-border/80 text-foreground/80 hover:text-foreground hover:border-blue-500/40 hover:bg-slate-50 dark:hover:bg-slate-900 hover:shadow-xs transition-all duration-200 cursor-default"
+              className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-card border border-border/80 text-foreground/80 hover:text-foreground hover:border-blue-500/40 hover:bg-slate-50 dark:hover:bg-slate-900 hover:shadow-xs transition-all duration-200 cursor-default min-h-[44px]"
             >
               <BrandLogo
                 name={b}
@@ -234,14 +276,14 @@ function BrandsStrip() {
 
 function ServicesGrid() {
   return (
-    <section className="py-24">
+    <section className="py-16 sm:py-24">
       <div className="container-x">
         <SectionHeader
           eyebrow="Popular Repairs"
-          title="Repairs for every device you own"
-          description="From cracked screen replacement to battery issues & motherboard work — one team, one 12-month warranty."
+          title="Popular Phone Repairs"
+          description="From screen replacements and battery changes to charging ports and camera repairs."
         />
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 sm:mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {deviceServices.map((s, i) => (
             <motion.div
               key={s.slug}
@@ -251,10 +293,10 @@ function ServicesGrid() {
               transition={{ duration: 0.4, delay: i * 0.05 }}
             >
               <Link to="/services/$slug" params={{ slug: s.slug }} className="group block h-full">
-                <Card className="h-full border-border/70 hover:border-blue-500/40 hover:shadow-md transition-all">
-                  <CardContent className="p-6 flex flex-col justify-between h-full">
+                <Card className="h-full border-border/70 hover:border-indigo-500/40 hover:shadow-md transition-all">
+                  <CardContent className="p-5 sm:p-6 flex flex-col justify-between h-full">
                     <div>
-                      <div className="h-11 w-11 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 grid place-items-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                      <div className="h-11 w-11 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 grid place-items-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                         <s.icon className="h-5 w-5" />
                       </div>
                       <h3 className="font-display font-semibold text-lg">{s.title}</h3>
@@ -264,7 +306,7 @@ function ServicesGrid() {
                       <span className="text-muted-foreground">
                         From <span className="text-foreground font-semibold">{s.priceFrom}</span>
                       </span>
-                      <span className="text-blue-600 dark:text-blue-400 font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                      <span className="text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
                         View Repair <ChevronRight className="h-3 w-3" />
                       </span>
                     </div>
@@ -275,12 +317,12 @@ function ServicesGrid() {
           ))}
         </div>
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
-          <Button asChild variant="outline" size="lg" className="rounded-full">
+          <Button asChild variant="outline" size="lg" className="rounded-full min-h-[44px]">
             <Link to="/services">Browse all services</Link>
           </Button>
           <a
             href="#quote"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline px-3 py-2 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline px-3 py-2 transition-colors min-h-[44px]"
           >
             Not sure which service you need? Get a free quote →
           </a>
@@ -294,54 +336,64 @@ function HowItWorks() {
   const steps = [
     {
       n: "01",
-      title: "Book in 60s",
-      desc: "Select your device, model and problem — choose walk-in, home visit or mail-in.",
+      tag: "BOOK",
+      title: "Book Your Repair",
+      desc: "Choose your phone and tell us what needs fixing.",
     },
     {
       n: "02",
-      title: "Free Diagnosis",
-      desc: "Free diagnostic review and a fixed quote before any work starts. No surprises.",
+      tag: "SERVICE",
+      title: "Choose Your Service",
+      desc: "Visit our workshop or book a home or mail-in repair.",
     },
     {
       n: "03",
-      title: "Same-Day Fix",
-      desc: "Most repairs completed in under 60 minutes by certified UK technicians.",
+      tag: "REPAIR",
+      title: "We Repair Your Phone",
+      desc: "Our technicians inspect and repair your device.",
     },
     {
       n: "04",
-      title: "12-Month Guarantee",
-      desc: "Every repair covered by our 12-month parts & labour guarantee.",
+      tag: "COLLECT",
+      title: "Collect Your Phone",
+      desc: "Check your phone before you leave. Every repair is covered by our 12-month warranty.",
     },
   ];
   return (
-    <section className="py-24 bg-slate-900 text-white">
+    <section className="py-16 sm:py-24 bg-[#F7F9FC] border-y border-[#E6EAF0]">
       <div className="container-x">
         <SectionHeader
-          dark
-          eyebrow="How it works"
-          title="From booked to fixed in four simple steps"
-          description="Fast, transparent, professional repair with zero hassle."
+          eyebrow="Simple Process"
+          title="How Your Repair Works"
+          description="A simple repair process from booking to collection."
         />
-        <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 sm:mt-16 grid gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
           {steps.map((s) => (
-            <div key={s.n} className="relative p-6 rounded-2xl bg-white/5 border border-white/10">
-              <div className="text-5xl font-mono font-extrabold text-blue-400/30">{s.n}</div>
-              <h3 className="mt-3 font-display font-semibold text-lg text-white">{s.title}</h3>
-              <p className="mt-2 text-sm text-slate-300 leading-relaxed">{s.desc}</p>
+            <div key={s.n} className="relative p-5 sm:p-6 rounded-2xl bg-white border border-[#E6EAF0] shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl font-mono font-extrabold text-indigo-600">{s.n}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700">
+                    {s.tag}
+                  </span>
+                </div>
+                <h3 className="mt-4 font-display font-extrabold text-lg text-[#0B1220]">{s.title}</h3>
+                <p className="mt-2 text-xs text-[#5B6472] leading-relaxed">{s.desc}</p>
+              </div>
             </div>
           ))}
         </div>
-        <div className="mt-14 text-center">
+        <div className="mt-10 sm:mt-14 text-center">
           <Button
             asChild
             size="lg"
-            className="rounded-full h-12 px-8 text-sm font-semibold bg-white text-slate-900 hover:bg-slate-100 shadow-md transition-all duration-200"
+            className="rounded-xl h-12 px-8 text-sm font-semibold shadow-md transition-all duration-200 min-h-[48px] w-full sm:w-auto"
           >
             <Link
               to="/book"
               onClick={() => trackFunnelEvent("book_click", { location: "how_it_works" })}
             >
-              Ready when you are — Book in 60 seconds →
+              Book Your Repair →
             </Link>
           </Button>
         </div>
@@ -352,16 +404,16 @@ function HowItWorks() {
 
 function WhyUs() {
   const points = [
-    "Certified technicians with 10+ years experience",
-    "Genuine-grade & OEM-quality replacement parts",
-    "Transparent fixed pricing — no hidden fees",
-    "12-month warranty on all parts and labour",
-    "Data security and confidentiality guaranteed",
-    "Free UK-wide return delivery on mail-in repairs",
+    "Experienced technicians based at our London Road workshop",
+    "High-grade replacement parts with strict quality checks",
+    "Transparent fixed pricing without hidden fees",
+    "6-Month Warranty covering parts and labour",
+    "Data privacy guaranteed — your personal data is safe",
+    "Tracked courier return for all mail-in repairs",
   ];
   return (
-    <section className="py-24">
-      <div className="container-x grid gap-16 lg:grid-cols-2 lg:items-center">
+    <section className="py-16 sm:py-24 bg-white">
+      <div className="container-x grid gap-10 sm:gap-16 lg:grid-cols-2 lg:items-center">
         <div className="relative">
           <img
             src={technicianImg}
@@ -369,36 +421,34 @@ function WhyUs() {
             width={1400}
             height={1000}
             loading="lazy"
-            className="rounded-3xl shadow-xl w-full h-auto object-cover aspect-[4/3] border border-border/80"
+            className="rounded-2xl shadow-xl w-full h-auto object-cover aspect-[4/3] border border-[#E6EAF0]"
           />
-          <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 bg-card/95 backdrop-blur-md border border-border rounded-2xl p-4 md:p-5 shadow-lg">
+          <div className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 bg-white/95 backdrop-blur-md border border-[#E6EAF0] rounded-xl p-3 sm:p-4 shadow-lg max-w-[calc(100%-1.5rem)]">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-emerald-500/15 grid place-items-center">
-                <ShieldCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <div className="h-10 w-10 rounded-full bg-emerald-50 grid place-items-center shrink-0">
+                <ShieldCheck className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
-                <div className="font-semibold text-sm">12-Month Guarantee</div>
-                <div className="text-xs text-muted-foreground">On parts &amp; labour</div>
+                <div className="font-bold text-sm text-[#0B1220]">6-Month Warranty</div>
+                <div className="text-xs text-[#5B6472]">Full parts and labour cover</div>
               </div>
             </div>
           </div>
         </div>
-        <div className="space-y-6">
-          <p className="text-xs uppercase tracking-widest text-blue-600 dark:text-blue-400 font-bold">
-            Why {business.name}
+        <div className="space-y-5 sm:space-y-6">
+          <p className="text-xs uppercase tracking-widest text-indigo-600 font-bold">
+            Experienced Technicians · Quality Repairs
           </p>
-          <h2 className="font-display font-bold text-3xl md:text-4xl tracking-tight">
-            Liverpool repair experts you can actually trust
+          <h2 className="font-display font-extrabold text-2xl sm:text-4xl text-[#0B1220] tracking-tight">
+            Local Phone Repair You Can Trust
           </h2>
-          <p className="text-muted-foreground leading-relaxed">
-            We've repaired over {business.repairsCount} devices across Liverpool and the UK. Same
-            certified team, same quality standard — whether you walk in, we come to your doorstep,
-            or you post it to us.
+          <p className="text-[#5B6472] leading-relaxed text-sm sm:text-base">
+            We are a local phone repair team based in Liverpool. Our technicians repair phones every day and work with customers across Liverpool and the surrounding areas. You can visit our workshop on London Road or book a home repair or mail-in service.
           </p>
           <ul className="grid gap-3 pt-2">
             {points.map((p) => (
-              <li key={p} className="flex items-start gap-3 text-sm font-medium">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+              <li key={p} className="flex items-start gap-3 text-sm font-medium text-[#0B1220]">
+                <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
                 <span>{p}</span>
               </li>
             ))}
@@ -411,18 +461,18 @@ function WhyUs() {
 
 function ReviewsSection() {
   return (
-    <section className="py-24 bg-surface">
+    <section className="py-16 sm:py-24 bg-surface">
       <div className="container-x">
         <SectionHeader
           eyebrow="Reviews"
-          title="What our customers say"
-          description={`${business.rating.stars} out of 5 from ${business.rating.reviews}+ verified Google reviews`}
+          title="What Our Customers Say"
+          description={`Rated ${business.rating.stars} out of 5 on Google`}
         />
-        <div className="mt-14">
+        <div className="mt-10 sm:mt-14">
           <ReviewsCarousel />
         </div>
         <div className="mt-10 flex flex-col items-center gap-6">
-          <Button asChild variant="outline" className="rounded-full">
+          <Button asChild variant="outline" className="rounded-full min-h-[44px]">
             <a href={business.googleReviewUrl} target="_blank" rel="noreferrer">
               <Star className="mr-2 h-4 w-4 fill-amber-400 text-amber-400" />
               Leave a Google review
@@ -430,18 +480,18 @@ function ReviewsSection() {
           </Button>
 
           {/* Decision Stage Primary CTA Box */}
-          <div className="w-full max-w-2xl p-6 sm:p-8 rounded-3xl bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/20 text-center space-y-4 shadow-xs mt-4">
+          <div className="w-full max-w-2xl p-5 sm:p-8 rounded-3xl bg-indigo-500/5 dark:bg-indigo-500/10 border border-indigo-500/20 text-center space-y-4 shadow-xs mt-4">
             <h3 className="font-display font-bold text-xl sm:text-2xl text-foreground">
-              Join {business.repairsCount} happy customers — Book Repair
+              Local Phone Repair in Liverpool
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
-              Same-day repairs backed by our 12-month guarantee. No fix, no fee.
+              Same-day repairs covered by our 6-month warranty.
             </p>
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
               <Button
                 asChild
                 size="lg"
-                className="rounded-full h-12 px-8 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/25"
+                className="rounded-full h-12 px-8 text-sm font-semibold min-h-[48px]"
               >
                 <Link
                   to="/book"
@@ -449,17 +499,17 @@ function ReviewsSection() {
                     trackFunnelEvent("book_click", { location: "reviews_decision_stage" })
                   }
                 >
-                  Book Repair Now <ChevronRight className="ml-1.5 h-4 w-4" />
+                  Book Repair <ChevronRight className="ml-1.5 h-4 w-4" />
                 </Link>
               </Button>
               <Button
                 asChild
                 size="lg"
                 variant="outline"
-                className="rounded-full h-12 px-6 text-sm font-semibold border-border bg-card/80"
+                className="rounded-full h-12 px-6 text-sm font-semibold border-border bg-card/80 min-h-[48px]"
               >
                 <a href={telLink()}>
-                  <Phone className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <Phone className="mr-2 h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   Call {business.phone}
                 </a>
               </Button>
@@ -477,15 +527,15 @@ function ServiceOptionsSection() {
       icon: Wrench,
       img: walkinIllustration,
       title: "Walk-in Repair",
-      desc: "Visit our Liverpool workshop — most repairs completed in 30–60 minutes while you wait.",
+      desc: "Visit our Liverpool workshop. Most repairs are completed in 30–60 minutes.",
       cta: "Book Walk-in Repair →",
       to: "/book" as const,
     },
     {
       icon: HomeIcon,
       img: homeVisitIllustration,
-      title: "Home Service",
-      desc: "We come to you. Repairs completed at your doorstep or office across Liverpool & North West.",
+      title: "Home Repair",
+      desc: "We come to you. Book a repair at your home or workplace across Liverpool and nearby areas.",
       cta: "Book Home Visit →",
       to: "/home-repair" as const,
     },
@@ -493,22 +543,22 @@ function ServiceOptionsSection() {
       icon: Package,
       img: mailinIllustration,
       title: "Mail-in Repair",
-      desc: "Ship your device to us with free return courier delivery — fully insured and tracked end-to-end.",
+      desc: "Send your phone to us by tracked post. We will repair it and arrange its return.",
       cta: "Book Mail-in Repair →",
       to: "/mail-in" as const,
     },
   ];
   return (
-    <section className="py-24 bg-background">
+    <section className="py-16 sm:py-24 bg-background">
       <div className="container-x">
-        <SectionHeader eyebrow="Choose your service" title="Repair, your way" />
-        <div className="mt-14 grid gap-8 md:grid-cols-3">
+        <SectionHeader eyebrow="Choose your service" title="Repair Options" />
+        <div className="mt-10 sm:mt-14 grid gap-6 sm:gap-8 md:grid-cols-3">
           {opts.map((o) => (
             <Card
               key={o.title}
-              className="border-border/70 group hover:border-blue-500/40 hover:shadow-lg transition-all duration-300 bg-card overflow-hidden"
+              className="border-border/70 group hover:border-indigo-500/40 hover:shadow-lg transition-all duration-300 bg-card overflow-hidden"
             >
-              <CardContent className="p-6 md:p-8 flex flex-col justify-between h-full">
+              <CardContent className="p-5 sm:p-8 flex flex-col justify-between h-full">
                 <div>
                   <div className="relative rounded-2xl overflow-hidden bg-slate-50/80 dark:bg-slate-900/40 border border-border/70 p-4 mb-6 flex items-center justify-center aspect-[16/10]">
                     <img
@@ -520,7 +570,7 @@ function ServiceOptionsSection() {
                     />
                   </div>
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                    <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                       <o.icon className="h-5 w-5" />
                     </div>
                     <h3 className="font-display font-semibold text-xl text-foreground">
@@ -532,7 +582,7 @@ function ServiceOptionsSection() {
                 <Button
                   asChild
                   variant="link"
-                  className="mt-6 px-0 text-blue-600 dark:text-blue-400 font-semibold justify-start"
+                  className="mt-6 px-0 text-indigo-600 dark:text-indigo-400 font-semibold justify-start min-h-[44px]"
                 >
                   <Link
                     to={o.to}
@@ -557,20 +607,19 @@ function ServiceOptionsSection() {
 
 function QuoteSection() {
   return (
-    <section className="py-24 bg-surface" id="quote">
-      <div className="container-x grid gap-12 lg:grid-cols-2 lg:items-center">
+    <section className="py-16 sm:py-24 bg-surface" id="quote">
+      <div className="container-x grid gap-8 sm:gap-12 lg:grid-cols-2 lg:items-center">
         <div>
-          <p className="text-xs uppercase tracking-widest text-blue-600 dark:text-blue-400 font-bold">
+          <p className="text-xs uppercase tracking-widest text-indigo-600 dark:text-indigo-400 font-bold">
             Free quote
           </p>
-          <h2 className="mt-3 font-display font-bold text-3xl md:text-4xl">
+          <h2 className="mt-3 font-display font-bold text-2xl sm:text-4xl">
             Not sure of the cost?
             <br />
             Get a free estimate.
           </h2>
-          <p className="mt-4 text-muted-foreground">
-            Tell us what's wrong — we'll come back with a fixed price estimate and turnaround by phone or
-            WhatsApp, usually within an hour.
+          <p className="mt-4 text-muted-foreground text-sm sm:text-base">
+            Tell us what is wrong with your phone. We will review the details and get back to you with an estimated price.
           </p>
           <img
             src={devicesImg}
@@ -578,7 +627,7 @@ function QuoteSection() {
             width={1400}
             height={900}
             loading="lazy"
-            className="mt-8 rounded-2xl w-full h-auto object-cover aspect-[16/10] border border-border"
+            className="mt-6 sm:mt-8 rounded-2xl w-full h-auto object-cover aspect-[16/10] border border-border"
           />
         </div>
         <QuoteForm />
@@ -589,14 +638,14 @@ function QuoteSection() {
 
 function FaqSection() {
   return (
-    <section className="py-24">
+    <section className="py-16 sm:py-24">
       <div className="container-x max-w-3xl">
-        <SectionHeader eyebrow="FAQ" title="Common questions" />
-        <div className="mt-12">
+        <SectionHeader eyebrow="FAQ" title="Phone Repair FAQs" />
+        <div className="mt-8 sm:mt-12">
           <FaqAccordion />
         </div>
-        <div className="mt-10 text-center">
-          <Button asChild variant="outline" className="rounded-full">
+        <div className="mt-8 sm:mt-10 text-center">
+          <Button asChild variant="outline" className="rounded-full min-h-[44px]">
             <Link to="/faq">View all FAQs</Link>
           </Button>
         </div>
@@ -608,24 +657,17 @@ function FaqSection() {
 function MapSection() {
   const directionsUrl = business.social.google;
   return (
-    <section className="py-20 border-t border-border bg-background">
+    <section className="py-16 sm:py-20 border-t border-border bg-background">
       <div className="container-x">
         <SectionHeader
           eyebrow="Liverpool Workshop"
-          title="Visit our Liverpool Repair Center"
-          description="Co-located inside Liverpool Post Office on London Road. Drop in for same-day repair while you wait."
+          title="Visit Our Liverpool Repair Centre"
+          description="We are based on London Road in Liverpool. Visit us for a same-day repair or contact us to book your repair."
         />
-        <div className="mt-10 relative rounded-3xl overflow-hidden border border-border/80 shadow-md min-h-[380px] md:aspect-[16/7]">
-          <iframe
-            title="MR. KHAN Liverpool Workshop Location"
-            src={business.googleMapsEmbed}
-            className="w-full h-full min-h-[380px]"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-          <div className="absolute top-4 left-4 p-5 rounded-2xl bg-card/95 backdrop-blur-md border border-border shadow-xl max-w-sm z-10 space-y-3">
-            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-wider">
-              <MapPin className="h-4 w-4 shrink-0" /> {business.name} Repair Experts
+        <div className="mt-8 sm:mt-10 flex flex-col md:block relative rounded-3xl overflow-hidden border border-border/80 shadow-md min-h-[380px] md:aspect-[16/7]">
+          <div className="p-4 sm:p-5 rounded-2xl bg-card/95 backdrop-blur-md border border-border shadow-xl max-w-sm z-10 space-y-3 m-3 md:m-0 md:absolute md:top-4 md:left-4">
+            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-xs uppercase tracking-wider">
+              <MapPin className="h-4 w-4 shrink-0" /> Liverpool Repair Workshop
             </div>
             <div>
               <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
@@ -635,17 +677,17 @@ function MapSection() {
                 {business.address.line1}, {business.address.city} {business.address.postcode}
               </div>
               <div className="text-xs text-muted-foreground mt-0.5">
-                Co-located inside Liverpool Post Office
+                Located inside Liverpool Post Office
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs font-semibold text-foreground pt-1 border-t border-border/60">
-              <Phone className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 shrink-0" /> {business.phone}
+              <Phone className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" /> {business.phone}
             </div>
             <div className="pt-2 flex items-center gap-2">
               <Button
                 asChild
                 size="sm"
-                className="rounded-xl h-9 px-4 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white"
+                className="rounded-xl h-10 px-4 text-xs font-semibold min-h-[40px]"
               >
                 <a href={directionsUrl} target="_blank" rel="noreferrer">
                   <Navigation className="h-3.5 w-3.5 mr-1.5" />
@@ -656,15 +698,22 @@ function MapSection() {
                 asChild
                 size="sm"
                 variant="outline"
-                className="rounded-xl h-9 px-3 text-xs font-semibold"
+                className="rounded-xl h-10 px-3 text-xs font-semibold min-h-[40px]"
               >
                 <a href={telLink()}>
-                  <Phone className="h-3.5 w-3.5 mr-1 text-blue-600 dark:text-blue-400" />
+                  <Phone className="h-3.5 w-3.5 mr-1 text-indigo-600 dark:text-indigo-400" />
                   Call
                 </a>
               </Button>
             </div>
           </div>
+          <iframe
+            title="MR. KHAN Liverpool Workshop Location"
+            src={business.googleMapsEmbed}
+            className="w-full h-full min-h-[320px] md:min-h-[380px]"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </div>
     </section>
@@ -673,37 +722,36 @@ function MapSection() {
 
 function FinalCtaSection() {
   return (
-    <section className="py-20 bg-slate-950 text-white relative overflow-hidden border-t border-slate-800">
+    <section className="py-24 bg-[#050B1A] text-white relative overflow-hidden">
       <div className="container-x max-w-4xl text-center space-y-6 relative z-10">
         <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight">
-          Ready to Fix Your Phone?
+          Phone Broken? Let's Get It Fixed.
         </h2>
         <p className="text-slate-300 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-          Book your repair today. Same-day service backed by our 12-month warranty in Liverpool and
-          across the UK.
+          Same-day repairs. Experienced technicians. Clear pricing. Book online or visit our London Road workshop today.
         </p>
-        <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
+        <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
           <Button
             asChild
             size="lg"
-            className="rounded-full h-13 px-8 text-base font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-xl shadow-blue-600/30"
+            className="rounded-xl h-13 px-8 text-base font-semibold shadow-xl shadow-indigo-600/30 transition-all"
           >
             <Link
               to="/book"
               onClick={() => trackFunnelEvent("book_click", { location: "final_cta" })}
             >
-              Book Repair Now <ChevronRight className="ml-1.5 h-4 w-4" />
+              Book Your Repair <ChevronRight className="ml-1.5 h-4 w-4" />
             </Link>
           </Button>
           <Button
             asChild
             size="lg"
             variant="outline"
-            className="rounded-full h-13 px-7 text-base font-semibold border-white/20 bg-white/10 hover:bg-white/20 text-white"
+            className="rounded-xl h-13 px-7 text-base font-semibold border-white/20 bg-white/10 hover:bg-white/20 text-white"
           >
             <a href={telLink()}>
-              <Phone className="mr-2 h-4 w-4 text-blue-400" />
-              Call {business.phone}
+              <Phone className="mr-2 h-4 w-4 text-indigo-400" />
+              Call Us: {business.phone}
             </a>
           </Button>
         </div>

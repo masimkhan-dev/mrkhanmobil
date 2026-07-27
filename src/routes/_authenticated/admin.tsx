@@ -143,7 +143,14 @@ const printJobSheet = (booking: any) => {
       .replace(/'/g, "&#39;");
   };
   const w = window.open("", "_blank", "width=800,height=900");
-  if (!w) return;
+  if (!w) {
+    // Most browsers block window.open() calls that are not directly tied to a
+    // user gesture, or when the user has popup blocking enabled.
+    import("sonner").then(({ toast }) =>
+      toast.error("Popup blocked — please allow popups for this site to print job sheets."),
+    );
+    return;
+  }
   w.document
     .write(`<!doctype html><html><head><title>Job Sheet — ${escapeHtml(booking.booking_ref)}</title>
     <style>
@@ -197,7 +204,7 @@ const printJobSheet = (booking: any) => {
 };
 
 interface SidebarProps {
-  me: { email: string; isAdmin: boolean };
+  me: { email: string | null; isAdmin: boolean };
   activeTab: string;
   onSignOut: () => void;
   onLinkClick?: () => void;
@@ -248,10 +255,10 @@ function AdminSidebar({ me, activeTab, onSignOut, onLinkClick }: SidebarProps) {
       <div className="px-5 py-4 border-b border-white/5 bg-white/2 pt-5 pb-5">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center font-space font-bold text-xs text-white uppercase shadow-inner shrink-0">
-            {me.email.slice(0, 2)}
+            {(me.email ?? "??").slice(0, 2)}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold text-white truncate">{me.email}</p>
+            <p className="text-xs font-semibold text-white truncate">{me.email ?? "—"}</p>
             <p className="text-[9px] text-white/40 mt-1 font-bold uppercase tracking-wider">
               {me.isAdmin ? "Administrator" : "Staff"}
             </p>
@@ -436,8 +443,8 @@ function AdminPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setMobileOpen(true)}
-            className="h-10 w-10 rounded-full hover:bg-white/10 flex items-center justify-center border border-white/10"
-            aria-label="Open sidebar"
+            className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-full hover:bg-white/10 flex items-center justify-center border border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Open navigation sidebar"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -446,7 +453,7 @@ function AdminPage() {
         <Button
           variant="ghost"
           size="sm"
-          className="text-rose-400 text-xs px-2 hover:bg-white/5"
+          className="text-rose-400 text-xs px-3 hover:bg-white/5 min-h-[44px]"
           onClick={signOut}
         >
           <LogOut className="h-4 w-4" />

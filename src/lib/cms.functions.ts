@@ -1,34 +1,29 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertAdmin, assertAdminOrStaff } from "@/lib/auth-guards";
 import { z } from "zod";
 
-/* ============ helpers ============ */
-async function assertAdmin(supabase: any, userId: string) {
-  if (userId === "demo-user-id") return;
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data } = await supabaseAdmin.from("user_roles").select("role").eq("user_id", userId);
-  let roles = (data ?? []).map((r: any) => r.role);
-  if (roles.length === 0) {
-    await supabaseAdmin.from("user_roles").insert({ user_id: userId, role: "admin" });
-    roles = ["admin"];
-  }
-}
-async function assertStaff(supabase: any, userId: string) {
-  if (userId === "demo-user-id") return;
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data } = await supabaseAdmin.from("user_roles").select("role").eq("user_id", userId);
-  let roles = (data ?? []).map((r: any) => r.role);
-  if (roles.length === 0) {
-    await supabaseAdmin.from("user_roles").insert({ user_id: userId, role: "admin" });
-    roles = ["admin"];
-  }
-}
+/** Keys that are safe to expose to the public (unauthenticated) client. */
+const PUBLIC_SETTINGS_KEYS = [
+  "business",
+  "address",
+  "hours",
+  "social",
+  "branding",
+  "announcement",
+] as const;
 
 /* ============ SITE SETTINGS ============ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SettingsMap = Record<string, any>;
+
 export const getPublicSiteSettings = createServerFn({ method: "GET" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data } = await supabaseAdmin.from("site_settings").select("key, value");
-  const out: Record<string, any> = {};
+  const { data } = await supabaseAdmin
+    .from("site_settings")
+    .select("key, value")
+    .in("key", PUBLIC_SETTINGS_KEYS);
+  const out: SettingsMap = {};
   for (const row of data ?? []) out[row.key] = row.value;
   return out;
 });
@@ -36,7 +31,7 @@ export const getPublicSiteSettings = createServerFn({ method: "GET" }).handler(a
 export const getAllSiteSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { data, error } = await context.supabase.from("site_settings").select("*").order("key");
     if (error) throw new Error(error.message);
     const out: Record<string, any> = {};
@@ -141,7 +136,7 @@ export const updateSiteSetting = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { error } = await context.supabase
       .from("site_settings")
       .upsert(
@@ -168,7 +163,7 @@ export const listPublicServices = createServerFn({ method: "GET" }).handler(asyn
 export const listAdminServices = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { data, error } = await context.supabase.from("services").select("*").order("sort_order");
     if (error) throw new Error(error.message);
     return data ?? [];
@@ -194,7 +189,7 @@ export const upsertService = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => ServiceSchema.parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const payload = { ...data, updated_at: new Date().toISOString() };
     const { error } = data.id
       ? await context.supabase.from("services").update(payload).eq("id", data.id)
@@ -206,7 +201,7 @@ export const deleteService = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { error } = await context.supabase.from("services").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -234,7 +229,7 @@ export const listBrandsWithModels = createServerFn({ method: "GET" }).handler(as
 export const listAllBrandsWithModels = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { data: brands } = await context.supabase
       .from("device_brands")
       .select("*")
@@ -260,7 +255,7 @@ export const upsertBrand = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => BrandSchema.parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const payload = { ...data, updated_at: new Date().toISOString() };
     const { error } = data.id
       ? await context.supabase.from("device_brands").update(payload).eq("id", data.id)
@@ -272,7 +267,7 @@ export const deleteBrand = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { error } = await context.supabase.from("device_brands").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -289,7 +284,7 @@ export const upsertModel = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => ModelSchema.parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const payload = { ...data, updated_at: new Date().toISOString() };
     const { error } = data.id
       ? await context.supabase.from("device_models").update(payload).eq("id", data.id)
@@ -301,7 +296,7 @@ export const deleteModel = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { error } = await context.supabase.from("device_models").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -321,7 +316,7 @@ export const listPublicRepairTypes = createServerFn({ method: "GET" }).handler(a
 export const listAdminRepairTypes = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { data, error } = await context.supabase
       .from("repair_types")
       .select("*")
@@ -343,7 +338,7 @@ export const upsertRepairType = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => RepairTypeSchema.parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const payload = { ...data, updated_at: new Date().toISOString() };
     const { error } = data.id
       ? await context.supabase.from("repair_types").update(payload).eq("id", data.id)
@@ -355,7 +350,7 @@ export const deleteRepairType = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { error } = await context.supabase.from("repair_types").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -375,7 +370,7 @@ export const listPublicReviews = createServerFn({ method: "GET" }).handler(async
 export const listAdminReviews = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { data, error } = await context.supabase.from("reviews").select("*").order("sort_order");
     if (error) throw new Error(error.message);
     return data ?? [];
@@ -396,7 +391,7 @@ export const upsertReview = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => ReviewSchema.parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const payload = { ...data, updated_at: new Date().toISOString() };
     const { error } = data.id
       ? await context.supabase.from("reviews").update(payload).eq("id", data.id)
@@ -408,7 +403,7 @@ export const deleteReview = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { error } = await context.supabase.from("reviews").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -428,7 +423,7 @@ export const listPublicFaqs = createServerFn({ method: "GET" }).handler(async ()
 export const listAdminFaqs = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { data, error } = await context.supabase.from("faqs").select("*").order("sort_order");
     if (error) throw new Error(error.message);
     return data ?? [];
@@ -446,7 +441,7 @@ export const upsertFaq = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => FaqSchema.parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const payload = { ...data, updated_at: new Date().toISOString() };
     const { error } = data.id
       ? await context.supabase.from("faqs").update(payload).eq("id", data.id)
@@ -458,7 +453,7 @@ export const deleteFaq = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { error } = await context.supabase.from("faqs").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -478,7 +473,7 @@ export const listPublicGallery = createServerFn({ method: "GET" }).handler(async
 export const listAdminGallery = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { data, error } = await context.supabase
       .from("gallery_items")
       .select("*")
@@ -500,7 +495,7 @@ export const upsertGallery = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => GallerySchema.parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const payload = { ...data, updated_at: new Date().toISOString() };
     const { error } = data.id
       ? await context.supabase.from("gallery_items").update(payload).eq("id", data.id)
@@ -512,7 +507,7 @@ export const deleteGallery = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.supabase, context.userId);
+    await assertAdmin(context.userId);
     const { error } = await context.supabase.from("gallery_items").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -523,7 +518,7 @@ export const listBookingEvents = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ booking_id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertAdminOrStaff(context.userId);
     const { data: events, error } = await context.supabase
       .from("booking_events")
       .select("*")
