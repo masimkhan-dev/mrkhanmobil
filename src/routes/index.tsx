@@ -41,28 +41,27 @@ import { InstantPriceCalculator } from "@/components/instant-price-calculator";
 
 export const Route = createFileRoute("/")({
   head: () => {
-    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
-        { title: `${business.name} | Mobile Phone Repair — Liverpool, Manchester & UK` },
+        { title: "Phone Repair Liverpool | Same-Day Fix | MR. KHAN" },
         {
           name: "description",
           content:
-            "Same-day iPhone, Samsung, Google Pixel & Android repair with a 6-month warranty. Walk-in, home visit or mail-in across the UK. Book in 60 seconds.",
+            "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome at London Road, Liverpool Post Office.",
         },
-        {
-          property: "og:title",
-          content: `${business.name} — Same-Day Mobile Repair with 6-Month Warranty`,
-        },
+        { property: "og:title", content: "Phone Repair Liverpool | Same-Day Fix | MR. KHAN" },
         {
           property: "og:description",
-          content: "Trusted UK repair experts. Book online in 60 seconds.",
+          content:
+            "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome.",
         },
-        { property: "og:image", content: "/og-home.png" },
-        { property: "og:url", content: `${siteUrl}/` },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/" },
+        { property: "og:image", content: "https://www.mrkhanmobiles.co.uk/og-home.png" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [
-        { rel: "canonical", href: `${siteUrl}/` },
+        { rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/" },
         { rel: "preload", href: heroImg, as: "image", type: "image/jpeg" },
       ],
       scripts: [
@@ -71,8 +70,8 @@ export const Route = createFileRoute("/")({
           children: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "MobilePhoneRepairShop",
-            name: `${business.name} Repair Experts`,
-            url: siteUrl,
+            name: `${business.name} Mobile Repair`,
+            url: "https://www.mrkhanmobiles.co.uk",
             telephone: business.phoneRaw,
             priceRange: "££",
             address: {
@@ -131,7 +130,7 @@ function Home() {
 
 function Hero() {
   return (
-    <section className="relative bg-[#050B1A] text-white py-14 sm:py-20 lg:py-28 overflow-hidden">
+    <section className="relative bg-[#050B1A] text-white pt-12 sm:pt-16 pb-20 sm:pb-24 overflow-hidden">
       <div className="container-x grid gap-8 lg:gap-12 lg:grid-cols-12 lg:items-center">
         {/* Left Column: Content */}
         <motion.div
@@ -145,52 +144,52 @@ function Hero() {
             <span className="truncate">{business.rating.stars} Google Rating · {business.rating.reviews}+ Verified Reviews</span>
           </div>
 
-          <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.1]">
-            Reliable Phone Repairs<br />
-            <span className="text-indigo-400">in Liverpool</span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display tracking-tight">
+            Liverpool's Trusted{" "}
+            <span className="text-[#E21B23]">Phone Repair</span> Experts
           </h1>
-
-          <p className="text-slate-300 text-base sm:text-lg max-w-xl leading-relaxed">
-            Fast phone repairs from experienced technicians in Liverpool. Most screen and battery repairs completed within 60 minutes.
+          <p className="text-lg md:text-xl text-slate-300 mt-4 max-w-2xl leading-relaxed">
+            Same-day screen & battery repairs while you wait. 12-month warranty. 
+            Walk-ins welcome at Liverpool Post Office, London Road.
           </p>
 
-          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-            <Button
-              asChild
-              size="lg"
-              className="rounded-xl h-13 px-7 text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all min-h-[48px]"
+          <div className="flex flex-wrap gap-4 mt-8 items-center">
+            <a
+              href="/book"
+              className="bg-[#E21B23] text-white px-8 py-3.5 rounded-full font-semibold hover:bg-red-700 transition animate-pulse-glow inline-flex items-center justify-center text-center shadow-lg"
             >
-              <Link to="/book">
-                Book a Repair <ChevronRight className="ml-1.5 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="rounded-xl h-13 px-6 text-sm font-semibold border-white/20 bg-white/5 hover:bg-white/15 text-white min-h-[48px]"
+              Book Repair
+            </a>
+            <a
+              href="https://wa.me/447707733038?text=Hi%20MR.%20KHAN%2C%20I%27d%20like%20a%20quote"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#25D366] text-white px-8 py-3.5 rounded-full font-semibold hover:bg-green-700 transition flex items-center gap-2 shadow-lg"
             >
-              <a href={telLink()}>
-                <Phone className="mr-2 h-4.5 w-4.5 text-indigo-400" />
-                Call Us: {business.phone}
-              </a>
-            </Button>
+              💬 WhatsApp Us
+            </a>
+            <a
+              href="tel:+447707733038"
+              className="border-2 border-white/30 text-white px-8 py-3.5 rounded-full font-semibold hover:bg-white hover:text-[#171717] transition flex items-center gap-2"
+            >
+              📞 Call Now
+            </a>
           </div>
 
           <div className="pt-3 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-300 font-medium">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" /> 6-Month Warranty
+              <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" /> 12-Month Warranty
             </div>
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-indigo-400 shrink-0" /> Same-Day Repairs
+              <Clock className="h-4 w-4 text-indigo-400 shrink-0" /> Open 7 Days (8 AM – 9 PM)
             </div>
             <div className="flex items-center gap-2">
-              <Award className="h-4 w-4 text-amber-400 shrink-0" /> Free Diagnosis
+              <Award className="h-4 w-4 text-amber-400 shrink-0" /> Walk-ins Welcome
             </div>
           </div>
         </motion.div>
 
-        {/* Right Column: Real Technician Image */}
+        {/* Right Column: Technician Image */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -200,19 +199,21 @@ function Hero() {
           <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl aspect-[16/10] sm:aspect-[4/3] lg:aspect-[1/1]">
             <img
               src={technicianImg}
-              alt="MR. KHAN Repair Technician working on motherboard"
+              alt="MR. KHAN Repair Technician working on phone repair in Liverpool"
               className="w-full h-full object-cover"
               width={800}
               height={800}
+              loading="eager"
+              fetchPriority="high"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#050B1A]/80 via-transparent to-transparent" />
             <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-3 sm:p-4 rounded-xl bg-[#050B1A]/90 backdrop-blur-md border border-white/10 flex items-center justify-between gap-2">
               <div>
                 <div className="text-xs font-bold text-white">Liverpool Repair Workshop</div>
-                <div className="text-[10px] text-slate-400">Located inside Liverpool Post Office on London Road</div>
+                <div className="text-[10px] text-slate-400">📍 83-85 London Road, Liverpool · Open Mon-Sat 8am-9pm, Sun 10am-9pm</div>
               </div>
               <div className="flex items-center gap-1 text-emerald-400 text-xs font-semibold shrink-0">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Open Now
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Open 7 Days
               </div>
             </div>
           </div>
@@ -223,28 +224,37 @@ function Hero() {
 }
 
 function TrustBar() {
-  const items = [
-    { icon: Clock, label: "Same-Day Repairs", desc: "Most repairs completed in 60 minutes" },
-    { icon: ShieldCheck, label: "Parts and Labour Warranty", desc: "Covered by our 6-month warranty" },
-    { icon: Award, label: "Free Diagnosis", desc: "No repair fee if we can't fix it" },
-    { icon: Wrench, label: "Experienced Technicians", desc: "Local repair team on London Road" },
-  ];
   return (
-    <section className="border-b border-[#E6EAF0] bg-white py-6 sm:py-8">
-      <div className="container-x">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-          {items.map((i, idx) => (
-            <div key={idx} className="flex items-start gap-3.5">
-              <i.icon className="h-5 w-5 text-indigo-600 shrink-0 mt-0.5" />
-              <div>
-                <div className="text-sm font-bold text-[#0B1220] leading-tight">{i.label}</div>
-                <div className="text-xs text-[#5B6472] mt-0.5">{i.desc}</div>
-              </div>
-            </div>
-          ))}
+    <div className="relative -mt-10 mx-4 md:mx-auto max-w-4xl bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 grid grid-cols-2 md:grid-cols-4 gap-6 z-10 border border-border">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-950/60 flex items-center justify-center text-green-600 dark:text-green-400 font-bold shrink-0">✓</div>
+        <div>
+          <p className="font-semibold text-sm text-foreground">12-Month Warranty</p>
+          <p className="text-xs text-muted-foreground">On every repair</p>
         </div>
       </div>
-    </section>
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold shrink-0">⚡</div>
+        <div>
+          <p className="font-semibold text-sm text-foreground">Same-Day Repairs</p>
+          <p className="text-xs text-muted-foreground">Most in 60 mins</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-950/60 flex items-center justify-center text-red-600 dark:text-red-400 font-bold shrink-0">📍</div>
+        <div>
+          <p className="font-semibold text-sm text-foreground">Liverpool Post Office</p>
+          <p className="text-xs text-muted-foreground">83-85 London Road</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-950/60 flex items-center justify-center text-yellow-600 dark:text-yellow-400 font-bold shrink-0">★</div>
+        <div>
+          <p className="font-semibold text-sm text-foreground">4.9★ Google Reviews</p>
+          <p className="text-xs text-muted-foreground">847+ happy customers</p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -403,13 +413,23 @@ function HowItWorks() {
 }
 
 function WhyUs() {
-  const points = [
-    "Experienced technicians based at our London Road workshop",
-    "High-grade replacement parts with strict quality checks",
-    "Transparent fixed pricing without hidden fees",
-    "6-Month Warranty covering parts and labour",
-    "Data privacy guaranteed — your personal data is safe",
-    "Tracked courier return for all mail-in repairs",
+  const points: { id: string; content: React.ReactNode }[] = [
+    { id: "p1", content: "Experienced technicians based at our London Road workshop" },
+    { id: "p2", content: "High-grade replacement parts with strict quality checks" },
+    { id: "p3", content: "Transparent fixed pricing without hidden fees" },
+    { id: "p4", content: "12-Month Warranty covering parts and labour" },
+    {
+      id: "p5",
+      content: (
+        <span>
+          <Link to="/privacy" className="underline hover:text-indigo-600 font-semibold transition">
+            Data privacy guaranteed
+          </Link>
+          {" — your personal data is safe"}
+        </span>
+      ),
+    },
+    { id: "p6", content: "Tracked courier return for all mail-in repairs" },
   ];
   return (
     <section className="py-16 sm:py-24 bg-white">
@@ -429,7 +449,7 @@ function WhyUs() {
                 <ShieldCheck className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
-                <div className="font-bold text-sm text-[#0B1220]">6-Month Warranty</div>
+                <div className="font-bold text-sm text-[#0B1220]">12-Month Warranty</div>
                 <div className="text-xs text-[#5B6472]">Full parts and labour cover</div>
               </div>
             </div>
@@ -446,10 +466,10 @@ function WhyUs() {
             We are a local phone repair team based in Liverpool. Our technicians repair phones every day and work with customers across Liverpool and the surrounding areas. You can visit our workshop on London Road or book a home repair or mail-in service.
           </p>
           <ul className="grid gap-3 pt-2">
-            {points.map((p) => (
-              <li key={p} className="flex items-start gap-3 text-sm font-medium text-[#0B1220]">
+            {points.map((item) => (
+              <li key={item.id} className="flex items-start gap-3 text-sm font-medium text-[#0B1220]">
                 <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
-                <span>{p}</span>
+                <span>{item.content}</span>
               </li>
             ))}
           </ul>
@@ -485,7 +505,7 @@ function ReviewsSection() {
               Local Phone Repair in Liverpool
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
-              Same-day repairs covered by our 6-month warranty.
+              Same-day repairs covered by our 12-month warranty.
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
               <Button

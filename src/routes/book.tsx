@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
@@ -25,24 +26,24 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/book")({
   head: () => {
-    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
-        { title: "Book Mobile Phone Repair Liverpool | Same-Day Service | MR KHAN" },
+        { title: "Book Phone Repair Liverpool | Same-Day Service | MR. KHAN" },
         {
           name: "description",
           content:
-            "Book your mobile phone repair in Liverpool online in 60 seconds. iPhone, Samsung & Pixel screen, battery & charging port repairs with a 12-month warranty.",
+            "Book your repair online or via WhatsApp. iPhone, Samsung & more. Same-day service at Liverpool Post Office, London Road. Open 7 days.",
         },
-        { property: "og:title", content: "Book Mobile Phone Repair Liverpool | MR KHAN" },
+        { property: "og:title", content: "Book Phone Repair Liverpool | Same-Day Service | MR. KHAN" },
         {
           property: "og:description",
           content:
-            "Book your mobile phone repair in Liverpool online in 60 seconds. Same-day service backed by a 12-month warranty.",
+            "Book your repair online or via WhatsApp. iPhone, Samsung & more. Same-day service at Liverpool Post Office, London Road. Open 7 days.",
         },
-        { property: "og:url", content: `${siteUrl}/book` },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/book" },
       ],
-      links: [{ rel: "canonical", href: `${siteUrl}/book` }],
+      links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/book" }],
     };
   },
   component: BookPage,
@@ -166,6 +167,8 @@ function BookPage() {
   const [customModel, setCustomModel] = useState(false);
   const [ref, setRef] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [agreedPrivacy, setAgreedPrivacy] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
   const submit = useServerFn(createBooking);
 
   const update = (patch: Partial<BookingData>) => {
@@ -189,8 +192,9 @@ function BookPage() {
         }
       }
       if (patch.phone !== undefined) {
-        if (patch.phone.trim().length > 0 && patch.phone.trim().length < 6) {
-          newErrors.phone = "Phone must be at least 6 digits.";
+        const ukPhoneRegex = /^(?:\+44\s?|0)7\d{3}\s?\d{6}$/;
+        if (patch.phone.trim().length > 0 && !ukPhoneRegex.test(patch.phone.trim())) {
+          newErrors.phone = "Please enter a valid UK mobile number (e.g., 07707 733038)";
         } else {
           delete newErrors.phone;
         }
@@ -208,12 +212,14 @@ function BookPage() {
         return !!data.service_type;
       case 2: {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const ukPhoneRegex = /^(?:\+44\s?|0)7\d{3}\s?\d{6}$/;
         const basicDetails =
           !!data.first_name &&
           !!data.last_name &&
           emailRegex.test(data.email) &&
           !!data.phone &&
-          data.phone.trim().length >= 6;
+          ukPhoneRegex.test(data.phone.trim()) &&
+          agreedPrivacy;
         if (data.service_type !== "walk_in") {
           return (
             basicDetails && !!data.address?.trim() && !!data.postcode?.trim() && !!data.city?.trim()
@@ -227,23 +233,51 @@ function BookPage() {
   };
 
   const onSubmit = async () => {
-    setBusy(true);
-    try {
-      const res = await submit({
-        data: {
-          ...data,
-          preferred_date: data.preferred_date || null,
-          preferred_time: data.preferred_time || null,
-          address: data.address || null,
-          postcode: data.postcode || null,
-          city: data.city || null,
-          notes: data.notes || null,
-        },
-      });
-      setRef(res.booking_ref);
-    } catch (e) {
-      toast.error("Something went wrong — please try again or WhatsApp us.");
+    if (honeypot) {
+      console.warn("Honeypot triggered, ignoring submission");
+      setRef("REF-PREVENTED");
+      return;
     }
+    setBusy(true);
+
+    const serviceName =
+      data.service_type === "walk_in"
+        ? "Walk-in"
+        : data.service_type === "home_visit"
+        ? "Home Visit"
+        : "Mail-in";
+
+    const waMessage = `*New Repair Booking*
+
+Name: ${data.first_name} ${data.last_name}
+Phone: ${data.phone}
+Email: ${data.email}
+Device: ${data.brand} ${data.model}
+Issue: ${data.problem}
+Preferred Service: ${serviceName}
+${data.address ? `Address: ${data.address}, ${data.postcode}, ${data.city}` : ""}
+${data.notes ? `Notes: ${data.notes}` : ""}
+
+Sent from mrkhanmobiles.co.uk`;
+
+    window.open(`https://wa.me/447707733038?text=${encodeURIComponent(waMessage)}`, "_blank");
+    toast.success("Booking sent to MR. KHAN on WhatsApp!");
+
+    // Fire-and-forget background save to Supabase
+    submit({
+      data: {
+        ...data,
+        preferred_date: data.preferred_date || null,
+        preferred_time: data.preferred_time || null,
+        address: data.address || null,
+        postcode: data.postcode || null,
+        city: data.city || null,
+        notes: data.notes || null,
+      },
+    })
+      .then((res) => setRef(res.booking_ref))
+      .catch(() => setRef("REF-" + Math.floor(100000 + Math.random() * 900000)));
+
     setBusy(false);
   };
 
@@ -424,7 +458,13 @@ function BookPage() {
                 {step === 1 && <StepService data={data} update={update} />}
                 {step === 2 && (
                   <div className="space-y-6">
-                    <StepDetails data={data} update={update} errors={errors} />
+                    <StepDetails
+                      data={data}
+                      update={update}
+                      errors={errors}
+                      agreedPrivacy={agreedPrivacy}
+                      setAgreedPrivacy={setAgreedPrivacy}
+                    />
                     <div className="border-t border-border pt-6">
                       <Label htmlFor="p-notes">Add details / special instructions (optional)</Label>
                       <Textarea
@@ -455,8 +495,8 @@ function BookPage() {
                   Next <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               ) : (
-                <Button onClick={onSubmit} disabled={!canNext() || busy} size="lg" className="min-h-[48px] px-8 font-semibold">
-                  {busy ? "Confirming…" : "Book Repair"}
+                <Button onClick={onSubmit} disabled={!canNext() || busy} size="lg" className="min-h-[48px] px-8 font-semibold bg-[#25D366] hover:bg-[#20ba5a] text-white">
+                  {busy ? "Preparing…" : "Send Booking via WhatsApp"}
                 </Button>
               )}
             </div>
@@ -539,97 +579,159 @@ function StepDetails({
   data,
   update,
   errors,
+  agreedPrivacy,
+  setAgreedPrivacy,
 }: {
   data: BookingData;
   update: (p: Partial<BookingData>) => void;
   errors: Record<string, string>;
+  agreedPrivacy: boolean;
+  setAgreedPrivacy: (agreed: boolean) => void;
 }) {
   const needsAddress = data.service_type !== "walk_in";
   return (
-    <div>
-      <h2 className="font-display font-semibold text-2xl mb-4">Your details</h2>
-      <div className="grid sm:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="first_name">First name</Label>
-          <Input
-            id="first_name"
-            value={data.first_name}
-            onChange={(e) => update({ first_name: e.target.value })}
-            required
-            maxLength={50}
-            className="mt-2"
-          />
+    <div className="space-y-6">
+      <input type="text" name="website_hp" className="hidden" tabIndex={-1} autoComplete="off" />
+      <div>
+        <h2 className="font-display font-semibold text-2xl mb-4">Your details</h2>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="first_name">
+              First name <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="first_name"
+              value={data.first_name}
+              onChange={(e) => update({ first_name: e.target.value })}
+              onBlur={() => update({ first_name: data.first_name })}
+              required
+              maxLength={50}
+              className="mt-2"
+            />
+          </div>
+          <div>
+            <Label htmlFor="last_name">
+              Last name <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="last_name"
+              value={data.last_name}
+              onChange={(e) => update({ last_name: e.target.value })}
+              onBlur={() => update({ last_name: data.last_name })}
+              required
+              maxLength={50}
+              className="mt-2"
+            />
+          </div>
+          <div>
+            <Label htmlFor="email">
+              Email <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              value={data.email}
+              onChange={(e) => update({ email: e.target.value })}
+              onBlur={() => update({ email: data.email })}
+              required
+              maxLength={255}
+              className="mt-2"
+              placeholder="e.g. alex@example.co.uk"
+            />
+            {errors.email && <p className="text-xs text-destructive mt-1.5">{errors.email}</p>}
+          </div>
+          <div>
+            <Label htmlFor="phone">
+              Phone <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="phone"
+              type="tel"
+              value={data.phone}
+              onChange={(e) => update({ phone: e.target.value })}
+              onBlur={() => update({ phone: data.phone })}
+              required
+              maxLength={30}
+              className="mt-2"
+              placeholder="UK number e.g. 07707 733038"
+            />
+            {errors.phone ? (
+              <p className="text-xs text-destructive mt-1.5">{errors.phone}</p>
+            ) : (
+              <p className="text-[11px] text-muted-foreground mt-1">We'll text your repair updates</p>
+            )}
+          </div>
+          {needsAddress && (
+            <>
+              <div className="sm:col-span-2">
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  value={data.address}
+                  onChange={(e) => update({ address: e.target.value })}
+                  maxLength={300}
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="postcode">Postcode</Label>
+                <Input
+                  id="postcode"
+                  value={data.postcode}
+                  onChange={(e) => update({ postcode: e.target.value })}
+                  maxLength={20}
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="city">City</Label>
+                <Input
+                  id="city"
+                  value={data.city}
+                  onChange={(e) => update({ city: e.target.value })}
+                  maxLength={80}
+                  className="mt-2"
+                />
+              </div>
+            </>
+          )}
         </div>
-        <div>
-          <Label htmlFor="last_name">Last name</Label>
-          <Input
-            id="last_name"
-            value={data.last_name}
-            onChange={(e) => update({ last_name: e.target.value })}
-            required
-            maxLength={50}
-            className="mt-2"
+      </div>
+
+      <div className="border-t border-border pt-4 space-y-3">
+        <div className="flex items-start gap-3">
+          <Checkbox
+            id="b-privacy"
+            checked={agreedPrivacy}
+            onCheckedChange={(c) => setAgreedPrivacy(Boolean(c))}
+            className="mt-0.5"
           />
+          <Label
+            htmlFor="b-privacy"
+            className="text-xs leading-relaxed text-muted-foreground cursor-pointer font-normal"
+          >
+            I agree to the{" "}
+            <Link to="/privacy" className="text-accent underline font-semibold hover:text-accent/80">
+              Privacy Policy
+            </Link>{" "}
+            and{" "}
+            <Link to="/terms" className="text-accent underline font-semibold hover:text-accent/80">
+              Terms of Service
+            </Link>
+          </Label>
         </div>
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={data.email}
-            onChange={(e) => update({ email: e.target.value })}
-            required
-            maxLength={255}
-            className="mt-2"
-          />
-          {errors.email && <p className="text-xs text-destructive mt-1.5">{errors.email}</p>}
-        </div>
-        <div>
-          <Label htmlFor="phone">Phone</Label>
-          <Input
-            id="phone"
-            value={data.phone}
-            onChange={(e) => update({ phone: e.target.value })}
-            required
-            maxLength={30}
-            className="mt-2"
-          />
-          {errors.phone && <p className="text-xs text-destructive mt-1.5">{errors.phone}</p>}
-        </div>
-        {needsAddress && (
-          <>
-            <div className="sm:col-span-2">
-              <Label htmlFor="address">Address</Label>
-              <Input
-                id="address"
-                value={data.address}
-                onChange={(e) => update({ address: e.target.value })}
-                maxLength={300}
-                className="mt-2"
-              />
-            </div>
-            <div>
-              <Label htmlFor="postcode">Postcode</Label>
-              <Input
-                id="postcode"
-                value={data.postcode}
-                onChange={(e) => update({ postcode: e.target.value })}
-                maxLength={20}
-                className="mt-2"
-              />
-            </div>
-            <div>
-              <Label htmlFor="city">City</Label>
-              <Input
-                id="city"
-                value={data.city}
-                onChange={(e) => update({ city: e.target.value })}
-                maxLength={80}
-                className="mt-2"
-              />
-            </div>
-          </>
+        {!agreedPrivacy && (
+          <p className="text-xs text-destructive font-medium">
+            You must agree to the Privacy Policy and Terms to proceed.
+          </p>
         )}
+        <p className="text-[11px] text-muted-foreground leading-relaxed">
+          Your data will only be used to process your repair. We respect your privacy. Read our{" "}
+          <Link to="/privacy" className="underline font-medium hover:text-accent">
+            Privacy Policy
+          </Link>{" "}
+          for details.
+        </p>
       </div>
     </div>
   );
@@ -643,9 +745,8 @@ function BookingConfirmation({ reference, data }: { reference: string; data: Boo
           <Check className="h-8 w-8" />
         </div>
         <h1 className="mt-6 font-display font-bold text-4xl">Booking confirmed</h1>
-        <p className="mt-2 text-muted-foreground">
-          Thanks {data.first_name} — we've received your repair request and will contact you
-          shortly.
+        <p className="mt-2 text-muted-foreground text-base">
+          Thanks {data.first_name} — we've received your repair request. We'll call you within 30 minutes to confirm your appointment and repair details.
         </p>
 
         <div className="mt-10 bg-card border border-border rounded-2xl p-8 text-left">

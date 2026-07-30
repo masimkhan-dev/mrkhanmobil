@@ -6,14 +6,22 @@ import { Phone, MessageCircle, Mail, MapPin, Clock } from "lucide-react";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: `Contact Us | ${business.name}` },
+      { title: "Contact MR. KHAN Mobile Repair | Liverpool" },
       {
         name: "description",
-        content: `Contact ${business.name} — call, WhatsApp, email or drop in. UK-wide mail-in repair, same-day service in the North West.`,
+        content:
+          "Visit our Liverpool workshop at 83-85 London Road or message us on WhatsApp. Open 7 days a week, 8am–9pm. Same-day repairs.",
       },
-      { property: "og:url", content: "/contact" },
+      { property: "og:title", content: "Contact MR. KHAN Mobile Repair | Liverpool" },
+      {
+        property: "og:description",
+        content:
+          "Visit our Liverpool workshop at 83-85 London Road or message us on WhatsApp. Open 7 days a week, 8am–9pm. Same-day repairs.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/contact" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/contact" }],
   }),
   component: () => (
     <section className="py-16 md:py-24">

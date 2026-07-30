@@ -37,37 +37,20 @@ export const Route = createFileRoute("/services/$slug")({
     return s;
   },
   head: ({ loaderData, params }) => {
-    const siteUrl = process.env.SITE_URL || business.url;
-    const slugTitles: Record<string, string> = {
-      "screen-repair": "Screen Replacement Liverpool | Same-Day Screen Fix | MR KHAN",
-      "battery-replacement": "Phone Battery Replacement Liverpool | Same-Day Service | MR KHAN",
-      "water-damage": "Water Damage Phone Diagnostic Liverpool | MR KHAN",
-      "charging-port": "Phone Charging Port Repair Liverpool | MR KHAN",
-      "rear-camera": "Phone Camera Repair Liverpool | Same-Day Fix | MR KHAN",
-      "back-glass": "Phone Back Glass Replacement Liverpool | MR KHAN",
-    };
-    const pageTitle = loaderData
-      ? slugTitles[params.slug] || `${loaderData.title} Repair Liverpool | MR KHAN`
-      : "Mobile Phone Repair Liverpool | MR KHAN";
+    const formattedSlug = params.slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+    const pageTitle = `${formattedSlug} Repair Liverpool | MR. KHAN`;
+    const pageDescription = `Same-day ${params.slug.replace(/-/g, " ")} repair in Liverpool. Free diagnosis. 12-month warranty. Book online or WhatsApp.`;
 
     return {
-      meta: loaderData
-        ? [
-            { title: pageTitle },
-            {
-              name: "description",
-              content: `Same-day ${loaderData.title} in Liverpool. ${loaderData.short || ""} From ${loaderData.priceFrom} with a 12-month warranty at MR KHAN, 83, 85 London Rd, Liverpool L3 8JA.`,
-            },
-            { property: "og:title", content: pageTitle },
-            {
-              property: "og:description",
-              content: `Same-day ${loaderData.title} in Liverpool with a 12-month warranty.`,
-            },
-            { property: "og:url", content: `${siteUrl}/services/${params.slug}` },
-            { property: "og:type", content: "product" },
-          ]
-        : [],
-      links: [{ rel: "canonical", href: `${siteUrl}/services/${params.slug}` }],
+      meta: [
+        { title: pageTitle },
+        { name: "description", content: pageDescription },
+        { property: "og:title", content: pageTitle },
+        { property: "og:description", content: pageDescription },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: `https://www.mrkhanmobiles.co.uk/services/${params.slug}` },
+      ],
+      links: [{ rel: "canonical", href: `https://www.mrkhanmobiles.co.uk/services/${params.slug}` }],
       scripts: loaderData
         ? [
             {
@@ -76,9 +59,9 @@ export const Route = createFileRoute("/services/$slug")({
                 "@context": "https://schema.org",
                 "@type": "BreadcrumbList",
                 itemListElement: [
-                  { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-                  { "@type": "ListItem", position: 2, name: "Services", item: `${siteUrl}/services` },
-                  { "@type": "ListItem", position: 3, name: loaderData.title, item: `${siteUrl}/services/${params.slug}` },
+                  { "@type": "ListItem", position: 1, name: "Home", item: "https://www.mrkhanmobiles.co.uk/" },
+                  { "@type": "ListItem", position: 2, name: "Services", item: "https://www.mrkhanmobiles.co.uk/services" },
+                  { "@type": "ListItem", position: 3, name: loaderData.title, item: `https://www.mrkhanmobiles.co.uk/services/${params.slug}` },
                 ],
               }),
             },
@@ -91,11 +74,6 @@ export const Route = createFileRoute("/services/$slug")({
                 provider: { "@type": "LocalBusiness", name: business.name },
                 areaServed: "United Kingdom",
                 description: loaderData.description || undefined,
-                offers: {
-                  "@type": "Offer",
-                  priceCurrency: "GBP",
-                  price: (loaderData.priceFrom || "").replace("£", ""),
-                },
               }),
             },
           ]

@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/cookies")({
+export const Route = createFileRoute("/cookie-policy")({
   beforeLoad: () => {
-    throw redirect({ to: "/privacy" });
+    throw redirect({ to: "/cookies" });
   },
 });

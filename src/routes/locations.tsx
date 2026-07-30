@@ -14,24 +14,24 @@ const citiesQuery = {
 export const Route = createFileRoute("/locations")({
   loader: ({ context }) => context.queryClient.ensureQueryData(citiesQuery),
   head: () => {
-    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
-        { title: "Mobile Repair Locations Liverpool & North West | MR KHAN" },
+        { title: "Phone Repair Near Me Liverpool | MR. KHAN" },
         {
           name: "description",
           content:
-            "Same-day mobile phone repair across Liverpool, Manchester, Wirral, Bootle, St Helens & Southport. Visit MR KHAN at 83, 85 London Rd, Liverpool L3 8JA or book doorstep repair.",
+            "Same-day phone repairs in Liverpool, Wirral, Southport & surrounding areas. Walk-ins welcome. 12-month warranty. Book online.",
         },
-        { property: "og:title", content: "Mobile Repair Locations Liverpool | MR KHAN" },
+        { property: "og:title", content: "Phone Repair Near Me Liverpool | MR. KHAN" },
         {
           property: "og:description",
           content:
-            "Mobile phone repair locations across Liverpool, Manchester & North West with a 12-month warranty.",
+            "Same-day phone repairs in Liverpool, Wirral, Southport & surrounding areas. Walk-ins welcome. 12-month warranty. Book online.",
         },
-        { property: "og:url", content: `${siteUrl}/locations` },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/locations" },
       ],
-      links: [{ rel: "canonical", href: `${siteUrl}/locations` }],
+      links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/locations" }],
     };
   },
   component: LocationsPage,

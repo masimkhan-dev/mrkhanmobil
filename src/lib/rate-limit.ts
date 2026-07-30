@@ -1,6 +1,11 @@
 import { createMiddleware } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 
+/**
+ * NOTE: In-memory rate limiting (Map) is transient in serverless environments
+ * (Cloudflare Workers / Vercel Edge). It provides basic burst protection.
+ * TODO: Replace with Redis (Upstash) or database-backed rate limiting for production scale.
+ */
 const ipCache = new Map<string, { count: number; expiresAt: number }>();
 const LIMIT = 5; // max 5 requests
 const WINDOW_MS = 60 * 1000; // per 1 minute

@@ -7,14 +7,22 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
-      { title: `Customer Reviews | ${business.name}` },
+      { title: "Customer Reviews | 4.9★ Phone Repair Liverpool | MR. KHAN" },
       {
         name: "description",
-        content: `${business.rating.stars} out of 5 from ${business.rating.reviews}+ verified Google reviews. Read what our customers say.`,
+        content:
+          "Read 847+ verified Google reviews for MR. KHAN Mobile Repair. Same-day service, 12-month warranty, trusted by Liverpool customers.",
       },
-      { property: "og:url", content: "/reviews" },
+      { property: "og:title", content: "Customer Reviews | 4.9★ Phone Repair Liverpool | MR. KHAN" },
+      {
+        property: "og:description",
+        content:
+          "Read 847+ verified Google reviews for MR. KHAN Mobile Repair. Same-day service, 12-month warranty, trusted by Liverpool customers.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/reviews" },
     ],
-    links: [{ rel: "canonical", href: "/reviews" }],
+    links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/reviews" }],
   }),
   component: () => (
     <section className="py-16 md:py-24">

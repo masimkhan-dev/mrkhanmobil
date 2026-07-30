@@ -14,9 +14,14 @@ import { useServerFn } from "@tanstack/react-start";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader, StickyMobileBar } from "@/components/site-header";
+import { TopBar } from "@/components/top-bar";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
 import { FloatingWhatsApp } from "@/components/floating-whatsapp";
+import { TopLoadingBar } from "@/components/top-loading-bar";
+import { BackToTop } from "@/components/back-to-top";
+import { MobileStickyCTA } from "@/components/mobile-sticky-cta";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { business } from "@/config/business";
 import { getPublicSiteSettings } from "@/lib/cms.functions";
 
@@ -75,37 +80,37 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-const siteName = "MR KHAN | Mobile Phone Repair Liverpool";
-
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Mobile Phone Repair Liverpool | iPhone & Samsung | MR KHAN" },
+      { title: "Phone Repair Liverpool | Same-Day Fix | MR. KHAN" },
       {
         name: "description",
         content:
-          "Same-day mobile phone repair in Liverpool. iPhone, Samsung, Google Pixel and Android screen, battery and charging port repairs with a 12-month warranty. Visit MR KHAN at 83, 85 London Rd, Liverpool L3 8JA.",
+          "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome at London Road, Liverpool Post Office.",
       },
-      { name: "author", content: "MR KHAN" },
-      { name: "theme-color", content: "#0F172A" },
-      { property: "og:site_name", content: "MR KHAN Repair Experts" },
+      { name: "author", content: "MR. KHAN Mobile Repair" },
+      { name: "theme-color", content: "#171717" },
+      { property: "og:site_name", content: "MR. KHAN Mobile Repair" },
+      { property: "og:locale", content: "en_GB" },
       { property: "og:type", content: "website" },
-      { property: "og:title", content: "Mobile Phone Repair Liverpool | iPhone & Samsung | MR KHAN" },
+      { property: "og:title", content: "Phone Repair Liverpool | Same-Day Fix | MR. KHAN" },
       {
         property: "og:description",
-        content: "Same-day mobile phone repair in Liverpool with a 12-month warranty. Walk-in, home visit or mail-in.",
+        content:
+          "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome.",
       },
       { property: "og:image", content: `${business.url}/og-home.png` },
       { property: "og:url", content: `${business.url}/` },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Mobile Phone Repair Liverpool | iPhone & Samsung | MR KHAN" },
+      { name: "twitter:title", content: "Phone Repair Liverpool | Same-Day Fix | MR. KHAN" },
       {
         name: "twitter:description",
         content:
-          "Same-day mobile phone repair in Liverpool. iPhone, Samsung, Google Pixel screen & battery repairs with a 12-month warranty.",
+          "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome.",
       },
       { name: "twitter:image", content: `${business.url}/og-home.png` },
     ],
@@ -125,70 +130,52 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": ["LocalBusiness", "MobilePhoneRepairShop"],
-          "@id": `${business.url}/#organization`,
-          name: "MR KHAN Repair Experts",
-          url: `${business.url}/`,
-          logo: `${business.url}/logo.png`,
+          "@type": "MobilePhoneStore",
+          name: "MR. KHAN Mobile Repair",
           image: `${business.url}/og-home.png`,
-          telephone: business.phoneRaw,
-          email: business.email,
+          "@id": "https://www.mrkhanmobiles.co.uk",
+          url: "https://www.mrkhanmobiles.co.uk",
+          telephone: "+447707733038",
           priceRange: "££",
-          hasMap: business.googleReviewUrl,
-          sameAs: [
-            business.social.facebook,
-            business.social.instagram,
-            business.social.tiktok,
-          ],
           address: {
             "@type": "PostalAddress",
-            streetAddress: business.address.line1,
-            addressLocality: business.address.city,
-            addressRegion: business.address.region,
-            postalCode: business.address.postcode,
+            streetAddress: "83-85 London Road, Liverpool Post Office",
+            addressLocality: "Liverpool",
+            postalCode: "L3 8JA",
             addressCountry: "GB",
           },
           geo: {
             "@type": "GeoCoordinates",
-            latitude: 53.4094083,
-            longitude: -2.9742342,
+            latitude: "53.4106",
+            longitude: "-2.9779",
           },
           openingHoursSpecification: [
             {
               "@type": "OpeningHoursSpecification",
-              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-              opens: "09:00",
-              closes: "19:00",
-            },
-            {
-              "@type": "OpeningHoursSpecification",
-              dayOfWeek: "Saturday",
-              opens: "10:00",
-              closes: "18:00",
+              dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+              opens: "08:00",
+              closes: "21:00",
             },
             {
               "@type": "OpeningHoursSpecification",
               dayOfWeek: "Sunday",
-              opens: "11:00",
-              closes: "16:00",
+              opens: "10:00",
+              closes: "21:00",
             },
           ],
           aggregateRating: {
             "@type": "AggregateRating",
-            ratingValue: String(business.rating.stars),
-            reviewCount: String(business.rating.reviews),
+            ratingValue: "4.9",
+            reviewCount: "847",
           },
-          areaServed: [
-            "Liverpool",
-            "Merseyside",
-            "Wirral",
-            "Manchester",
-            "Bootle",
-            "St Helens",
-            "Southport",
-            "Birkenhead",
-            "United Kingdom",
-          ],
+          areaServed: {
+            "@type": "City",
+            name: "Liverpool",
+            containedInPlace: {
+              "@type": "Country",
+              name: "United Kingdom",
+            },
+          },
         }),
       },
     ],
@@ -218,6 +205,10 @@ function AppLayout() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const getSettings = useServerFn(getPublicSiteSettings);
   const { data: settings } = useQuery({
     queryKey: ["public-site-settings"],
@@ -242,6 +233,13 @@ function AppLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:outline-none font-semibold text-sm"
+      >
+        Skip to main content
+      </a>
+      <TopBar />
       {announcement?.enabled && announcement?.text && (
         <div className="bg-accent text-accent-foreground text-center py-2 px-4 text-xs md:text-sm font-semibold flex items-center justify-center gap-2">
           {announcement.link ? (
@@ -254,8 +252,10 @@ function AppLayout() {
         </div>
       )}
       <SiteHeader />
-      <main className="flex-1 pb-24 md:pb-0">
-        <Outlet />
+      <main id="main-content" className="flex-1 pb-20 md:pb-0">
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
       <SiteFooter />
     </div>
@@ -269,9 +269,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <TopLoadingBar />
       <AppLayout />
-      {!isAdminRoute && <StickyMobileBar />}
-      {!isAdminRoute && <FloatingWhatsApp />}
+      {!isAdminRoute && <MobileStickyCTA />}
+      {!isAdminRoute && <BackToTop />}
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );

@@ -4,5 +4,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /auth/
 
-=
-|,Litemap: https://www.mrkhanmobiles.co.uk/sitemap.xml
+Sitemap: https://www.mrkhanmobiles.co.uk/sitemap.xml

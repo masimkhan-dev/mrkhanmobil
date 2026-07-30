@@ -17,24 +17,24 @@ const servicesQuery = {
 export const Route = createFileRoute("/services")({
   loader: ({ context }) => context.queryClient.ensureQueryData(servicesQuery),
   head: () => {
-    const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
-        { title: "Mobile Phone Repair Services Liverpool | Screen, Battery & Diagnostics | MR KHAN" },
+        { title: "Phone Repair Services Liverpool | Screen, Battery & More | MR. KHAN" },
         {
           name: "description",
           content:
-            "Explore all mobile phone repair services at MR KHAN Liverpool. iPhone, Samsung & Pixel screen replacement, battery repair, charging port fix & water damage diagnosis with a 12-month warranty.",
+            "Expert screen, battery & charging port repairs in Liverpool. Transparent pricing after free check. 12-month warranty. Book online or WhatsApp.",
         },
-        { property: "og:title", content: "Mobile Phone Repair Services Liverpool | MR KHAN" },
+        { property: "og:title", content: "Phone Repair Services Liverpool | Screen, Battery & More | MR. KHAN" },
         {
           property: "og:description",
           content:
-            "Screen replacement, battery repair, charging port fix & water damage diagnosis in Liverpool with a 12-month warranty.",
+            "Expert screen, battery & charging port repairs in Liverpool. Transparent pricing after free check. 12-month warranty. Book online or WhatsApp.",
         },
-        { property: "og:url", content: `${siteUrl}/services` },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/services" },
       ],
-      links: [{ rel: "canonical", href: `${siteUrl}/services` }],
+      links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/services" }],
       scripts: [
         {
           type: "application/ld+json",
@@ -45,8 +45,65 @@ export const Route = createFileRoute("/services")({
               "@type": "ListItem",
               position: i + 1,
               name: s.title,
-              url: `${siteUrl}/services/${s.slug}`,
+              url: `https://www.mrkhanmobiles.co.uk/services/${s.slug}`,
             })),
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "How much does phone screen repair cost in Liverpool?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Repair costs vary by device model and damage type. At MR. KHAN, we offer a free diagnosis and transparent quote before any work begins. Use our instant cost estimator or contact us on WhatsApp for a quick price.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Do you offer a warranty on phone repairs?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes, all repairs at MR. KHAN come with a 12-month warranty covering parts and labour. If the same issue reoccurs, we will fix it free of charge.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "How long does a phone repair take?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Most screen and battery repairs are completed within 30 to 60 minutes. Complex issues may take longer. We offer same-day service for walk-in customers at our Liverpool workshop.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Do I need to book an appointment?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "No appointment is needed for walk-in repairs. Simply visit us at 83-85 London Road, Liverpool. We are open 7 days a week. You can also book a home visit or mail-in repair via WhatsApp.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "What phone brands do you repair?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "We repair all major brands including iPhone, Samsung Galaxy, Google Pixel, Huawei, Xiaomi, Oppo, OnePlus, Honor, Sony, Nokia, and Motorola.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Is my data safe during repair?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "We take data privacy seriously. Your personal data is never accessed or copied except when necessary to test repair functionality. We recommend backing up your device before repair as a precaution.",
+                },
+              },
+            ],
           }),
         },
       ],

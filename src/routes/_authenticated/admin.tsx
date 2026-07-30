@@ -1040,8 +1040,11 @@ function BookingsPanel({
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       ) : filteredBookings.length === 0 ? (
-        <div className="p-16 text-center text-muted-foreground text-sm bg-card border rounded-xl">
-          No bookings match.
+        <div className="p-12 text-center text-muted-foreground text-sm bg-card border border-border rounded-xl space-y-2">
+          <div className="font-semibold text-base text-foreground">No repair tickets found</div>
+          <p className="text-xs max-w-md mx-auto text-muted-foreground">
+            There are currently no repair tickets matching your search or filter criteria.
+          </p>
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -1133,7 +1136,7 @@ function BookingsPanel({
 
                   <div className="flex items-center gap-1 ml-auto">
                     <a
-                      href={`tel:${b.phone}`}
+                      href={`tel:${b.phone?.replace(/\s+/g, "")}`}
                       className="h-7 w-7 rounded border border-border bg-background grid place-items-center hover:border-accent hover:text-accent transition text-muted-foreground"
                       title="Call Customer"
                     >

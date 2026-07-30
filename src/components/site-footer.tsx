@@ -32,7 +32,7 @@ export function SiteFooter() {
               </div>
             </div>
             <p className="text-sm text-primary-foreground/75 leading-relaxed">
-              Professional phone repairs in Liverpool with a 6-month warranty.
+              Professional phone repairs in Liverpool with a 12-month warranty.
             </p>
           </div>
 
@@ -64,11 +64,13 @@ export function SiteFooter() {
               </li>
               <li className="flex items-start gap-2.5">
                 <Clock className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-                <div>
-                  <div className="font-semibold text-xs text-primary-foreground">
-                    Mon–Fri: 9:00 – 19:00
-                  </div>
-                  <div className="text-xs text-primary-foreground/70">Sat–Sun: 9:00 – 18:00</div>
+                <div className="space-y-0.5 text-xs text-primary-foreground/80">
+                  {business.hours.map((h) => (
+                    <div key={h.day} className="flex justify-between gap-2">
+                      <span className="font-medium text-primary-foreground/70">{h.day}:</span>
+                      <span>{h.hours}</span>
+                    </div>
+                  ))}
                 </div>
               </li>
             </ul>
@@ -116,22 +118,41 @@ export function SiteFooter() {
             <span className="px-2 py-1 rounded bg-white/10 text-[11px]">Cash</span>
           </div>
           <div className="text-xs text-primary-foreground/60">
-            Liverpool Repair Workshop · 6-Month Warranty Included
+            Liverpool Repair Workshop · 12-Month Warranty Included
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-6 pt-4 border-t border-primary-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-primary-foreground/60">
+        <div className="mt-6 pt-4 border-t border-primary-foreground/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-primary-foreground/60">
           <div>
-            © {new Date().getFullYear()} {business.legalName}. Registered in England & Wales. All
-            rights reserved.
+            <div>
+              © {new Date().getFullYear()} {business.legalName}. Registered in England & Wales. All
+              rights reserved.
+            </div>
+            {(business.companyNumber || business.vatNumber || business.icoReference) && (
+              <div className="text-[11px] text-primary-foreground/50 mt-1">
+                {[
+                  business.companyNumber && `Company No: ${business.companyNumber}`,
+                  business.vatNumber && `VAT No: ${business.vatNumber}`,
+                  business.icoReference && `ICO Ref: ${business.icoReference}`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </div>
+            )}
           </div>
-          <div className="flex gap-4 font-medium">
+          <div className="flex flex-wrap items-center gap-4 text-xs font-medium">
             <Link to="/privacy" className="hover:text-primary-foreground transition">
               Privacy Policy
             </Link>
             <Link to="/terms" className="hover:text-primary-foreground transition">
-              Terms of Service
+              Terms & Conditions
+            </Link>
+            <Link to="/refunds" className="hover:text-primary-foreground transition">
+              Returns & Refund Policy
+            </Link>
+            <Link to="/accessibility" className="hover:text-primary-foreground transition">
+              Accessibility
             </Link>
           </div>
         </div>
