@@ -109,7 +109,6 @@ function Home() {
     <>
       <EmergencyBanner />
       <Hero />
-      <TrustBar />
       <InstantPriceCalculator />
       <BrandsStrip />
       <ServicesGrid />
@@ -130,33 +129,55 @@ function Home() {
 
 function Hero() {
   return (
-    <section className="relative bg-[#050B1A] text-white pt-12 sm:pt-16 pb-20 sm:pb-24 overflow-hidden">
-      <div className="container-x grid gap-8 lg:gap-12 lg:grid-cols-12 lg:items-center">
-        {/* Left Column: Content */}
+    <section className="relative bg-[#050B1A] text-white pt-16 sm:pt-24 pb-28 sm:pb-32 overflow-hidden">
+      {/* Full Background Hero Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={heroImg}
+          alt="MR. KHAN Mobile Repair Workshop Liverpool"
+          className="w-full h-full object-cover object-center scale-105 filter brightness-[0.85]"
+          loading="eager"
+          fetchPriority="high"
+        />
+        {/* Dynamic Gradients for Maximum Contrast and Visual Depth */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050B1A]/95 via-[#050B1A]/85 to-[#050B1A]/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050B1A] via-transparent to-[#050B1A]/70" />
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-[#E21B23]/20 rounded-full blur-3xl pointer-events-none" />
+      </div>
+
+      <div className="container-x relative z-10 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="lg:col-span-7 space-y-5 sm:space-y-6"
+          className="space-y-6 text-left"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-slate-200 text-xs font-semibold max-w-full">
-            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400 shrink-0" />
-            <span className="truncate">{business.rating.stars} Google Rating · {business.rating.reviews}+ Verified Reviews</span>
+          {/* Glass Rating Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-slate-100 text-xs font-semibold shadow-lg">
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400 shrink-0" />
+            <span>{business.rating.stars}★ Google Rating · {business.rating.reviews}+ Verified Reviews</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-display tracking-tight">
+          {/* Main Headline */}
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.1] font-display tracking-tight text-white">
             Liverpool's Trusted{" "}
-            <span className="text-[#E21B23]">Phone Repair</span> Experts
+            <span className="text-[#E21B23] drop-shadow-[0_0_25px_rgba(226,27,35,0.5)]">
+              Phone Repair
+            </span>{" "}
+            Experts
           </h1>
-          <p className="text-lg md:text-xl text-slate-300 mt-4 max-w-2xl leading-relaxed">
-            Same-day screen & battery repairs while you wait. 12-month warranty. 
-            Walk-ins welcome at Liverpool Post Office, London Road.
+
+          {/* Subtitle */}
+          <p className="text-lg md:text-2xl text-slate-200 max-w-2xl leading-relaxed font-normal">
+            Same-day screen & battery repairs while you wait. 12-month warranty on all parts & labor.
+            Walk-ins welcome at Liverpool Post Office, 83-85 London Road.
           </p>
 
-          <div className="flex flex-wrap gap-4 mt-8 items-center">
+          {/* Action CTAs */}
+          <div className="flex flex-wrap gap-4 pt-4 items-center">
             <a
               href="/book"
-              className="bg-[#E21B23] text-white px-8 py-3.5 rounded-full font-semibold hover:bg-red-700 transition animate-pulse-glow inline-flex items-center justify-center text-center shadow-lg"
+              className="bg-[#E21B23] text-white px-9 py-4 rounded-full font-bold text-base hover:bg-red-700 transition-all animate-pulse-glow inline-flex items-center justify-center text-center shadow-2xl hover:scale-105 duration-200"
             >
               Book Repair
             </a>
@@ -164,57 +185,28 @@ function Hero() {
               href="https://wa.me/447707733038?text=Hi%20MR.%20KHAN%2C%20I%27d%20like%20a%20quote"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#25D366] text-white px-8 py-3.5 rounded-full font-semibold hover:bg-green-700 transition flex items-center gap-2 shadow-lg"
+              className="bg-[#25D366] text-white px-8 py-4 rounded-full font-bold text-base hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-2xl hover:scale-105 duration-200"
             >
               💬 WhatsApp Us
             </a>
             <a
               href="tel:+447707733038"
-              className="border-2 border-white/30 text-white px-8 py-3.5 rounded-full font-semibold hover:bg-white hover:text-[#171717] transition flex items-center gap-2"
+              className="bg-white/10 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-full font-bold text-base hover:bg-white hover:text-[#171717] transition-all flex items-center gap-2 shadow-lg hover:scale-105 duration-200"
             >
               📞 Call Now
             </a>
           </div>
 
-          <div className="pt-3 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-300 font-medium">
-            <div className="flex items-center gap-2">
+          {/* Key Feature Badges */}
+          <div className="pt-6 flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-slate-200 font-semibold">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/15 shadow-sm">
               <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" /> 12-Month Warranty
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-indigo-400 shrink-0" /> Open 7 Days (8 AM – 9 PM)
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/15 shadow-sm">
+              <Clock className="h-4 w-4 text-blue-400 shrink-0" /> Open 7 Days (8 AM – 9 PM)
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/15 shadow-sm">
               <Award className="h-4 w-4 text-amber-400 shrink-0" /> Walk-ins Welcome
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Right Column: Technician Image */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.15 }}
-          className="lg:col-span-5 relative"
-        >
-          <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl aspect-[16/10] sm:aspect-[4/3] lg:aspect-[1/1]">
-            <img
-              src={technicianImg}
-              alt="MR. KHAN Repair Technician working on phone repair in Liverpool"
-              className="w-full h-full object-cover"
-              width={800}
-              height={800}
-              loading="eager"
-              fetchPriority="high"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050B1A]/80 via-transparent to-transparent" />
-            <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 p-3 sm:p-4 rounded-xl bg-[#050B1A]/90 backdrop-blur-md border border-white/10 flex items-center justify-between gap-2">
-              <div>
-                <div className="text-xs font-bold text-white">Liverpool Repair Workshop</div>
-                <div className="text-[10px] text-slate-400">📍 83-85 London Road, Liverpool · Open Mon-Sat 8am-9pm, Sun 10am-9pm</div>
-              </div>
-              <div className="flex items-center gap-1 text-emerald-400 text-xs font-semibold shrink-0">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" /> Open 7 Days
-              </div>
             </div>
           </div>
         </motion.div>
@@ -223,40 +215,7 @@ function Hero() {
   );
 }
 
-function TrustBar() {
-  return (
-    <div className="relative -mt-10 mx-4 md:mx-auto max-w-4xl bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-6 grid grid-cols-2 md:grid-cols-4 gap-6 z-10 border border-border">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-950/60 flex items-center justify-center text-green-600 dark:text-green-400 font-bold shrink-0">✓</div>
-        <div>
-          <p className="font-semibold text-sm text-foreground">12-Month Warranty</p>
-          <p className="text-xs text-muted-foreground">On every repair</p>
-        </div>
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold shrink-0">⚡</div>
-        <div>
-          <p className="font-semibold text-sm text-foreground">Same-Day Repairs</p>
-          <p className="text-xs text-muted-foreground">Most in 60 mins</p>
-        </div>
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-950/60 flex items-center justify-center text-red-600 dark:text-red-400 font-bold shrink-0">📍</div>
-        <div>
-          <p className="font-semibold text-sm text-foreground">Liverpool Post Office</p>
-          <p className="text-xs text-muted-foreground">83-85 London Road</p>
-        </div>
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-950/60 flex items-center justify-center text-yellow-600 dark:text-yellow-400 font-bold shrink-0">★</div>
-        <div>
-          <p className="font-semibold text-sm text-foreground">4.9★ Google Reviews</p>
-          <p className="text-xs text-muted-foreground">847+ happy customers</p>
-        </div>
-      </div>
-    </div>
-  );
-}
+
 
 function BrandsStrip() {
   return (

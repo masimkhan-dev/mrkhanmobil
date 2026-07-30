@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Phone, Home, Wrench } from "lucide-react";
 import { business, telLink } from "@/config/business";
 
-export const Route = createFileRoute("/404")({
+export const Route = createFileRoute("/404" as any)({
   component: NotFoundPage,
 });
 
