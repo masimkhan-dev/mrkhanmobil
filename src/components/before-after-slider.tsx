@@ -49,98 +49,100 @@ export function BeforeAfterSlider() {
   };
 
   return (
-    <section className="py-16 sm:py-20 bg-slate-950 text-white relative overflow-hidden">
-      {/* Background Lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-blue-600/10 blur-[140px] pointer-events-none rounded-full" />
+    <section className="py-16 sm:py-24 bg-[#f7f7f5] border-y border-[#e3e5e8]">
+      <div className="container-x">
+        <div className="relative rounded-3xl bg-gradient-to-b from-[#07101d] via-[#0b1728] to-[#07101d] text-white p-6 sm:p-10 lg:p-12 border border-slate-800/80 shadow-xl overflow-hidden">
+          {/* Background Lighting */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-red-600/10 blur-[140px] pointer-events-none rounded-full" />
 
-      <div className="container-x relative">
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
-          <Badge
-            variant="secondary"
-            className="mb-3 rounded-full py-1 px-3.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 gap-1.5"
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            Before &amp; After
-          </Badge>
-          <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight">
-            Before &amp;{" "}
-            <span className="bg-gradient-to-r from-indigo-400 to-sky-300 bg-clip-text text-transparent">
-              After
-            </span>
-          </h2>
-          <p className="mt-3 text-slate-400 text-sm sm:text-base">
-            See the difference a professional repair can make.
-          </p>
-        </div>
-
-        <div className="max-w-3xl mx-auto">
-          <div
-            ref={containerRef}
-            tabIndex={0}
-            role="slider"
-            aria-label="Before and after screen repair comparison"
-            aria-valuenow={Math.round(sliderPosition)}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            onKeyDown={handleKeyDown}
-            className="relative h-[300px] sm:h-[420px] md:h-[480px] rounded-3xl overflow-hidden select-none cursor-ew-resize border border-white/10 shadow-2xl bg-slate-900 touch-pan-y focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onMouseDown={(e) => {
-              setIsDragging(true);
-              handleMove(e.clientX);
-            }}
-            onMouseUp={() => setIsDragging(false)}
-            onMouseLeave={() => setIsDragging(false)}
-            onMouseMove={handleMouseMove}
-            onTouchStart={(e) => {
-              setIsDragging(true);
-              handleMove(e.touches[0].clientX);
-            }}
-            onTouchEnd={() => setIsDragging(false)}
-            onTouchMove={handleTouchMove}
-          >
-            {/* After Image (Pristine) - Full background */}
-            <img
-              src={screenAfter}
-              alt="Repaired phone screen after repair"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10">
-              <Badge className="bg-emerald-500/90 text-white text-xs font-semibold shadow-md border-0 px-2.5 py-1">
-                AFTER: Restored & Pristine
-              </Badge>
-            </div>
-
-            {/* Before Image (Cracked) - Clipped by width */}
-            <div
-              className="absolute inset-y-0 left-0 overflow-hidden"
-              style={{ width: `${sliderPosition}%` }}
+          <div className="relative text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+            <Badge
+              variant="secondary"
+              className="mb-3 rounded-full py-1 px-3.5 bg-red-500/10 text-[#e21b23] border border-red-500/20 gap-1.5 font-bold"
             >
-              <img
-                src={screenBefore}
-                alt="Cracked phone screen before repair"
-                className="absolute inset-y-0 left-0 h-full max-w-none object-cover"
-                style={{ width: containerWidth > 0 ? `${containerWidth}px` : "100%" }}
-              />
-              <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                <Badge className="bg-rose-500/90 text-white text-xs font-semibold shadow-md border-0 px-2.5 py-1">
-                  BEFORE: Shattered Glass
-                </Badge>
-              </div>
-            </div>
-
-            {/* Slider Divider Line */}
-            <div
-              className="absolute inset-y-0 z-20 w-1 bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]"
-              style={{ left: `${sliderPosition}%` }}
-            >
-              <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-11 w-11 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-lg border-2 border-blue-500 font-bold min-h-[44px] min-w-[44px]">
-                <ArrowLeftRight className="h-5 w-5 text-blue-600" />
-              </div>
-            </div>
+              <Sparkles className="h-3.5 w-3.5" />
+              Before &amp; After Quality
+            </Badge>
+            <h2 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl tracking-tight text-white">
+              See the difference a <span className="text-[#e21b23]">professional repair</span> makes
+            </h2>
+            <p className="mt-2 text-slate-300 text-sm sm:text-base">
+              Drag the slider to compare genuine-grade glass finish before and after repair.
+            </p>
           </div>
 
-          <div className="mt-4 text-center text-xs text-slate-400 flex items-center justify-center gap-2">
-            <span>← Drag left/right or use arrow keys to compare →</span>
+          <div className="max-w-3xl mx-auto">
+            <div
+              ref={containerRef}
+              tabIndex={0}
+              role="slider"
+              aria-label="Before and after screen repair comparison"
+              aria-valuenow={Math.round(sliderPosition)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              onKeyDown={handleKeyDown}
+              className="relative h-[280px] sm:h-[380px] md:h-[440px] rounded-2xl overflow-hidden select-none cursor-ew-resize border border-white/10 shadow-2xl bg-slate-900 touch-pan-y focus:outline-none focus:ring-2 focus:ring-[#e21b23]"
+              onMouseDown={(e) => {
+                setIsDragging(true);
+                handleMove(e.clientX);
+              }}
+              onMouseUp={() => setIsDragging(false)}
+              onMouseLeave={() => setIsDragging(false)}
+              onMouseMove={handleMouseMove}
+              onTouchStart={(e) => {
+                setIsDragging(true);
+                handleMove(e.touches[0].clientX);
+              }}
+              onTouchEnd={() => setIsDragging(false)}
+              onTouchMove={handleTouchMove}
+            >
+              {/* After Image (Full width background) */}
+              <img
+                src={screenAfter}
+                alt="Repaired phone screen in pristine condition"
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                draggable={false}
+              />
+
+              {/* Before Image (Clipped overlay) */}
+              <div
+                className="absolute inset-y-0 left-0 overflow-hidden"
+                style={{ width: `${sliderPosition}%` }}
+              >
+                <img
+                  src={screenBefore}
+                  alt="Damaged phone screen before repair"
+                  className="absolute inset-y-0 left-0 h-full object-cover max-w-none pointer-events-none"
+                  style={{ width: containerWidth > 0 ? `${containerWidth}px` : "100%" }}
+                  draggable={false}
+                />
+              </div>
+
+              {/* Divider Line & Handle */}
+              <div
+                className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_10px_rgba(0,0,0,0.5)] cursor-ew-resize z-20"
+                style={{ left: `${sliderPosition}%` }}
+              >
+                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white text-[#111318] shadow-lg flex items-center justify-center border-2 border-[#e21b23]">
+                  <ArrowLeftRight className="w-4 h-4 text-[#e21b23]" />
+                </div>
+              </div>
+
+              {/* Badges */}
+              <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full pointer-events-none z-10 border border-white/10">
+                BEFORE
+              </div>
+              <div className="absolute top-4 right-4 bg-[#e21b23]/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full pointer-events-none z-10 border border-white/10">
+                AFTER
+              </div>
+            </div>
+
+            <div className="mt-4 text-center">
+              <span className="text-xs text-slate-400 font-medium inline-flex items-center gap-1.5">
+                <ArrowLeftRight className="w-3.5 h-3.5 text-[#e21b23]" />
+                Drag slider or use arrow keys to inspect screen quality
+              </span>
+            </div>
           </div>
         </div>
       </div>

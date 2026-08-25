@@ -11,7 +11,10 @@ export const Route = createFileRoute("/warranty")({
         content:
           "All repairs covered by our 12-month parts & labour warranty. Free re-repair if the same issue returns. Trusted phone repair in Liverpool.",
       },
-      { property: "og:title", content: "12-Month Repair Warranty | MR. KHAN Mobile Repair Liverpool" },
+      {
+        property: "og:title",
+        content: "12-Month Repair Warranty | MR. KHAN Mobile Repair Liverpool",
+      },
       {
         property: "og:description",
         content:
@@ -56,14 +59,21 @@ export const Route = createFileRoute("/warranty")({
         <div className="mt-12 p-6 rounded-2xl bg-muted/40 border border-border space-y-3">
           <h3 className="font-display font-semibold text-lg">How to claim your warranty</h3>
           <p className="text-sm text-muted-foreground">
-            To make a warranty claim, contact us with your booking reference and proof of repair. We'll inspect your device and re-repair it free of charge.
+            To make a warranty claim, contact us with your booking reference and proof of repair.
+            We'll inspect your device and re-repair it free of charge.
           </p>
           <div className="flex flex-wrap gap-4 pt-2 text-sm font-semibold">
-            <a href={telLink()} className="inline-flex items-center gap-1.5 text-accent hover:underline">
+            <a
+              href={telLink()}
+              className="inline-flex items-center gap-1.5 text-accent hover:underline"
+            >
               <Phone className="h-4 w-4" /> Call {business.phone}
             </a>
             {business.email && (
-              <a href={`mailto:${business.email}`} className="inline-flex items-center gap-1.5 text-accent hover:underline">
+              <a
+                href={`mailto:${business.email}`}
+                className="inline-flex items-center gap-1.5 text-accent hover:underline"
+              >
                 <Mail className="h-4 w-4" /> Email {business.email}
               </a>
             )}

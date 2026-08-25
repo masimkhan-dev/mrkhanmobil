@@ -35,7 +35,7 @@ export const Route = createFileRoute("/mail-in")({
             Anywhere in the UK. Free tracked & insured return delivery on every mail-in repair.
           </p>
           <Button asChild size="lg" className="mt-8 rounded-full">
-            <Link to="/book">Start mail-in booking</Link>
+            <Link to="/contact">Contact us about mail-in repair</Link>
           </Button>
         </div>
       </section>

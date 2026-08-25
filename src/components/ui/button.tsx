@@ -35,8 +35,7 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
@@ -60,7 +59,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const isUiverseStyle = variant === "default" || variant === "uiverse" || !variant;
 
     if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<any>;
+      const child = children as React.ReactElement<{ children?: React.ReactNode }>;
       const innerContent = isUiverseStyle ? (
         <>
           <UiverseDecoration />
@@ -73,11 +72,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       );
 
       return (
-        <Slot
-          ref={ref}
-          className={cn(buttonVariants({ variant, size, className }))}
-          {...props}
-        >
+        <Slot ref={ref} className={cn(buttonVariants({ variant, size, className }))} {...props}>
           {React.cloneElement(child, child.props, innerContent)}
         </Slot>
       );
@@ -85,11 +80,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     if (isUiverseStyle) {
       return (
-        <button
-          ref={ref}
-          className={cn(buttonVariants({ variant, size, className }))}
-          {...props}
-        >
+        <button ref={ref} className={cn(buttonVariants({ variant, size, className }))} {...props}>
           <UiverseDecoration />
           <span className="relative z-20 flex items-center justify-center gap-2 text-white transition-colors duration-200 ease-in-out">
             {children}

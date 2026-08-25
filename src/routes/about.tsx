@@ -32,11 +32,12 @@ export const Route = createFileRoute("/about")({
             No more mystery pricing, no more "we'll call you", no more disappointing warranties.
           </p>
           <p>
-            We combine experienced technicians, high-grade parts and a 12-month warranty into
-            one honest service — walk-in, home visit or mail-in.
+            We combine experienced technicians, high-grade parts and a 12-month warranty into one
+            honest service — walk-in, home visit or mail-in.
           </p>
           <p>
-            Today we repair devices every day from our workshop in Liverpool, and mail-in from across the UK.
+            Today we repair devices every day from our workshop in Liverpool, and mail-in from
+            across the UK.
           </p>
           <h2 className="font-display font-semibold text-2xl mt-10">Our promise</h2>
           <ul>

@@ -533,6 +533,62 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      counter_create_purchase: {
+        Args: { p_data: Json };
+        Returns: Json;
+      };
+      counter_create_repair: {
+        Args: { p_data: Json };
+        Returns: Json;
+      };
+      counter_create_sale: {
+        Args: { p_data: Json };
+        Returns: Json;
+      };
+      counter_customer_statement: {
+        Args: { p_customer_id: string; p_from?: string; p_to?: string };
+        Returns: Json;
+      };
+      counter_dashboard: {
+        Args: Record<PropertyKey, never>;
+        Returns: Json;
+      };
+      counter_invoices: {
+        Args: { p_from?: string; p_kind?: string; p_query?: string; p_to?: string };
+        Returns: Json;
+      };
+      counter_invoice_detail: {
+        Args: { p_invoice_id: string; p_kind: string };
+        Returns: Json;
+      };
+      counter_pay_supplier: {
+        Args: { p_data: Json };
+        Returns: Json;
+      };
+      counter_receive_customer_payment: {
+        Args: { p_data: Json };
+        Returns: Json;
+      };
+      counter_search_customers: {
+        Args: { p_query?: string };
+        Returns: Json;
+      };
+      counter_search_suppliers: {
+        Args: { p_query?: string };
+        Returns: Json;
+      };
+      counter_stock: {
+        Args: { p_query?: string; p_status?: string };
+        Returns: Json;
+      };
+      counter_supplier_statement: {
+        Args: { p_supplier_id: string; p_from?: string; p_to?: string };
+        Returns: Json;
+      };
+      counter_void_invoice: {
+        Args: { p_invoice_id: string; p_kind: string; p_reason: string };
+        Returns: Json;
+      };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];

@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { business, telLink, whatsappLink } from "@/config/business";
-import { QuoteForm } from "@/components/quote-form";
 import { Phone, MessageCircle, Mail, MapPin, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
@@ -25,7 +24,7 @@ export const Route = createFileRoute("/contact")({
   }),
   component: () => (
     <section className="py-16 md:py-24">
-      <div className="container-x grid gap-12 lg:grid-cols-2">
+      <div className="container-x max-w-3xl">
         <div>
           <p className="text-xs uppercase tracking-widest text-accent font-semibold">
             Get in touch
@@ -89,9 +88,6 @@ export const Route = createFileRoute("/contact")({
               </div>
             </li>
           </ul>
-        </div>
-        <div>
-          <QuoteForm source="contact_page" />
         </div>
       </div>
     </section>

@@ -1,6 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { business, telLink } from "@/config/business";
-import { RefreshCw, CheckCircle2, ShieldCheck, ShoppingBag, Phone, Mail, MapPin } from "lucide-react";
+import {
+  RefreshCw,
+  CheckCircle2,
+  ShieldCheck,
+  ShoppingBag,
+  Phone,
+  Mail,
+  MapPin,
+} from "lucide-react";
 
 export const Route = createFileRoute("/refunds")({
   head: () => ({
@@ -35,7 +43,9 @@ export const Route = createFileRoute("/refunds")({
 
         <div className="mt-10 space-y-10 text-foreground/90 leading-relaxed text-sm sm:text-base">
           <p>
-            At <strong>{business.name}</strong>, customer satisfaction and transparent quality are our top priorities. This policy explains our returns and refund terms for repair services and retail accessories under UK Consumer Rights law.
+            At <strong>{business.name}</strong>, customer satisfaction and transparent quality are
+            our top priorities. This policy explains our returns and refund terms for repair
+            services and retail accessories under UK Consumer Rights law.
           </p>
 
           {/* 1. Repair Service Refund & Warranty Claims */}
@@ -47,10 +57,24 @@ export const Route = createFileRoute("/refunds")({
               Every repair is backed by our <strong>12-Month Parts & Labour Warranty</strong>:
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground">
-              <li><strong>Free Re-Repair:</strong> If a fitted part develops a technical fault within 12 months, we will re-repair or replace the component free of charge.</li>
-              <li><strong>Refund Condition:</strong> If we are unable to resolve a defective replacement part under warranty after diagnostic attempt, a full or partial refund for the repair charge will be issued.</li>
-              <li><strong>No Fix, No Fee:</strong> If we diagnose a standard hardware fault as unrepairable upon initial inspection, no repair fee is charged.</li>
-              <li><strong>Exclusions:</strong> Refunds or free re-repairs are not provided for accidental drops, physical screen cracks, liquid ingress occurring after repair completion, or unauthorized third-party tampering.</li>
+              <li>
+                <strong>Free Re-Repair:</strong> If a fitted part develops a technical fault within
+                12 months, we will re-repair or replace the component free of charge.
+              </li>
+              <li>
+                <strong>Refund Condition:</strong> If we are unable to resolve a defective
+                replacement part under warranty after diagnostic attempt, a full or partial refund
+                for the repair charge will be issued.
+              </li>
+              <li>
+                <strong>No Fix, No Fee:</strong> If we diagnose a standard hardware fault as
+                unrepairable upon initial inspection, no repair fee is charged.
+              </li>
+              <li>
+                <strong>Exclusions:</strong> Refunds or free re-repairs are not provided for
+                accidental drops, physical screen cracks, liquid ingress occurring after repair
+                completion, or unauthorized third-party tampering.
+              </li>
             </ul>
           </div>
 
@@ -60,12 +84,23 @@ export const Route = createFileRoute("/refunds")({
               <ShoppingBag className="h-5 w-5 text-accent" /> 2. Retail Accessories & Products
             </h2>
             <p className="text-muted-foreground">
-              For phone cases, chargers, screen protectors, cables, and electronic accessories purchased in-store or online:
+              For phone cases, chargers, screen protectors, cables, and electronic accessories
+              purchased in-store or online:
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground">
-              <li><strong>14-Day Return Window:</strong> Unopened, unused retail items in original packaging can be returned within 14 days of purchase with receipt for an exchange or full refund.</li>
-              <li><strong>Faulty Products:</strong> If an accessory is defective upon purchase, bring it back within 30 days for an immediate replacement or full refund.</li>
-              <li><strong>Exclusions:</strong> Fitted screen protectors, opened hygiene-sensitive items, or clearance accessories damaged through misuse are non-refundable.</li>
+              <li>
+                <strong>14-Day Return Window:</strong> Unopened, unused retail items in original
+                packaging can be returned within 14 days of purchase with receipt for an exchange or
+                full refund.
+              </li>
+              <li>
+                <strong>Faulty Products:</strong> If an accessory is defective upon purchase, bring
+                it back within 30 days for an immediate replacement or full refund.
+              </li>
+              <li>
+                <strong>Exclusions:</strong> Fitted screen protectors, opened hygiene-sensitive
+                items, or clearance accessories damaged through misuse are non-refundable.
+              </li>
             </ul>
           </div>
 
@@ -75,9 +110,18 @@ export const Route = createFileRoute("/refunds")({
               <CheckCircle2 className="h-5 w-5 text-accent" /> 3. Return Procedure
             </h2>
             <ol className="list-decimal pl-5 space-y-1.5 text-muted-foreground">
-              <li>Bring your device or accessory to our Liverpool workshop with your booking reference receipt.</li>
-              <li>For mail-in repairs, contact customer support prior to posting back a warranty claim device.</li>
-              <li>Approved refunds are issued to the original payment method (Cash or Card) within 3–5 business days.</li>
+              <li>
+                Bring your device or accessory to our Liverpool workshop with your booking reference
+                receipt.
+              </li>
+              <li>
+                For mail-in repairs, contact customer support prior to posting back a warranty claim
+                device.
+              </li>
+              <li>
+                Approved refunds are issued to the original payment method (Cash or Card) within 3–5
+                business days.
+              </li>
             </ol>
           </div>
 
@@ -90,12 +134,16 @@ export const Route = createFileRoute("/refunds")({
             <ul className="space-y-2.5 text-sm font-medium text-foreground pt-1">
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 text-accent shrink-0" />
-                <a href={telLink()} className="hover:underline">{business.phone}</a>
+                <a href={telLink()} className="hover:underline">
+                  {business.phone}
+                </a>
               </li>
               {business.email && (
                 <li className="flex items-center gap-3">
                   <Mail className="h-4 w-4 text-accent shrink-0" />
-                  <a href={`mailto:${business.email}`} className="hover:underline">{business.email}</a>
+                  <a href={`mailto:${business.email}`} className="hover:underline">
+                    {business.email}
+                  </a>
                 </li>
               )}
               <li className="flex items-start gap-3">

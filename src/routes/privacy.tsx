@@ -1,6 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { business, telLink } from "@/config/business";
-import { ShieldCheck, Lock, Eye, FileText, Phone, Mail, MapPin, Server, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+  ShieldCheck,
+  Lock,
+  Eye,
+  FileText,
+  Phone,
+  Mail,
+  MapPin,
+  Server,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -40,13 +51,23 @@ export const Route = createFileRoute("/privacy")({
               <BuildingIcon className="h-5 w-5 text-accent" /> 1. Who We Are
             </h2>
             <p className="text-muted-foreground">
-              This Privacy Policy applies to <strong>{business.legalName}</strong> (trading as <strong>{business.name} Repair Experts</strong>):
+              This Privacy Policy applies to <strong>{business.legalName}</strong> (trading as{" "}
+              <strong>{business.name} Repair Experts</strong>):
             </p>
             <div className="p-4 rounded-xl bg-muted/30 border border-border text-xs sm:text-sm space-y-1.5 text-muted-foreground">
-              <p><strong>Business Name:</strong> {business.legalName} (t/a {business.name})</p>
-              <p><strong>Address:</strong> {business.address.line1}, {business.address.city}, {business.address.postcode}, {business.address.country}</p>
-              <p><strong>Phone:</strong> {business.phone}</p>
-              <p><strong>Email:</strong> {business.email}</p>
+              <p>
+                <strong>Business Name:</strong> {business.legalName} (t/a {business.name})
+              </p>
+              <p>
+                <strong>Address:</strong> {business.address.line1}, {business.address.city},{" "}
+                {business.address.postcode}, {business.address.country}
+              </p>
+              <p>
+                <strong>Phone:</strong> {business.phone}
+              </p>
+              <p>
+                <strong>Email:</strong> {business.email}
+              </p>
             </div>
           </div>
 
@@ -55,13 +76,30 @@ export const Route = createFileRoute("/privacy")({
             <h2 className="font-display font-semibold text-2xl text-foreground flex items-center gap-2">
               <Eye className="h-5 w-5 text-accent" /> 2. What Data We Collect
             </h2>
-            <p className="text-muted-foreground">We may collect and process the following information:</p>
+            <p className="text-muted-foreground">
+              We may collect and process the following information:
+            </p>
             <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground">
-              <li><strong>Contact Information:</strong> Your full name, phone number, and email address.</li>
-              <li><strong>Device Information:</strong> Device brand, model, fault description, and IMEI/serial number (if provided for diagnosis).</li>
-              <li><strong>Service Details:</strong> Repair type, preferred method (walk-in, home visit, or mail-in), and delivery address (for home visits or mail-in returns).</li>
-              <li><strong>Payment Information:</strong> Transactions processed securely via card terminal or cash — we never store full card numbers.</li>
-              <li><strong>Technical Data:</strong> Basic server logs (IP address, browser type) for website security.</li>
+              <li>
+                <strong>Contact Information:</strong> Your full name, phone number, and email
+                address.
+              </li>
+              <li>
+                <strong>Device Information:</strong> Device brand, model, fault description, and
+                IMEI/serial number (if provided for diagnosis).
+              </li>
+              <li>
+                <strong>Service Details:</strong> Repair type, preferred method (walk-in, home
+                visit, or mail-in), and delivery address (for home visits or mail-in returns).
+              </li>
+              <li>
+                <strong>Payment Information:</strong> Transactions processed securely via card
+                terminal or cash — we never store full card numbers.
+              </li>
+              <li>
+                <strong>Technical Data:</strong> Basic server logs (IP address, browser type) for
+                website security.
+              </li>
             </ul>
           </div>
 
@@ -71,9 +109,18 @@ export const Route = createFileRoute("/privacy")({
               <FileText className="h-5 w-5 text-accent" /> 3. Lawful Basis for Processing
             </h2>
             <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground">
-              <li><strong>Contractual Obligation:</strong> To fulfill and perform the repair service you requested.</li>
-              <li><strong>Legitimate Interest:</strong> For customer support, fraud prevention, and legal compliance.</li>
-              <li><strong>Consent:</strong> Promotional or newsletter updates ONLY if you explicitly tick the opt-in box.</li>
+              <li>
+                <strong>Contractual Obligation:</strong> To fulfill and perform the repair service
+                you requested.
+              </li>
+              <li>
+                <strong>Legitimate Interest:</strong> For customer support, fraud prevention, and
+                legal compliance.
+              </li>
+              <li>
+                <strong>Consent:</strong> Promotional or newsletter updates ONLY if you explicitly
+                tick the opt-in box.
+              </li>
             </ul>
           </div>
 
@@ -92,28 +139,64 @@ export const Route = createFileRoute("/privacy")({
 
           {/* 5. How Long We Keep Data */}
           <div className="space-y-3">
-            <h2 className="font-display font-semibold text-2xl text-foreground">5. How Long We Keep Data</h2>
+            <h2 className="font-display font-semibold text-2xl text-foreground">
+              5. How Long We Keep Data
+            </h2>
             <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground">
-              <li><strong>Repair Records & Invoices:</strong> Retained for 6 years in accordance with legal and accounting requirements.</li>
-              <li><strong>Marketing Consent:</strong> Retained until you withdraw your consent or unsubscribe.</li>
-              <li><strong>Website Security Server Logs:</strong> Retained for up to 12 months.</li>
+              <li>
+                <strong>Repair Records & Invoices:</strong> Retained for 6 years in accordance with
+                legal and accounting requirements.
+              </li>
+              <li>
+                <strong>Marketing Consent:</strong> Retained until you withdraw your consent or
+                unsubscribe.
+              </li>
+              <li>
+                <strong>Website Security Server Logs:</strong> Retained for up to 12 months.
+              </li>
             </ul>
           </div>
 
           {/* 6. Your Rights (UK GDPR) */}
           <div className="space-y-3">
-            <h2 className="font-display font-semibold text-2xl text-foreground">6. Your Rights (UK GDPR)</h2>
-            <p className="text-muted-foreground">Under UK data protection law, you have rights including:</p>
+            <h2 className="font-display font-semibold text-2xl text-foreground">
+              6. Your Rights (UK GDPR)
+            </h2>
+            <p className="text-muted-foreground">
+              Under UK data protection law, you have rights including:
+            </p>
             <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground">
-              <li><strong>Access:</strong> Request a copy of your personal data.</li>
-              <li><strong>Rectification:</strong> Request correction of inaccurate or incomplete information.</li>
-              <li><strong>Erasure:</strong> Request deletion of your personal data (Right to be Forgotten).</li>
-              <li><strong>Restriction:</strong> Limit how we process your personal data.</li>
-              <li><strong>Portability:</strong> Receive a copy of your data in a structured format.</li>
-              <li><strong>Objection:</strong> Object to processing based on legitimate interests.</li>
+              <li>
+                <strong>Access:</strong> Request a copy of your personal data.
+              </li>
+              <li>
+                <strong>Rectification:</strong> Request correction of inaccurate or incomplete
+                information.
+              </li>
+              <li>
+                <strong>Erasure:</strong> Request deletion of your personal data (Right to be
+                Forgotten).
+              </li>
+              <li>
+                <strong>Restriction:</strong> Limit how we process your personal data.
+              </li>
+              <li>
+                <strong>Portability:</strong> Receive a copy of your data in a structured format.
+              </li>
+              <li>
+                <strong>Objection:</strong> Object to processing based on legitimate interests.
+              </li>
             </ul>
             <p className="text-xs text-muted-foreground pt-1">
-              To exercise any of these rights, email <a href={`mailto:${business.email}`} className="text-accent underline font-medium">{business.email}</a> or call <a href={telLink()} className="text-accent underline font-medium">{business.phone}</a>.
+              To exercise any of these rights, email{" "}
+              <a href={`mailto:${business.email}`} className="text-accent underline font-medium">
+                {business.email}
+              </a>{" "}
+              or call{" "}
+              <a href={telLink()} className="text-accent underline font-medium">
+                {business.phone}
+              </a>
+              .
             </p>
           </div>
 
@@ -123,7 +206,10 @@ export const Route = createFileRoute("/privacy")({
               <Lock className="h-5 w-5 text-accent" /> 7. Data Sharing
             </h2>
             <p className="text-muted-foreground">
-              <strong>We do NOT sell your data to any third party.</strong> Data is stored securely via Supabase encrypted database infrastructure. Payment card processing is managed directly by accredited payment providers — we never see or store your full credit/debit card numbers.
+              <strong>We do NOT sell your data to any third party.</strong> Data is stored securely
+              via Supabase encrypted database infrastructure. Payment card processing is managed
+              directly by accredited payment providers — we never see or store your full
+              credit/debit card numbers.
             </p>
           </div>
 
@@ -133,7 +219,10 @@ export const Route = createFileRoute("/privacy")({
               <Server className="h-5 w-5 text-accent" /> 8. Cookies & Tracking
             </h2>
             <p className="text-muted-foreground">
-              We do <strong>NOT</strong> use Google Analytics, Meta Pixel, or any non-essential tracking cookies. We only use essential session cookies required for website functionality (such as managing your repair booking form session). No cookie consent banner is required as we do not deploy tracking or advertising cookies.
+              We do <strong>NOT</strong> use Google Analytics, Meta Pixel, or any non-essential
+              tracking cookies. We only use essential session cookies required for website
+              functionality (such as managing your repair booking form session). No cookie consent
+              banner is required as we do not deploy tracking or advertising cookies.
             </p>
           </div>
 
@@ -141,15 +230,20 @@ export const Route = createFileRoute("/privacy")({
           <div className="space-y-3">
             <h2 className="font-display font-semibold text-2xl text-foreground">9. Security</h2>
             <p className="text-muted-foreground">
-              All website data is transmitted securely over encrypted HTTPS connections. Stored data is kept in secure, encrypted databases via Supabase, with access strictly restricted to authorized staff.
+              All website data is transmitted securely over encrypted HTTPS connections. Stored data
+              is kept in secure, encrypted databases via Supabase, with access strictly restricted
+              to authorized staff.
             </p>
           </div>
 
           {/* 10. Changes to This Policy */}
           <div className="space-y-3">
-            <h2 className="font-display font-semibold text-2xl text-foreground">10. Changes to This Policy</h2>
+            <h2 className="font-display font-semibold text-2xl text-foreground">
+              10. Changes to This Policy
+            </h2>
             <p className="text-muted-foreground">
-              We may update this Privacy Policy from time to time. Any changes will be published on this page with an updated revision date.
+              We may update this Privacy Policy from time to time. Any changes will be published on
+              this page with an updated revision date.
             </p>
           </div>
 
@@ -162,16 +256,21 @@ export const Route = createFileRoute("/privacy")({
             <ul className="space-y-2.5 text-sm font-medium text-foreground">
               <li className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-accent shrink-0" />
-                <a href={`mailto:${business.email}`} className="hover:underline">{business.email}</a>
+                <a href={`mailto:${business.email}`} className="hover:underline">
+                  {business.email}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-4 w-4 text-accent shrink-0" />
-                <a href={telLink()} className="hover:underline">{business.phone}</a>
+                <a href={telLink()} className="hover:underline">
+                  {business.phone}
+                </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 text-accent shrink-0 mt-0.5" />
                 <span className="text-muted-foreground">
-                  {business.address.line1}, {business.address.city}, {business.address.postcode}, {business.address.country}
+                  {business.address.line1}, {business.address.city}, {business.address.postcode},{" "}
+                  {business.address.country}
                 </span>
               </li>
             </ul>

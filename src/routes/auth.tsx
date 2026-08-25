@@ -108,12 +108,8 @@ function AuthPage() {
 
         <p className="mt-6 text-xs text-muted-foreground text-center">
           Staff access only. Customers can{" "}
-          <Link to="/book" className="text-primary hover:underline">
-            book a repair
-          </Link>{" "}
-          or{" "}
-          <Link to="/track" className="text-primary hover:underline">
-            track a repair
+          <Link to="/contact" className="text-primary hover:underline">
+            contact the shop
           </Link>{" "}
           without an account.
         </p>

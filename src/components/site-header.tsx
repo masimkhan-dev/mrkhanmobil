@@ -1,443 +1,402 @@
-import { Link } from "@tanstack/react-router";
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
-import { Menu, X, Phone, ChevronDown, Wrench, Home as HomeIcon, Package, Smartphone, Battery, Droplets, Zap, Camera, ShieldCheck } from "lucide-react";
-import { business, telLink } from "@/config/business";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { Menu, MessageCircle, Phone, X } from "lucide-react";
+import { business, telLink, whatsappLink } from "@/config/business";
 import logoImg from "@/assets/logo.png";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+const navLinks = [
+  { to: "/", label: "Home", exact: true },
+  { to: "/services", label: "Repairs", exact: false },
+  { to: "/buy-sell", label: "Buy & Sell", exact: false },
+  { to: "/about", label: "About Us", exact: false },
+  { to: "/contact", label: "Contact", exact: false },
+] as const;
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
-  const [servicesOpen, setServicesOpen] = useState(false);
-  const [optionsOpen, setOptionsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const location = useRouterState({ select: (s) => s.location.pathname });
 
+  // Scroll state for sticky collapse
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => setSignedIn(!!session));
-    return () => sub.subscription.unsubscribe();
+    const onScroll = () => setScrolled(window.scrollY > 72);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close menu on route change
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setOpen(false);
-      };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.body.style.overflow = "";
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    } else {
-      document.body.style.overflow = "";
-    }
+    setOpen(false);
+  }, [location]);
+
+  // Escape key closes menu
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        setOpen(false);
+        hamburgerRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Body scroll lock when menu open
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  // Click outside to close
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (open && menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  const isActive = (to: string, exact: boolean) => {
+    if (exact) return location === to;
+    return location === to || location.startsWith(to + "/");
+  };
+
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/95 dark:bg-slate-900/95 border-b border-border/80 shadow-sm transition-all">
-      <div className="container-x flex h-20 items-center justify-between gap-4">
-        {/* Brand Logo - Bigger UK High-Street Style */}
-        <Link to="/" className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-red-500 rounded-xl p-1 shrink-0">
-          <div className="h-[40px] md:h-[52px] w-auto overflow-hidden flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
-            <img
-              src={logoImg}
-              alt="MR. KHAN Repair Experts Logo"
-              width={52}
-              height={52}
-              className="h-full w-auto object-contain"
-            />
-          </div>
-          <div className="leading-tight">
-            <div className="font-display font-extrabold text-xl md:text-2xl tracking-tight text-foreground flex items-center gap-1.5">
-              {business.name}
-              <span className="inline-block h-2 w-2 rounded-full bg-[#E21B23] animate-pulse" />
-            </div>
-            <div className="text-[10px] md:text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
-              Liverpool's Trusted Repair Experts
-            </div>
-          </div>
-        </Link>
-
-        {/* Desktop Nav Items */}
-        <nav className="hidden lg:flex items-center gap-1 text-sm font-semibold">
-          <Link
-            to="/"
-            className="px-3.5 py-2 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted/80 transition-all"
-            activeProps={{ className: "text-foreground bg-muted font-bold" }}
-            activeOptions={{ exact: true }}
-          >
-            Home
-          </Link>
-
-          {/* Services Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center gap-1 px-3.5 py-2 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted/80 transition-all outline-none">
-              <span>Services</span>
-              <ChevronDown className="h-4 w-4 opacity-70" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-60 p-2 rounded-2xl shadow-xl">
-              <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold px-2 py-1">
-                Popular Brand Repairs
-              </DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link to="/services/$slug" params={{ slug: "iphone-repair" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
-                  <Smartphone className="h-4 w-4 text-[#E21B23]" />
-                  <span className="font-medium text-xs">iPhone Repair</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/services/$slug" params={{ slug: "samsung-repair" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
-                  <Smartphone className="h-4 w-4 text-blue-600" />
-                  <span className="font-medium text-xs">Samsung Repair</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/services/$slug" params={{ slug: "google-pixel-repair" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
-                  <Smartphone className="h-4 w-4 text-emerald-600" />
-                  <span className="font-medium text-xs">Google Pixel Repair</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/services" className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
-                  <Smartphone className="h-4 w-4 text-purple-600" />
-                  <span className="font-medium text-xs">Huawei / Xiaomi / Oppo / OnePlus</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="my-1" />
-              <DropdownMenuItem asChild>
-                <Link to="/services" className="font-bold text-[#E21B23] hover:text-red-700 cursor-pointer rounded-xl text-xs py-2">
-                  View All Services →
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Repair Options Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center gap-1 px-3.5 py-2 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted/80 transition-all outline-none">
-              <span>Repair Options</span>
-              <ChevronDown className="h-4 w-4 opacity-70" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-64 p-2 rounded-2xl shadow-xl">
-              <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold px-2 py-1">
-                Ways To Repair
-              </DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link to="/services" params={{}} search={{ service: "walk_in" }} className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
-                  <Wrench className="h-4 w-4 text-[#E21B23]" />
-                  <div>
-                    <div className="font-semibold text-xs">Walk-in Repair</div>
-                    <div className="text-[10px] text-muted-foreground">London Road Workshop (30-60 mins)</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/home-repair" className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
-                  <HomeIcon className="h-4 w-4 text-[#E21B23]" />
-                  <div>
-                    <div className="font-semibold text-xs">Home Repair</div>
-                    <div className="text-[10px] text-muted-foreground">Doorstep callout across Liverpool</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/mail-in" className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2">
-                  <Package className="h-4 w-4 text-[#E21B23]" />
-                  <div>
-                    <div className="font-semibold text-xs">Mail-in Repair</div>
-                    <div className="text-[10px] text-muted-foreground">Post to us with free return shipping</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="my-1" />
-              <DropdownMenuItem asChild>
-                <Link to="/track" className="flex items-center gap-2.5 cursor-pointer rounded-xl py-2 font-semibold text-xs text-emerald-600">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Track Your Repair →
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Link
-            to="/locations"
-            className="px-3.5 py-2 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted/80 transition-all"
-            activeProps={{ className: "text-foreground bg-muted font-bold" }}
-          >
-            Locations
-          </Link>
-          <Link
-            to="/reviews"
-            className="px-3.5 py-2 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted/80 transition-all"
-            activeProps={{ className: "text-foreground bg-muted font-bold" }}
-          >
-            Reviews
-          </Link>
-          <Link
-            to="/contact"
-            className="px-3.5 py-2 rounded-full text-foreground/80 hover:text-foreground hover:bg-muted/80 transition-all"
-            activeProps={{ className: "text-foreground bg-muted font-bold" }}
-          >
-            Contact
-          </Link>
-        </nav>
-
-        {/* Desktop Action Buttons */}
-        <div className="hidden lg:flex items-center gap-3">
-          <a
-            href="tel:+447707733038"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold border border-input text-foreground hover:bg-accent hover:text-accent-foreground transition-all shrink-0"
-          >
-            <Phone className="h-3.5 w-3.5 text-[#E21B23]" />
-            07707 733038
-          </a>
-
-          {signedIn && (
-            <Button asChild size="sm" variant="outline" className="rounded-full gap-1.5 text-xs">
-              <Link to="/admin">
-                <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />
-                Admin
-              </Link>
-            </Button>
-          )}
-
-          <a
-            href="/book"
-            className="bg-[#E21B23] text-white hover:bg-red-700 font-bold px-6 py-2.5 rounded-full text-xs animate-pulse-glow transition-all shadow-md shrink-0"
-          >
-            Book Repair
-          </a>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <div className="flex items-center gap-2 lg:hidden">
-          <button
-            onClick={() => setOpen(!open)}
-            className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-full hover:bg-muted/80 flex items-center justify-center border border-border/80 focus:outline-none focus:ring-2 focus:ring-red-500"
-            aria-label="Toggle menu"
-            aria-expanded={open}
-          >
-            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Full-Screen Overlay Menu Drawer */}
-      <AnimatePresence>
-        {open && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setOpen(false)}
-              className="fixed inset-0 bg-black/70 backdrop-blur-xs z-40 lg:hidden"
-            />
-            <motion.div
-              initial={{ opacity: 0, y: -16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.2 }}
-              className="fixed top-20 inset-x-0 bottom-0 bg-background border-t border-border shadow-2xl z-50 p-6 lg:hidden flex flex-col justify-between overflow-y-auto"
+    <header className="sticky top-0 z-40 w-full" role="banner">
+      {/* ── Full header (shown at top, before scroll) ─────────────────────── */}
+      <div
+        className={`w-full bg-white border-b border-[#e3e5e8] transition-shadow duration-200 ${
+          scrolled ? "hidden" : "block"
+        }`}
+      >
+        {/* Row 2: Brand bar */}
+        <div className="container-x">
+          <div className="flex items-center justify-between h-[84px] gap-4">
+            {/* Logo */}
+            <Link
+              to="/"
+              className="flex items-center gap-3.5 shrink-0 py-1"
+              aria-label="MR. KHAN — return to homepage"
             >
-              <div className="flex flex-col gap-3 text-base font-semibold">
-                {/* Phone Call Button at TOP of mobile menu */}
-                <a
-                  href="tel:+447707733038"
-                  className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-input bg-muted/50 text-sm font-bold text-foreground hover:bg-muted min-h-[48px] shadow-xs"
-                >
-                  <Phone className="h-4 w-4 text-[#E21B23]" />
-                  Call Us: 07707 733038
-                </a>
-
-                <Link
-                  to="/"
-                  onClick={() => setOpen(false)}
-                  className="py-3 px-4 rounded-xl hover:bg-muted font-bold text-lg"
-                  activeProps={{ className: "bg-muted font-bold text-[#E21B23]" }}
-                  activeOptions={{ exact: true }}
-                >
-                  Home
-                </Link>
-
-                {/* Services Accordion */}
-                <div className="border-y border-border/80 py-2">
-                  <button
-                    onClick={() => setServicesOpen(!servicesOpen)}
-                    className="w-full flex items-center justify-between py-2 px-4 rounded-xl font-bold text-lg text-left"
-                  >
-                    <span>Services</span>
-                    <ChevronDown className={`h-5 w-5 transition-transform ${servicesOpen ? "rotate-180" : ""}`} />
-                  </button>
-                  {servicesOpen && (
-                    <div className="pl-4 pr-2 py-2 space-y-2 bg-muted/40 rounded-xl mt-1">
-                      <Link
-                        to="/services/$slug"
-                        params={{ slug: "iphone-repair" }}
-                        onClick={() => setOpen(false)}
-                        className="flex items-center gap-2.5 py-2 px-3 rounded-lg text-sm font-medium hover:bg-muted"
-                      >
-                        <Smartphone className="h-4 w-4 text-[#E21B23]" />
-                        iPhone Repair
-                      </Link>
-                      <Link
-                        to="/services/$slug"
-                        params={{ slug: "samsung-repair" }}
-                        onClick={() => setOpen(false)}
-                        className="flex items-center gap-2.5 py-2 px-3 rounded-lg text-sm font-medium hover:bg-muted"
-                      >
-                        <Smartphone className="h-4 w-4 text-blue-600" />
-                        Samsung Repair
-                      </Link>
-                      <Link
-                        to="/services/$slug"
-                        params={{ slug: "google-pixel-repair" }}
-                        onClick={() => setOpen(false)}
-                        className="flex items-center gap-2.5 py-2 px-3 rounded-lg text-sm font-medium hover:bg-muted"
-                      >
-                        <Smartphone className="h-4 w-4 text-emerald-600" />
-                        Google Pixel Repair
-                      </Link>
-                      <Link
-                        to="/services"
-                        onClick={() => setOpen(false)}
-                        className="block text-xs font-bold text-[#E21B23] px-3 pt-1"
-                      >
-                        View All Services →
-                      </Link>
-                    </div>
-                  )}
+              <img
+                src={logoImg}
+                alt="MR. KHAN logo"
+                className="h-16 sm:h-[72px] w-auto max-w-[180px] object-contain shrink-0"
+                loading="eager"
+              />
+              <div className="hidden sm:block">
+                <div className="font-display font-extrabold text-[22px] leading-tight text-[#111318] tracking-tight">
+                  {business.name}
                 </div>
-
-                {/* Repair Options Accordion */}
-                <div className="border-b border-border/80 pb-2">
-                  <button
-                    onClick={() => setOptionsOpen(!optionsOpen)}
-                    className="w-full flex items-center justify-between py-2 px-4 rounded-xl font-bold text-lg text-left"
-                  >
-                    <span>Repair Options</span>
-                    <ChevronDown className={`h-5 w-5 transition-transform ${optionsOpen ? "rotate-180" : ""}`} />
-                  </button>
-                  {optionsOpen && (
-                    <div className="pl-4 pr-2 py-2 space-y-2 bg-muted/40 rounded-xl mt-1">
-                      <Link
-                        to="/services"
-                        search={{ service: "walk_in" }}
-                        onClick={() => setOpen(false)}
-                        className="flex items-center gap-2.5 py-2 px-3 rounded-lg text-sm font-medium hover:bg-muted"
-                      >
-                        <Wrench className="h-4 w-4 text-[#E21B23]" />
-                        Walk-in Repair
-                      </Link>
-                      <Link
-                        to="/home-repair"
-                        onClick={() => setOpen(false)}
-                        className="flex items-center gap-2.5 py-2 px-3 rounded-lg text-sm font-medium hover:bg-muted"
-                      >
-                        <HomeIcon className="h-4 w-4 text-[#E21B23]" />
-                        Home Repair
-                      </Link>
-                      <Link
-                        to="/mail-in"
-                        onClick={() => setOpen(false)}
-                        className="flex items-center gap-2.5 py-2 px-3 rounded-lg text-sm font-medium hover:bg-muted"
-                      >
-                        <Package className="h-4 w-4 text-[#E21B23]" />
-                        Mail-in Repair
-                      </Link>
-                      <Link
-                        to="/track"
-                        onClick={() => setOpen(false)}
-                        className="flex items-center gap-2.5 py-2 px-3 rounded-lg text-sm font-bold text-emerald-600 hover:bg-muted"
-                      >
-                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                        Track Your Repair
-                      </Link>
-                    </div>
-                  )}
+                <div className="text-[11px] text-[#5f6670] font-semibold tracking-wide leading-tight">
+                  Mobile Repairs · Liverpool
                 </div>
-
-                <Link
-                  to="/locations"
-                  onClick={() => setOpen(false)}
-                  className="py-3 px-4 rounded-xl hover:bg-muted text-lg"
-                  activeProps={{ className: "bg-muted font-bold text-[#E21B23]" }}
-                >
-                  Locations
-                </Link>
-                <Link
-                  to="/reviews"
-                  onClick={() => setOpen(false)}
-                  className="py-3 px-4 rounded-xl hover:bg-muted text-lg"
-                  activeProps={{ className: "bg-muted font-bold text-[#E21B23]" }}
-                >
-                  Reviews
-                </Link>
-                <Link
-                  to="/contact"
-                  onClick={() => setOpen(false)}
-                  className="py-3 px-4 rounded-xl hover:bg-muted text-lg"
-                  activeProps={{ className: "bg-muted font-bold text-[#E21B23]" }}
-                >
-                  Contact
-                </Link>
               </div>
+            </Link>
 
-              {/* "Book Repair" button at BOTTOM of mobile menu */}
-              <div className="pt-4 border-t border-border mt-auto">
-                <a
-                  href="/book"
-                  onClick={() => setOpen(false)}
-                  className="w-full flex items-center justify-center bg-[#E21B23] text-white font-bold py-3.5 px-6 rounded-xl text-base animate-pulse-glow shadow-lg transition-all min-h-[52px]"
-                >
-                  Book Repair
-                </a>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </header>
-  );
-}
+            {/* Right: Contact + CTAs (desktop only) */}
+            <div className="hidden lg:flex items-center gap-3">
+              <a
+                href={telLink()}
+                className="flex items-center gap-2 text-[#111318] font-semibold text-sm hover:text-[#e21b23] transition-colors"
+                aria-label={`Call MR. KHAN on ${business.phone}`}
+              >
+                <Phone className="h-4 w-4 text-[#e21b23]" />
+                Need help? {business.phone}
+              </a>
+              <span className="w-px h-5 bg-[#e3e5e8]" aria-hidden="true" />
+              <a
+                href={whatsappLink("Hi MR. KHAN, I need help with a repair.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[8px] bg-[#25d366] text-white text-sm font-semibold hover:bg-[#1da851] transition-colors min-h-[44px]"
+                aria-label="Message MR. KHAN on WhatsApp"
+              >
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp
+              </a>
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[8px] bg-[#e21b23] text-white text-sm font-semibold hover:bg-[#c41018] transition-colors min-h-[44px]"
+              >
+                Get a Repair Quote
+              </Link>
+            </div>
 
-export function StickyMobileBar() {
-  return (
-    <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-background/95 backdrop-blur-md border-t border-border/80 pb-safe">
-      <div className="grid grid-cols-3 gap-2 p-2 px-3">
-        <a
-          href="tel:+447707733038"
-          className="flex flex-col items-center justify-center gap-1 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs font-semibold min-h-[44px] active:scale-95 transition-transform"
-        >
-          <Phone className="h-4 w-4 text-red-500" /> Call
-        </a>
-        <a
-          href="https://wa.me/447707733038?text=Hi%20MR.%20KHAN%2C%20I%27d%20like%20a%20quote"
-          target="_blank"
-          rel="noreferrer"
-          className="flex flex-col items-center justify-center gap-1 py-2.5 rounded-xl bg-[#25D366] text-white text-xs font-semibold min-h-[44px] active:scale-95 transition-transform shadow-sm"
-        >
-          <span>💬 WhatsApp</span>
-        </a>
-        <a
-          href="/book"
-          className="flex flex-col items-center justify-center gap-1 py-2.5 rounded-xl bg-[#E21B23] text-white text-xs font-bold min-h-[44px] active:scale-95 transition-transform shadow-sm animate-pulse-glow"
-        >
-          <span>Book</span>
-        </a>
+            {/* Mobile: phone + WA icons + hamburger */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <a
+                href={telLink()}
+                className="flex items-center justify-center h-10 w-10 rounded-lg border border-[#e3e5e8] text-[#111318] hover:bg-[#f7f7f5] transition-colors"
+                aria-label={`Call ${business.phone}`}
+              >
+                <Phone className="h-5 w-5" />
+              </a>
+              <a
+                href={whatsappLink("Hi MR. KHAN, I need help with a repair.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center h-10 w-10 rounded-lg bg-[#25d366] text-white hover:bg-[#1da851] transition-colors"
+                aria-label="Message on WhatsApp"
+              >
+                <MessageCircle className="h-5 w-5" />
+              </a>
+              <button
+                ref={hamburgerRef}
+                onClick={() => setOpen(!open)}
+                aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={open}
+                aria-controls="mobile-menu"
+                className="flex items-center justify-center h-10 w-10 rounded-lg border border-[#e3e5e8] text-[#111318] hover:bg-[#f7f7f5] transition-colors"
+              >
+                {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 3: Main navigation bar (desktop) */}
+        <div className="hidden lg:block border-t border-[#e3e5e8] bg-white">
+          <div className="container-x">
+            <div className="flex items-center h-[56px]">
+              <nav className="flex items-center gap-1 flex-1" aria-label="Main navigation">
+                {navLinks.map((link) => {
+                  const active = isActive(link.to, link.exact);
+                  return (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      aria-current={active ? "page" : undefined}
+                      className={`relative px-4 py-2 text-[15px] font-medium rounded-md transition-colors ${
+                        active
+                          ? "text-[#111318] bg-[#f7f7f5]"
+                          : "text-[#5f6670] hover:text-[#111318] hover:bg-[#f7f7f5]"
+                      }`}
+                    >
+                      {link.label}
+                      {active && (
+                        <span
+                          className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#e21b23] rounded-full"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* ── Compact sticky header (shown after scroll) ─────────────────────── */}
+      <div
+        className={`w-full bg-white border-b border-[#e3e5e8] shadow-sm transition-all duration-200 ${
+          scrolled ? "block" : "hidden"
+        }`}
+      >
+        <div className="container-x">
+          <div className="flex items-center h-[64px] gap-4">
+            {/* Logo */}
+            <Link
+              to="/"
+              className="flex items-center gap-2.5 shrink-0"
+              aria-label="MR. KHAN — return to homepage"
+            >
+              <img
+                src={logoImg}
+                alt="MR. KHAN logo"
+                className="h-11 w-auto max-w-[120px] object-contain shrink-0"
+              />
+              <span className="font-display font-extrabold text-[17px] text-[#111318] tracking-tight">
+                {business.name}
+              </span>
+            </Link>
+
+            {/* Desktop nav (compact) */}
+            <nav
+              className="hidden lg:flex items-center gap-0.5 flex-1 ml-4"
+              aria-label="Main navigation"
+            >
+              {navLinks.map((link) => {
+                const active = isActive(link.to, link.exact);
+                return (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    aria-current={active ? "page" : undefined}
+                    className={`relative px-3 py-1.5 text-[14px] font-medium rounded-md transition-colors ${
+                      active
+                        ? "text-[#111318] bg-[#f7f7f5]"
+                        : "text-[#5f6670] hover:text-[#111318] hover:bg-[#f7f7f5]"
+                    }`}
+                  >
+                    {link.label}
+                    {active && (
+                      <span
+                        className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#e21b23] rounded-full"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* CTAs */}
+            <div className="hidden lg:flex items-center gap-2 ml-auto">
+              <a
+                href={whatsappLink("Hi MR. KHAN, I need help with a repair.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#25d366] text-white text-sm font-semibold hover:bg-[#1da851] transition-colors min-h-[40px]"
+              >
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp
+              </a>
+              <Link
+                to="/contact"
+                className="inline-flex items-center px-4 py-2 rounded-[8px] bg-[#e21b23] text-white text-sm font-semibold hover:bg-[#c41018] transition-colors min-h-[40px]"
+              >
+                Get a Quote
+              </Link>
+            </div>
+
+            {/* Mobile icons */}
+            <div className="flex items-center gap-2 lg:hidden ml-auto">
+              <a
+                href={telLink()}
+                className="flex items-center justify-center h-9 w-9 rounded-lg border border-[#e3e5e8] text-[#111318] hover:bg-[#f7f7f5] transition-colors"
+                aria-label={`Call ${business.phone}`}
+              >
+                <Phone className="h-4.5 w-4.5" />
+              </a>
+              <a
+                href={whatsappLink("Hi MR. KHAN, I need help with a repair.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center h-9 w-9 rounded-lg bg-[#25d366] text-white hover:bg-[#1da851] transition-colors"
+                aria-label="WhatsApp"
+              >
+                <MessageCircle className="h-4.5 w-4.5" />
+              </a>
+              <button
+                ref={hamburgerRef}
+                onClick={() => setOpen(!open)}
+                aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={open}
+                aria-controls="mobile-menu"
+                className="flex items-center justify-center h-9 w-9 rounded-lg border border-[#e3e5e8] text-[#111318] hover:bg-[#f7f7f5] transition-colors"
+              >
+                {open ? <X className="h-4.5 w-4.5" /> : <Menu className="h-4.5 w-4.5" />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Mobile drawer menu ─────────────────────────────────────────────── */}
+      {open && (
+        <div
+          className="fixed inset-0 z-50 lg:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Drawer */}
+          <div
+            ref={menuRef}
+            id="mobile-menu"
+            className="absolute top-0 right-0 h-full w-[min(320px,85vw)] bg-white shadow-xl flex flex-col"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 h-16 border-b border-[#e3e5e8]">
+              <span className="font-display font-extrabold text-[17px] text-[#111318]">
+                {business.name}
+              </span>
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  hamburgerRef.current?.focus();
+                }}
+                aria-label="Close navigation menu"
+                className="flex items-center justify-center h-10 w-10 rounded-lg border border-[#e3e5e8] text-[#111318] hover:bg-[#f7f7f5] transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Nav links */}
+            <nav className="flex-1 overflow-y-auto py-4 px-3" aria-label="Mobile navigation">
+              {navLinks.map((link) => {
+                const active = isActive(link.to, link.exact);
+                return (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    onClick={() => setOpen(false)}
+                    aria-current={active ? "page" : undefined}
+                    className={`flex items-center px-4 py-3.5 rounded-xl text-base font-semibold mb-1 transition-colors min-h-[52px] ${
+                      active
+                        ? "bg-[#f7f7f5] text-[#111318] border-l-2 border-[#e21b23]"
+                        : "text-[#111318] hover:bg-[#f7f7f5]"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* CTAs */}
+            <div className="p-4 border-t border-[#e3e5e8] space-y-3">
+              <Link
+                to="/contact"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center w-full px-5 py-3.5 rounded-[8px] bg-[#e21b23] text-white text-base font-semibold hover:bg-[#c41018] transition-colors min-h-[52px]"
+              >
+                Get a Repair Quote
+              </Link>
+              <a
+                href={whatsappLink("Hi MR. KHAN, I need help with a repair.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full px-5 py-3.5 rounded-[8px] bg-[#25d366] text-white text-base font-semibold hover:bg-[#1da851] transition-colors min-h-[52px]"
+              >
+                <MessageCircle className="h-5 w-5" />
+                Message on WhatsApp
+              </a>
+            </div>
+
+            {/* Contact info strip */}
+            <div className="px-5 py-4 bg-[#f7f7f5] border-t border-[#e3e5e8]">
+              <a
+                href={telLink()}
+                className="flex items-center gap-2 text-sm font-semibold text-[#111318] hover:text-[#e21b23] transition-colors"
+              >
+                <Phone className="h-4 w-4 text-[#e21b23]" />
+                {business.phone}
+              </a>
+              <p className="mt-1 text-xs text-[#5f6670]">
+                {business.address.line1}, {business.address.city}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }

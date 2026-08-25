@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, MapPin, ShieldCheck, Clock, Award } from "lucide-react";
 import { business } from "@/config/business";
-import { QuoteForm } from "@/components/quote-form";
 import { getCityBySlug, type CityPage } from "@/lib/city-pages.functions";
 
 const cityQuery = (slug: string) => ({
@@ -27,7 +26,8 @@ export const Route = createFileRoute("/repairs/$city")({
         ? [
             {
               title:
-                loaderData.meta_title || `Mobile Phone Repair in ${loaderData.name} | Same-Day Service | MR KHAN`,
+                loaderData.meta_title ||
+                `Mobile Phone Repair in ${loaderData.name} | Same-Day Service | MR KHAN`,
             },
             {
               name: "description",
@@ -37,7 +37,8 @@ export const Route = createFileRoute("/repairs/$city")({
             },
             {
               property: "og:title",
-              content: loaderData.meta_title || `Mobile Phone Repair in ${loaderData.name} | MR KHAN`,
+              content:
+                loaderData.meta_title || `Mobile Phone Repair in ${loaderData.name} | MR KHAN`,
             },
             {
               property: "og:description",
@@ -56,8 +57,18 @@ export const Route = createFileRoute("/repairs/$city")({
                 "@type": "BreadcrumbList",
                 itemListElement: [
                   { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-                  { "@type": "ListItem", position: 2, name: "Locations", item: `${siteUrl}/locations` },
-                  { "@type": "ListItem", position: 3, name: loaderData.name, item: `${siteUrl}/repairs/${params.city}` },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Locations",
+                    item: `${siteUrl}/locations`,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: loaderData.name,
+                    item: `${siteUrl}/repairs/${params.city}`,
+                  },
                 ],
               }),
             },
@@ -100,7 +111,7 @@ function CityPageView() {
           <p className="mt-4 text-lg text-muted-foreground">{c.intro}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg" className="rounded-full">
-              <Link to="/book">Book a repair</Link>
+              <Link to="/contact">Contact the shop</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="rounded-full">
               <Link to="/home-repair">Home visit in {c.name}</Link>
@@ -121,7 +132,7 @@ function CityPageView() {
       </section>
 
       <section className="py-16">
-        <div className="container-x grid gap-12 lg:grid-cols-[1fr_400px]">
+        <div className="container-x max-w-4xl">
           <div>
             {c.body && (
               <div className="prose prose-neutral max-w-none mb-10 whitespace-pre-line text-foreground/90">
@@ -164,9 +175,6 @@ function CityPageView() {
               ))}
             </ul>
           </div>
-          <aside className="lg:sticky lg:top-24 lg:self-start">
-            <QuoteForm source={`city:${c.slug}`} />
-          </aside>
         </div>
       </section>
     </>

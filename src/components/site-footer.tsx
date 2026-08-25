@@ -1,136 +1,227 @@
 import { Link } from "@tanstack/react-router";
 import { business, telLink, whatsappLink } from "@/config/business";
-import { Phone, MessageCircle, MapPin, Clock, Navigation } from "lucide-react";
+import { Phone, MessageCircle, MapPin, Mail, Navigation } from "lucide-react";
 import logoImg from "@/assets/logo.png";
+
+const repairLinks = [
+  { label: "iPhone Repair", slug: "iphone-repair" },
+  { label: "Samsung Repair", slug: "samsung-repair" },
+  { label: "Google Pixel Repair", slug: "google-pixel-repair" },
+  { label: "Screen Replacement", slug: "screen-replacement" },
+  { label: "Battery Replacement", slug: "battery-replacement" },
+  { label: "Charging Port Repair", slug: "charging-port" },
+  { label: "Water Damage Repair", slug: "water-damage" },
+] as const;
+
+const companyLinks = [
+  { label: "About Us", to: "/about" },
+  { label: "Buy & Sell", to: "/buy-sell" },
+  { label: "Reviews", to: "/reviews" },
+  { label: "Gallery", to: "/gallery" },
+  { label: "Blog", to: "/blog" },
+  { label: "Contact", to: "/contact" },
+] as const;
 
 export function SiteFooter() {
   const directionsUrl = business.social.google;
 
   return (
-    <footer className="mt-16 border-t border-border bg-primary text-primary-foreground">
-      <div className="container-x py-12 max-w-4xl mx-auto">
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
-          {/* Logo & About */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="h-11 w-11 rounded-xl overflow-hidden bg-white border border-white/20 flex items-center justify-center p-0.5 shadow-sm">
+    <footer className="mt-0 border-t border-[#e3e5e8] bg-[#07101d] text-white" role="contentinfo">
+      {/* Main footer grid */}
+      <div className="container-x py-14">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Column 1: Business */}
+          <div className="sm:col-span-2 lg:col-span-1 space-y-5">
+            {/* Logo */}
+            <Link
+              to="/"
+              aria-label="MR. KHAN — return to homepage"
+              className="inline-flex items-center gap-3"
+            >
+              <div className="h-12 w-12 rounded-[10px] overflow-hidden bg-white border border-white/20 flex items-center justify-center p-0.5">
                 <img
                   src={logoImg}
-                  alt="MR. KHAN Repair Experts Logo"
-                  width={44}
-                  height={44}
+                  alt="MR. KHAN logo"
+                  width={48}
+                  height={48}
                   className="w-full h-full object-contain"
                 />
               </div>
               <div>
-                <div className="font-display font-bold text-base leading-tight">
+                <div className="font-display font-extrabold text-[18px] leading-tight text-white">
                   {business.name}
                 </div>
-                <div className="text-[10px] uppercase tracking-widest text-primary-foreground/60 font-semibold">
-                  Repair Experts
+                <div className="text-[11px] text-white/50 font-medium tracking-wide leading-tight">
+                  Mobile Repairs · Liverpool
                 </div>
               </div>
-            </div>
-            <p className="text-sm text-primary-foreground/75 leading-relaxed">
-              Professional phone repairs in Liverpool with a 12-month warranty.
-            </p>
+            </Link>
+
+            {/* Legal name */}
+            <p className="text-sm text-white/60 leading-relaxed">{business.legalName}</p>
+
+            {/* Address */}
+            <address className="not-italic space-y-1.5 text-sm text-white/70">
+              <div className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 text-[#e21b23] shrink-0 mt-0.5" />
+                <div>
+                  <div>{business.address.line1}</div>
+                  <div>
+                    {business.address.city}, {business.address.postcode}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-[#e21b23] shrink-0" />
+                <a href={telLink()} className="hover:text-white transition-colors font-medium">
+                  {business.phone}
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-[#e21b23] shrink-0" />
+                <a href={`mailto:${business.email}`} className="hover:text-white transition-colors">
+                  {business.email}
+                </a>
+              </div>
+            </address>
+
+            {/* Directions */}
+            <a
+              href={directionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-white/10 text-white text-xs font-semibold hover:bg-white/20 transition-colors border border-white/10 min-h-[40px]"
+            >
+              <Navigation className="h-3.5 w-3.5" />
+              Get Directions
+            </a>
           </div>
 
-          {/* Quick Contact & Hours */}
-          <div className="space-y-3.5">
-            <h3 className="text-xs uppercase tracking-wider text-primary-foreground/50 font-bold">
-              Contact & Hours
-            </h3>
-            <ul className="space-y-2.5 text-sm text-primary-foreground/80">
-              <li className="flex items-center gap-2.5">
-                <Phone className="h-4 w-4 text-accent shrink-0" />
+          {/* Column 2: Repairs */}
+          <div className="space-y-4">
+            <h3 className="text-xs uppercase tracking-wider text-white/40 font-bold">Repairs</h3>
+            <ul className="space-y-2.5">
+              {repairLinks.map((l) => (
+                <li key={l.slug}>
+                  <Link
+                    to="/services/$slug"
+                    params={{ slug: l.slug }}
+                    className="text-sm text-white/70 hover:text-white transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  to="/services"
+                  className="text-sm text-[#e21b23] hover:text-white transition-colors font-semibold"
+                >
+                  All Repair Services →
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3: Company */}
+          <div className="space-y-4">
+            <h3 className="text-xs uppercase tracking-wider text-white/40 font-bold">Company</h3>
+            <ul className="space-y-2.5">
+              {companyLinks.map((l) => (
+                <li key={l.to}>
+                  <Link
+                    to={l.to}
+                    className="text-sm text-white/70 hover:text-white transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 4: Contact */}
+          <div className="space-y-4">
+            <h3 className="text-xs uppercase tracking-wider text-white/40 font-bold">Contact</h3>
+            <ul className="space-y-3">
+              <li>
                 <a
                   href={telLink()}
-                  className="hover:text-primary-foreground font-medium transition"
+                  className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
+                  aria-label={`Call MR. KHAN on ${business.phone}`}
                 >
+                  <Phone className="h-4 w-4 text-[#e21b23] shrink-0" />
                   {business.phone}
                 </a>
               </li>
-              <li className="flex items-center gap-2.5">
-                <MessageCircle className="h-4 w-4 text-accent shrink-0" />
+              <li>
                 <a
                   href={whatsappLink()}
                   target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-primary-foreground font-medium transition"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
+                  aria-label="Message MR. KHAN on WhatsApp"
                 >
+                  <MessageCircle className="h-4 w-4 text-[#25d366] shrink-0" />
                   WhatsApp Us
                 </a>
               </li>
-              <li className="flex items-start gap-2.5">
-                <Clock className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-                <div className="space-y-0.5 text-xs text-primary-foreground/80">
-                  {business.hours.map((h) => (
-                    <div key={h.day} className="flex justify-between gap-2">
-                      <span className="font-medium text-primary-foreground/70">{h.day}:</span>
-                      <span>{h.hours}</span>
-                    </div>
-                  ))}
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          {/* Address & Directions */}
-          <div className="space-y-3.5">
-            <h3 className="text-xs uppercase tracking-wider text-primary-foreground/50 font-bold">
-              Find Our Workshop
-            </h3>
-            <ul className="space-y-3.5 text-sm text-primary-foreground/80">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="h-4 w-4 text-accent shrink-0 mt-0.5" />
-                <div>
-                  <div>{business.address.line1}</div>
-                  <div className="text-xs text-primary-foreground/70">
-                    {business.address.city}, {business.address.postcode}
-                  </div>
-                  <div className="mt-1 text-[11px] text-accent font-medium">
-                    📍 Co-located inside Liverpool Post Office
-                  </div>
-                </div>
-              </li>
               <li>
                 <a
-                  href={directionsUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent text-accent-foreground text-xs font-semibold hover:bg-accent/90 transition shadow-sm"
+                  href={`mailto:${business.email}`}
+                  className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
                 >
-                  <Navigation className="h-3 w-3" /> Get Directions
+                  <Mail className="h-4 w-4 text-[#e21b23] shrink-0" />
+                  {business.email}
                 </a>
               </li>
             </ul>
+
+            {/* Opening hours */}
+            <div className="pt-3 border-t border-white/10">
+              <div className="text-xs uppercase tracking-wider text-white/40 font-bold mb-2">
+                Opening Hours
+              </div>
+              <div className="space-y-1 text-xs text-white/60">
+                {business.hours.map((h) => (
+                  <div key={h.day} className="flex justify-between gap-2">
+                    <span className="text-white/50 w-20 shrink-0">{h.day}</span>
+                    <span>{h.hours}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Payment & Trust Bar */}
-        <div className="mt-10 pt-6 border-t border-primary-foreground/10 flex flex-wrap justify-between items-center gap-4 text-xs text-primary-foreground/70">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="font-semibold text-primary-foreground">Accepted Payments:</span>
-            <span className="px-2 py-1 rounded bg-white/10 text-[11px]">Apple Pay</span>
-            <span className="px-2 py-1 rounded bg-white/10 text-[11px]">Google Pay</span>
-            <span className="px-2 py-1 rounded bg-white/10 text-[11px]">Visa / Mastercard</span>
-            <span className="px-2 py-1 rounded bg-white/10 text-[11px]">Cash</span>
-          </div>
-          <div className="text-xs text-primary-foreground/60">
-            Liverpool Repair Workshop · 12-Month Warranty Included
+      {/* Payment strip */}
+      <div className="border-t border-white/10">
+        <div className="container-x py-4 flex flex-wrap items-center justify-between gap-4 text-xs text-white/50">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold text-white/70">Accepted payments:</span>
+            {["Apple Pay", "Google Pay", "Visa / Mastercard", "Cash"].map((p) => (
+              <span
+                key={p}
+                className="px-2 py-1 rounded bg-white/8 border border-white/10 text-[11px]"
+              >
+                {p}
+              </span>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-6 pt-4 border-t border-primary-foreground/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-primary-foreground/60">
+      {/* Bottom legal bar */}
+      <div className="border-t border-white/10">
+        <div className="container-x py-5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40">
           <div>
             <div>
-              © {new Date().getFullYear()} {business.legalName}. Registered in England & Wales. All
-              rights reserved.
+              © {new Date().getFullYear()} {business.legalName}. Registered in England &amp; Wales.
+              All rights reserved.
             </div>
             {(business.companyNumber || business.vatNumber || business.icoReference) && (
-              <div className="text-[11px] text-primary-foreground/50 mt-1">
+              <div className="text-[11px] text-white/30 mt-1">
                 {[
                   business.companyNumber && `Company No: ${business.companyNumber}`,
                   business.vatNumber && `VAT No: ${business.vatNumber}`,
@@ -142,16 +233,16 @@ export function SiteFooter() {
             )}
           </div>
           <div className="flex flex-wrap items-center gap-4 text-xs font-medium">
-            <Link to="/privacy" className="hover:text-primary-foreground transition">
+            <Link to="/privacy" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>
-            <Link to="/terms" className="hover:text-primary-foreground transition">
-              Terms & Conditions
+            <Link to="/terms" className="hover:text-white transition-colors">
+              Terms &amp; Conditions
             </Link>
-            <Link to="/refunds" className="hover:text-primary-foreground transition">
-              Returns & Refund Policy
+            <Link to="/refunds" className="hover:text-white transition-colors">
+              Returns &amp; Refunds
             </Link>
-            <Link to="/accessibility" className="hover:text-primary-foreground transition">
+            <Link to="/accessibility" className="hover:text-white transition-colors">
               Accessibility
             </Link>
           </div>

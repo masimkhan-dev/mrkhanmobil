@@ -1,19 +1,21 @@
 # Codebase & Website Audit Report: MR. KHAN Mobile Repair
+
 **Target Domain:** mrkhanmobiles.co.uk  
 **Business Name:** MR. KHAN Repair Experts (Khan Mobile and Accessories Liverpool Ltd)  
 **Location:** Co-located inside Liverpool Post Office, 83-85 London Rd, Liverpool L3 8JA, UK  
 **Phone:** 07707 733038 / +44 7707 733038  
-**Audit Date:** July 30, 2026  
+**Audit Date:** July 30, 2026
 
 ---
 
 ## Executive Summary
 
-A comprehensive code, legal compliance, GDPR, SEO, accessibility, and security audit was conducted across all files in the `mrkhanmobiles.co.uk` repository. 
+A comprehensive code, legal compliance, GDPR, SEO, accessibility, and security audit was conducted across all files in the `mrkhanmobiles.co.uk` repository.
 
-While the application features a modern UI built with React 18, Vite, TanStack Router, Tailwind CSS, and Supabase, **critical legal compliance gaps, major content warranty contradictions, GDPR non-compliance risks, and technical SEO defects** were identified. 
+While the application features a modern UI built with React 18, Vite, TanStack Router, Tailwind CSS, and Supabase, **critical legal compliance gaps, major content warranty contradictions, GDPR non-compliance risks, and technical SEO defects** were identified.
 
 ### Key Findings Snapshot:
+
 1. **CRITICAL Legal & GDPR Non-Compliance:** Complete absence of a Cookie Consent Banner, missing `/accessibility` page, missing cookie settings control, lack of GDPR consent checkboxes on all forms (`/book`, `/contact`, quote form, newsletter), and missing UK Companies House registration number (CRN) & VAT details required by UK Companies Act 2006.
 2. **HIGH Warranty Contradiction (6-Month vs 12-Month):** Severe content mismatch across the site — Homepage Hero, Footer, About page, and Warranty page state a **6-Month Warranty**, whereas Root Metadata, Terms of Service, Booking Form, Service Pages, City SEO pages, and Homepage Process section claim a **12-Month Warranty**.
 3. **HIGH Technical SEO Defect in `robots.txt`:** `public/robots.txt` contains corrupted syntax (`= \n |,Litemap:...`), rendering the XML Sitemap undetectable by search engines.
@@ -29,6 +31,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 ### A. LEGAL & COMPLIANCE GAPS
 
 #### 🔴 CRITICAL: Missing Cookie Consent Banner & Unconsented Tracking
+
 - **File:** [src/routes/__root.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/__root.tsx#L1-L279), [src/lib/funnel-analytics.ts](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/lib/funnel-analytics.ts#L1-L36)
 - **Issue:** No cookie consent banner or modal component exists. Analytics scripts (`gtag`, `fbq`) fire tracking events automatically without user consent.
 - **Evidence:** `src/lib/funnel-analytics.ts` invokes `window.gtag` and `window.fbq` directly without checking cookie consent preferences.
@@ -36,9 +39,10 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Implement a banner component that blocks non-essential cookies/scripts until explicit user consent is given, and store preference in localStorage/cookies.
 
 #### 🔴 CRITICAL: Missing Privacy Consent Checkboxes & Data Usage Notices on Forms
+
 - **File:** [src/routes/book.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/book.tsx#L550-L635), [src/components/quote-form.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/components/quote-form.tsx#L94-L96), [src/components/newsletter.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/components/newsletter.tsx#L13-L40)
 - **Issue:** Booking form (`/book`) collects full PII (Name, Email, Phone, Address, Postcode) with **zero** privacy notice or consent checkbox. Quote form contains plain text without a link to Privacy Policy. Newsletter form collects email with no privacy notice.
-- **Evidence:** 
+- **Evidence:**
   ```tsx
   // src/components/quote-form.tsx (L94-L96)
   <p className="text-xs text-muted-foreground text-center">
@@ -49,6 +53,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Add a mandatory checkbox on booking and contact forms: `"I agree to the [Privacy Policy](/privacy) and [Terms](/terms)"`, and add privacy disclosure text under newsletter input.
 
 #### 🔴 CRITICAL: Unlinked "Data Privacy Guaranteed" Text
+
 - **File:** [src/routes/index.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/index.tsx#L411)
 - **Issue:** Homepage lists `"Data privacy guaranteed — your personal data is safe"` in a feature list without providing a hyperlink to the Privacy Policy (`/privacy`).
 - **Evidence:**
@@ -60,6 +65,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Hyperlink "Data privacy guaranteed" directly to `/privacy` or add an adjacent Privacy Policy link.
 
 #### 🟠 HIGH: Missing Mandatory UK Company Disclosures (CRN & VAT Number)
+
 - **File:** [src/config/business.ts](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/config/business.ts#L6), [src/components/site-footer.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/components/site-footer.tsx#L125-L128)
 - **Issue:** Footer displays `Khan Mobile and Accessories Liverpool Ltd`, but omits the mandatory Companies House Registration Number (CRN) and VAT Registration Number.
 - **Evidence:**
@@ -71,6 +77,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Update `business.ts` with `companyNumber` (CRN) and `vatNumber`, and render them in `site-footer.tsx`.
 
 #### 🟠 HIGH: Missing `/accessibility` Page & Footer Links for Cookie Settings & Accessibility
+
 - **File:** [src/components/site-footer.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/components/site-footer.tsx#L129-L136)
 - **Issue:** No `/accessibility` route exists. Footer only links to `/privacy` and `/terms`. Missing links to `/cookies`, Cookie Settings, and Accessibility.
 - **Evidence:**
@@ -85,6 +92,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Create `src/routes/accessibility.tsx`, add `/cookies`, Cookie Settings trigger, and `/accessibility` links to `site-footer.tsx`.
 
 #### 🟡 MEDIUM: Missing Standard Alias Route Redirects (`/privacy-policy`, `/terms-and-conditions`, `/cookie-policy`)
+
 - **File:** [src/routes/privacy.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/privacy.tsx), [src/routes/terms.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/terms.tsx), [src/routes/cookies.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/cookies.tsx)
 - **Issue:** Core legal routes are defined at `/privacy`, `/terms`, `/cookies`. standard web paths like `/privacy-policy`, `/terms-and-conditions`, `/cookie-policy` return 404.
 - **Risk:** **UX / Broken External Links**. External directory links or user typing common URL paths will land on a 404 page.
@@ -95,6 +103,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 ### B. CONTENT ACCURACY & CONSISTENCY
 
 #### 🟠 HIGH: Severe Warranty Duration Contradiction (6-Month vs 12-Month)
+
 - **File:** Multiple files across the codebase
 - **Issue:** The site presents conflicting warranty periods to customers depending on which page or component they view.
 - **Evidence & Breakdown:**
@@ -127,6 +136,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Standardize warranty duration across all components, configuration files, and legal documents (confirm single business standard: 6 Months or 12 Months).
 
 #### 🟡 MEDIUM: Operating Hours Contradiction Between Footer and Config
+
 - **File:** [src/config/business.ts](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/config/business.ts#L19-L27), [src/components/site-footer.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/components/site-footer.tsx#L68-L72)
 - **Issue:** Weekend opening hours differ between the site footer and central config/JSON-LD schema.
 - **Evidence:**
@@ -136,6 +146,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Reference `business.hours` directly in `site-footer.tsx` instead of hardcoding text string.
 
 #### 🟡 MEDIUM: Minor Address Formatting Inconsistency
+
 - **File:** [src/config/business.ts](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/config/business.ts#L13), [src/components/site-header.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/components/site-header.tsx#L66)
 - **Issue:** Street address is written as `83, 85 London Rd` in `business.ts` and header, whereas marketing copy uses `83-85 London Road`.
 - **Risk:** **Local SEO Consistency**. Google Maps prefers consistent street address formatting across NAP (Name, Address, Phone) citations.
@@ -146,6 +157,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 ### C. DATA COLLECTION & GDPR
 
 #### 🔴 CRITICAL: Absence of User Consent Management for Tracking Scripts
+
 - **File:** [src/lib/funnel-analytics.ts](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/lib/funnel-analytics.ts#L1-L36)
 - **Issue:** Analytics events for Google Analytics and Meta Pixel trigger unconditionally whenever `trackFunnelEvent` is called (e.g. quote start, booking click).
 - **Evidence:** `trackFunnelEvent` executes `window.gtag` and `window.fbq` without verifying if consent was granted via a consent manager.
@@ -153,6 +165,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Wrap `trackFunnelEvent` execution in a check for `localStorage.getItem("cookie_consent") === "granted"`.
 
 #### 🟠 HIGH: Inadequate Data Protection Disclosures for Stored PII
+
 - **File:** [src/lib/booking.functions.ts](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/lib/booking.functions.ts#L6-L82)
 - **Issue:** System collects sensitive customer data (Full Name, Email, Phone, Home Address, Postcode, Fault Details) and inserts directly into Supabase tables `bookings`, `leads`, `newsletter_subscribers`.
 - **Evidence:** Functions `createBooking`, `createLead`, `subscribeNewsletter` write to database without automated retention limits, data encryption beyond standard TLS, or user-configurable privacy preferences.
@@ -164,6 +177,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 ### D. SEO & TECHNICAL AUDIT
 
 #### 🟠 HIGH: Corrupted Syntax in `robots.txt` Blocking Sitemap Discovery
+
 - **File:** [public/robots.txt](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/public/robots.txt#L7-L8)
 - **Issue:** `public/robots.txt` contains corrupted characters and invalid directives.
 - **Evidence:**
@@ -181,6 +195,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Fix `public/robots.txt` line 7-8 to read: `Sitemap: https://www.mrkhanmobiles.co.uk/sitemap.xml`.
 
 #### 🟢 LOW: LocalBusiness Schema Opening Hours Mismatch
+
 - **File:** [src/routes/__root.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/__root.tsx#L163-L174)
 - **Issue:** Schema.org `OpeningHoursSpecification` in `__root.tsx` uses hardcoded hours that differ from the footer text.
 - **Fix:** Dynamically generate JSON-LD `openingHoursSpecification` from `business.hours` object in `business.ts`.
@@ -190,12 +205,14 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 ### E. ACCESSIBILITY AUDIT
 
 #### 🟠 HIGH: Missing "Skip to Content" Keyboard Navigation Link
+
 - **File:** [src/routes/__root.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/__root.tsx#L202-L214)
 - **Issue:** There is no `<a href="#main-content" className="sr-only focus:not-sr-only">Skip to content</a>` link at the top of the body for keyboard users.
 - **Risk:** **WCAG 2.1 AA Non-Compliance** (Success Criterion 2.4.1 Bypass Blocks). Keyboard users must tab through all header links on every page navigation.
 - **Fix:** Add a skip link at the top of `RootShell` in `__root.tsx` and target `<main id="main-content">`.
 
 #### 🟡 MEDIUM: Unlabeled Form Input in Newsletter Component
+
 - **File:** [src/components/newsletter.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/components/newsletter.tsx#L29-L36)
 - **Issue:** Email input in the footer newsletter subscription form lacks an associated `<label>` or `aria-label` attribute.
 - **Evidence:**
@@ -218,6 +235,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 ### F. PERFORMANCE & SECURITY AUDIT
 
 #### 🟡 MEDIUM: Unformatted Phone Numbers in `tel:` Links in Admin
+
 - **File:** [src/routes/_authenticated/admin.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/_authenticated/admin.tsx#L1136)
 - **Issue:** Tel link uses unformatted phone string with spaces e.g. `href={"tel:07707 733038"}` instead of clean digits `tel:+447707733038`.
 - **Evidence:**
@@ -228,6 +246,7 @@ While the application features a modern UI built with React 18, Vite, TanStack R
 - **Fix:** Format phone number string: `href={`tel:${b.phone.replace(/\s+/g, '')}`}`.
 
 #### 🟡 MEDIUM: In-Memory Rate Limiter Resetting in Serverless Environments & Lack of Honeypot / CAPTCHA
+
 - **File:** [src/lib/rate-limit.ts](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/lib/rate-limit.ts#L4-L28), [src/routes/book.tsx](file:///e:/mr.-khan-s-digital-hub/mr.-khan-s-digital-hub-main/src/routes/book.tsx)
 - **Issue:** Server functions use an in-memory `Map` (`ipCache`) for rate limiting. In serverless edge runtime, in-memory state is transient. Furthermore, public forms lack honeypot inputs or Cloudflare Turnstile CAPTCHA.
 - **Risk:** **Security / Spam Vulnerability**. Spambots can bypass client JS and flood Supabase database tables with fake leads/bookings.
@@ -255,20 +274,21 @@ graph TD
 
 ### Action Items Summary Table
 
-| ID | Category | Item Description | Priority | Target File(s) |
-| :--- | :--- | :--- | :--- | :--- |
-| **L-01** | Legal & GDPR | Build Cookie Consent Banner & gate analytics scripts | 🔴 CRITICAL | `src/components/cookie-banner.tsx`, `src/routes/__root.tsx`, `src/lib/funnel-analytics.ts` |
-| **L-02** | Legal & GDPR | Add GDPR consent checkboxes to booking & quote forms | 🔴 CRITICAL | `src/routes/book.tsx`, `src/components/quote-form.tsx` |
-| **L-03** | Legal & GDPR | Hyperlink "Data privacy guaranteed" to Privacy Policy | 🔴 CRITICAL | `src/routes/index.tsx` |
-| **SEO-01**| SEO | Repair corrupted syntax in `robots.txt` | 🟠 HIGH | `public/robots.txt` |
-| **C-01** | Content | Resolve 6-Month vs 12-Month warranty discrepancy | 🟠 HIGH | All route files & `src/config/services.ts` |
-| **L-04** | Legal | Add UK Company Reg Number (CRN) & VAT to footer | 🟠 HIGH | `src/config/business.ts`, `src/components/site-footer.tsx` |
-| **L-05** | Legal & A11y | Add `/accessibility` route, Cookie Settings & footer links | 🟠 HIGH | `src/routes/accessibility.tsx`, `src/components/site-footer.tsx` |
-| **A-01** | Accessibility | Add "Skip to Content" keyboard shortcut link | 🟠 HIGH | `src/routes/__root.tsx` |
-| **C-02** | Content | Sync footer weekend opening hours with business config | 🟡 MEDIUM | `src/components/site-footer.tsx` |
-| **A-02** | Accessibility | Add `aria-label` to Newsletter email input | 🟡 MEDIUM | `src/components/newsletter.tsx` |
-| **SEC-01**| Security | Add bot honeypot field to booking & quote forms | 🟡 MEDIUM | `src/routes/book.tsx`, `src/components/quote-form.tsx` |
-| **SEO-02**| SEO | Add route alias redirects for `/privacy-policy` etc. | 🟡 MEDIUM | `src/router.tsx` |
+| ID         | Category      | Item Description                                           | Priority    | Target File(s)                                                                             |
+| :--------- | :------------ | :--------------------------------------------------------- | :---------- | :----------------------------------------------------------------------------------------- |
+| **L-01**   | Legal & GDPR  | Build Cookie Consent Banner & gate analytics scripts       | 🔴 CRITICAL | `src/components/cookie-banner.tsx`, `src/routes/__root.tsx`, `src/lib/funnel-analytics.ts` |
+| **L-02**   | Legal & GDPR  | Add GDPR consent checkboxes to booking & quote forms       | 🔴 CRITICAL | `src/routes/book.tsx`, `src/components/quote-form.tsx`                                     |
+| **L-03**   | Legal & GDPR  | Hyperlink "Data privacy guaranteed" to Privacy Policy      | 🔴 CRITICAL | `src/routes/index.tsx`                                                                     |
+| **SEO-01** | SEO           | Repair corrupted syntax in `robots.txt`                    | 🟠 HIGH     | `public/robots.txt`                                                                        |
+| **C-01**   | Content       | Resolve 6-Month vs 12-Month warranty discrepancy           | 🟠 HIGH     | All route files & `src/config/services.ts`                                                 |
+| **L-04**   | Legal         | Add UK Company Reg Number (CRN) & VAT to footer            | 🟠 HIGH     | `src/config/business.ts`, `src/components/site-footer.tsx`                                 |
+| **L-05**   | Legal & A11y  | Add `/accessibility` route, Cookie Settings & footer links | 🟠 HIGH     | `src/routes/accessibility.tsx`, `src/components/site-footer.tsx`                           |
+| **A-01**   | Accessibility | Add "Skip to Content" keyboard shortcut link               | 🟠 HIGH     | `src/routes/__root.tsx`                                                                    |
+| **C-02**   | Content       | Sync footer weekend opening hours with business config     | 🟡 MEDIUM   | `src/components/site-footer.tsx`                                                           |
+| **A-02**   | Accessibility | Add `aria-label` to Newsletter email input                 | 🟡 MEDIUM   | `src/components/newsletter.tsx`                                                            |
+| **SEC-01** | Security      | Add bot honeypot field to booking & quote forms            | 🟡 MEDIUM   | `src/routes/book.tsx`, `src/components/quote-form.tsx`                                     |
+| **SEO-02** | SEO           | Add route alias redirects for `/privacy-policy` etc.       | 🟡 MEDIUM   | `src/router.tsx`                                                                           |
 
 ---
-*Report generated by Antigravity AI Assistant for MR. KHAN Mobile Repair.*
+
+_Report generated by Antigravity AI Assistant for MR. KHAN Mobile Repair._

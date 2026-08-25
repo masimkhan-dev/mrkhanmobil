@@ -1,12 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
   Star,
   ShieldCheck,
-  Clock,
   MapPin,
-  Award,
   ChevronRight,
   Wrench,
   Home as HomeIcon,
@@ -14,46 +11,36 @@ import {
   Phone,
   MessageCircle,
   CheckCircle2,
-  Smartphone,
   Navigation,
+  Smartphone,
 } from "lucide-react";
 import heroImg from "@/assets/heroimage.jpg";
-import devicesImg from "@/assets/devices.jpg";
 import technicianImg from "@/assets/technician.jpg";
-import walkinIllustration from "@/assets/illustrations/walkin_clean.png";
-import homeVisitIllustration from "@/assets/illustrations/home_visit_clean.png";
-import mailinIllustration from "@/assets/illustrations/mailin_clean.png";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { brands, deviceServices } from "@/config/services";
 import { business, telLink, whatsappLink } from "@/config/business";
-import { QuoteForm } from "@/components/quote-form";
-import { ExitIntentPopup } from "@/components/exit-intent";
-import { StickyConversionBar } from "@/components/sticky-conversion-bar";
 import { FaqAccordion } from "@/components/faq-accordion";
 import { ReviewsCarousel } from "@/components/reviews-carousel";
 import { BrandLogo } from "@/components/brand-logos";
 import { trackFunnelEvent } from "@/lib/funnel-analytics";
-import { EmergencyBanner } from "@/components/emergency-banner";
 import { BeforeAfterSlider } from "@/components/before-after-slider";
-import { InstantPriceCalculator } from "@/components/instant-price-calculator";
+import { brands, repairServices, buildRepairQuoteMessage } from "@/config/services";
+import { ServiceCard } from "@/components/service-card";
 
 export const Route = createFileRoute("/")({
   head: () => {
     return {
       meta: [
-        { title: "Phone Repair Liverpool | Same-Day Fix | MR. KHAN" },
+        { title: "Phone Repair Liverpool | MR. KHAN — London Road" },
         {
           name: "description",
           content:
-            "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome at London Road, Liverpool Post Office.",
+            "Screen, battery, charging port and device repairs from our London Road shop in Liverpool. Clear advice before we begin. MR. KHAN — 83–85 London Road, L3 8JA.",
         },
-        { property: "og:title", content: "Phone Repair Liverpool | Same-Day Fix | MR. KHAN" },
+        { property: "og:title", content: "Phone Repair Liverpool | MR. KHAN — London Road" },
         {
           property: "og:description",
           content:
-            "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome.",
+            "Screen, battery, charging port and device repairs from our London Road shop in Liverpool. Clear advice before we begin.",
         },
         { property: "og:type", content: "website" },
         { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/" },
@@ -90,7 +77,6 @@ export const Route = createFileRoute("/")({
             aggregateRating: {
               "@type": "AggregateRating",
               ratingValue: String(business.rating.stars),
-              reviewCount: String(business.rating.reviews),
             },
           }),
         },
@@ -107,133 +93,128 @@ function Home() {
 
   return (
     <>
-      <EmergencyBanner />
       <Hero />
-      <InstantPriceCalculator />
       <BrandsStrip />
-      <ServicesGrid />
+      <RepairFinder />
+      <ServiceOptions />
+      <LocalTrust />
       <BeforeAfterSlider />
       <HowItWorks />
-      <WhyUs />
       <ReviewsSection />
-      <ServiceOptionsSection />
-      <QuoteSection />
+      <ServicesOverview />
       <FaqSection />
       <MapSection />
       <FinalCtaSection />
-      <ExitIntentPopup />
-      <StickyConversionBar />
     </>
   );
 }
 
+// ── Hero ─────────────────────────────────────────────────────────────────────
+
 function Hero() {
   return (
-    <section className="relative bg-[#050B1A] text-white pt-16 sm:pt-24 pb-28 sm:pb-32 overflow-hidden">
-      {/* Full Background Hero Image */}
+    <section className="relative bg-[#07101d] text-white pt-14 sm:pt-20 pb-24 sm:pb-28 overflow-hidden">
+      {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img
           src={heroImg}
-          alt="MR. KHAN Mobile Repair Workshop Liverpool"
-          className="w-full h-full object-cover object-center scale-105 filter brightness-[0.85]"
+          alt="MR. KHAN repair workshop on London Road, Liverpool"
+          className="w-full h-full object-cover object-center"
           loading="eager"
           fetchPriority="high"
+          width={1600}
+          height={900}
         />
-        {/* Dynamic Gradients for Maximum Contrast and Visual Depth */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050B1A]/95 via-[#050B1A]/85 to-[#050B1A]/60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050B1A] via-transparent to-[#050B1A]/70" />
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-[#E21B23]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#07101d]/96 via-[#07101d]/88 to-[#07101d]/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07101d]/80 via-transparent to-transparent" />
       </div>
 
-      <div className="container-x relative z-10 max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="space-y-6 text-left"
-        >
-          {/* Glass Rating Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-slate-100 text-xs font-semibold shadow-lg">
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400 shrink-0" />
-            <span>{business.rating.stars}★ Google Rating · {business.rating.reviews}+ Verified Reviews</span>
+      <div className="container-x relative z-10 max-w-3xl">
+        {/* Trust badge */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-white mb-4">
+          <div className="flex items-center text-amber-400 gap-0.5">
+            <Star className="h-3.5 w-3.5 fill-amber-400" />
+            <Star className="h-3.5 w-3.5 fill-amber-400" />
+            <Star className="h-3.5 w-3.5 fill-amber-400" />
+            <Star className="h-3.5 w-3.5 fill-amber-400" />
+            <Star className="h-3.5 w-3.5 fill-amber-400" />
           </div>
+          <span>5-Star Rated on Google</span>
+          <span className="text-white/40">·</span>
+          <span>Same-Day Repairs</span>
+        </div>
 
-          {/* Main Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.1] font-display tracking-tight text-white">
-            Liverpool's Trusted{" "}
-            <span className="text-[#E21B23] drop-shadow-[0_0_25px_rgba(226,27,35,0.5)]">
-              Phone Repair
-            </span>{" "}
-            Experts
-          </h1>
+        {/* Eyebrow */}
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#e21b23] mb-3">
+          Mobile Repairs in Liverpool
+        </p>
 
-          {/* Subtitle */}
-          <p className="text-lg md:text-2xl text-slate-200 max-w-2xl leading-relaxed font-normal">
-            Same-day screen & battery repairs while you wait. 12-month warranty on all parts & labor.
-            Walk-ins welcome at Liverpool Post Office, 83-85 London Road.
-          </p>
+        {/* Headline */}
+        <h1 className="text-[2.4rem] sm:text-[3.2rem] lg:text-[3.8rem] font-display font-extrabold leading-[1.1] tracking-tight text-white">
+          Phone repairs, <span className="text-white">done properly.</span>
+        </h1>
 
-          {/* Action CTAs */}
-          <div className="flex flex-wrap gap-4 pt-4 items-center">
-            <a
-              href="/book"
-              className="bg-[#E21B23] text-white px-9 py-4 rounded-full font-bold text-base hover:bg-red-700 transition-all animate-pulse-glow inline-flex items-center justify-center text-center shadow-2xl hover:scale-105 duration-200"
-            >
-              Book Repair
-            </a>
-            <a
-              href="https://wa.me/447707733038?text=Hi%20MR.%20KHAN%2C%20I%27d%20like%20a%20quote"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[#25D366] text-white px-8 py-4 rounded-full font-bold text-base hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-2xl hover:scale-105 duration-200"
-            >
-              💬 WhatsApp Us
-            </a>
-            <a
-              href="tel:+447707733038"
-              className="bg-white/10 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-full font-bold text-base hover:bg-white hover:text-[#171717] transition-all flex items-center gap-2 shadow-lg hover:scale-105 duration-200"
-            >
-              📞 Call Now
-            </a>
-          </div>
+        {/* Subtext */}
+        <p className="mt-5 text-[1.05rem] sm:text-lg text-slate-200 max-w-xl leading-relaxed">
+          Screen, battery, charging port and device repairs from our London Road shop. Clear advice
+          before we begin and support after the repair.
+        </p>
 
-          {/* Key Feature Badges */}
-          <div className="pt-6 flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-slate-200 font-semibold">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/15 shadow-sm">
-              <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0" /> 12-Month Warranty
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/15 shadow-sm">
-              <Clock className="h-4 w-4 text-blue-400 shrink-0" /> Open 7 Days (8 AM – 9 PM)
-            </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl border border-white/15 shadow-sm">
-              <Award className="h-4 w-4 text-amber-400 shrink-0" /> Walk-ins Welcome
-            </div>
-          </div>
-        </motion.div>
+        {/* CTAs */}
+        <div className="mt-8 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+          <Link
+            to="/contact"
+            onClick={() => trackFunnelEvent("book_click", { location: "hero" })}
+            className="inline-flex items-center justify-center px-7 py-3.5 rounded-[8px] bg-[#e21b23] text-white font-semibold text-base hover:bg-[#c41018] transition-colors min-h-[52px] w-full sm:w-auto"
+          >
+            Get a Repair Quote
+          </Link>
+          <a
+            href={whatsappLink("Hi MR. KHAN, I'd like to get a repair quote.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-[8px] bg-[#25d366] text-white font-semibold text-base hover:bg-[#1da851] transition-colors min-h-[52px] w-full sm:w-auto"
+          >
+            <MessageCircle className="h-5 w-5" />
+            Message on WhatsApp
+          </a>
+        </div>
+
+        {/* Supporting contact + location */}
+        <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-6 text-sm text-slate-300">
+          <a
+            href={telLink()}
+            className="flex items-center gap-2 hover:text-white transition-colors"
+          >
+            <Phone className="h-4 w-4 text-[#e21b23] shrink-0" />
+            Or call {business.phone}
+          </a>
+          <span className="flex items-center gap-2 text-slate-400">
+            <MapPin className="h-4 w-4 text-[#e21b23] shrink-0" />
+            {business.address.line1}, {business.address.city} {business.address.postcode}
+          </span>
+        </div>
       </div>
     </section>
   );
 }
 
-
+// ── Brands Strip ─────────────────────────────────────────────────────────────
 
 function BrandsStrip() {
   return (
-    <section className="py-12 border-b border-border bg-background">
+    <section className="py-10 border-b border-[#e3e5e8] bg-white">
       <div className="container-x">
-        <p className="text-center text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-6">
-          Trusted repairs across every major brand
+        <p className="text-center text-xs uppercase tracking-widest text-[#5f6670] font-semibold mb-5">
+          Repairs across every major brand
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
           {brands.map((b) => (
             <div
               key={b}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-card border border-border/80 text-foreground/80 hover:text-foreground hover:border-blue-500/40 hover:bg-slate-50 dark:hover:bg-slate-900 hover:shadow-xs transition-all duration-200 cursor-default min-h-[44px]"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-[#e3e5e8] text-[#111318] hover:border-[#e21b23]/30 hover:bg-[#f7f7f5] transition-colors cursor-default min-h-[44px]"
             >
-              <BrandLogo
-                name={b}
-                className="h-4.5 w-4.5 text-blue-600 dark:text-blue-400 shrink-0"
-              />
+              <BrandLogo name={b} className="h-5 w-5 shrink-0" />
               <span className="text-sm font-semibold">{b}</span>
             </div>
           ))}
@@ -243,57 +224,100 @@ function BrandsStrip() {
   );
 }
 
-function ServicesGrid() {
+// ── Repair Finder ─────────────────────────────────────────────────────────────
+
+const deviceOptions = [
+  { label: "Apple iPhone", badge: "iPhone" },
+  { label: "Samsung Galaxy", badge: "Samsung" },
+  { label: "Google Pixel", badge: "Pixel" },
+  { label: "iPad & Tablets", badge: "iPad / Tablet" },
+  { label: "Other Device", badge: "Other" },
+] as const;
+
+function RepairFinder() {
+  const [selectedDevice, setSelectedDevice] = useState<string>("Apple iPhone");
+
   return (
-    <section className="py-16 sm:py-24">
+    <section className="py-16 sm:py-24 bg-[#f7f7f5]" id="repair-finder">
       <div className="container-x">
         <SectionHeader
-          eyebrow="Popular Repairs"
-          title="Popular Phone Repairs"
-          description="From screen replacements and battery changes to charging ports and camera repairs."
+          eyebrow="Find a Repair"
+          title="What needs repairing?"
+          description="Select your device brand and choose the repair service — we'll provide an upfront minimum price (inc. VAT & fitting) and direct WhatsApp quote."
         />
-        <div className="mt-10 sm:mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {deviceServices.map((s, i) => (
-            <motion.div
-              key={s.slug}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-            >
-              <Link to="/services/$slug" params={{ slug: s.slug }} className="group block h-full">
-                <Card className="h-full border-border/70 hover:border-indigo-500/40 hover:shadow-md transition-all">
-                  <CardContent className="p-5 sm:p-6 flex flex-col justify-between h-full">
-                    <div>
-                      <div className="h-11 w-11 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 grid place-items-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <s.icon className="h-5 w-5" />
-                      </div>
-                      <h3 className="font-display font-semibold text-lg">{s.title}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">{s.short}</p>
-                    </div>
-                    <div className="mt-6 flex items-center justify-between text-xs border-t border-border/60 pt-4">
-                      <span className="text-muted-foreground">
-                        From <span className="text-foreground font-semibold">{s.priceFrom}</span>
-                      </span>
-                      <span className="text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-                        View Repair <ChevronRight className="h-3 w-3" />
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
-          <Button asChild variant="outline" size="lg" className="rounded-full min-h-[44px]">
-            <Link to="/services">Browse all services</Link>
-          </Button>
-          <a
-            href="#quote"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline px-3 py-2 transition-colors min-h-[44px]"
+
+        {/* Step 1: Device selector */}
+        <div className="mt-10">
+          <div className="text-center text-xs font-bold uppercase tracking-wider text-[#5f6670] mb-3">
+            Step 1 — Select your device:
+          </div>
+          <div
+            className="flex flex-wrap gap-2.5 sm:gap-3 justify-center"
+            role="radiogroup"
+            aria-label="Device selection"
           >
-            Not sure which service you need? Get a free quote →
+            {deviceOptions.map((d) => {
+              const isSelected = selectedDevice === d.label;
+              return (
+                <button
+                  key={d.label}
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
+                  onClick={() => setSelectedDevice(d.label)}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-[10px] font-semibold text-sm transition-all min-h-[46px] border ${
+                    isSelected
+                      ? "bg-[#e21b23] text-white border-[#e21b23] shadow-sm ring-2 ring-[#e21b23]/20"
+                      : "bg-white text-[#111318] border-[#e3e5e8] hover:border-[#e21b23]/40 hover:bg-white"
+                  }`}
+                >
+                  <Smartphone className={`h-4 w-4 ${isSelected ? "text-white" : "text-[#5f6670]"}`} />
+                  {d.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Step 2: Repair services list with prices and WhatsApp quote */}
+        <div className="mt-10">
+          <div className="text-center text-xs font-bold uppercase tracking-wider text-[#5f6670] mb-4">
+            Step 2 — Selected for <span className="text-[#e21b23] underline font-extrabold">{selectedDevice}</span>:
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {repairServices.map((r) => (
+              <ServiceCard key={r.slug} service={r} selectedDevice={selectedDevice} />
+            ))}
+          </div>
+        </div>
+
+        {/* Fallback */}
+        <div className="mt-8 p-5 sm:p-6 rounded-[14px] bg-white border border-[#e3e5e8] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <div className="font-display font-bold text-[17px] text-[#111318]">
+              Can't find your device or repair issue?
+            </div>
+            <div className="text-sm text-[#5f6670] mt-0.5">
+              Message us directly with your device model — we'll give you an immediate free quote.
+            </div>
+          </div>
+          <a
+            href={whatsappLink(
+              `Hi MR. KHAN, I need a repair quote for my ${selectedDevice}. Could you please check availability and pricing?`
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() =>
+              trackFunnelEvent("book_click", {
+                location: "repair_finder_fallback",
+                device: selectedDevice,
+              })
+            }
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[8px] bg-[#25d366] text-white font-bold text-sm hover:bg-[#1da851] transition-colors min-h-[46px] shrink-0"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Custom Quote on WhatsApp
           </a>
         </div>
       </div>
@@ -301,282 +325,57 @@ function ServicesGrid() {
   );
 }
 
-function HowItWorks() {
-  const steps = [
-    {
-      n: "01",
-      tag: "BOOK",
-      title: "Book Your Repair",
-      desc: "Choose your phone and tell us what needs fixing.",
-    },
-    {
-      n: "02",
-      tag: "SERVICE",
-      title: "Choose Your Service",
-      desc: "Visit our workshop or book a home or mail-in repair.",
-    },
-    {
-      n: "03",
-      tag: "REPAIR",
-      title: "We Repair Your Phone",
-      desc: "Our technicians inspect and repair your device.",
-    },
-    {
-      n: "04",
-      tag: "COLLECT",
-      title: "Collect Your Phone",
-      desc: "Check your phone before you leave. Every repair is covered by our 12-month warranty.",
-    },
-  ];
-  return (
-    <section className="py-16 sm:py-24 bg-[#F7F9FC] border-y border-[#E6EAF0]">
-      <div className="container-x">
-        <SectionHeader
-          eyebrow="Simple Process"
-          title="How Your Repair Works"
-          description="A simple repair process from booking to collection."
-        />
-        <div className="mt-10 sm:mt-16 grid gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {steps.map((s) => (
-            <div key={s.n} className="relative p-5 sm:p-6 rounded-2xl bg-white border border-[#E6EAF0] shadow-xs flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-3xl font-mono font-extrabold text-indigo-600">{s.n}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700">
-                    {s.tag}
-                  </span>
-                </div>
-                <h3 className="mt-4 font-display font-extrabold text-lg text-[#0B1220]">{s.title}</h3>
-                <p className="mt-2 text-xs text-[#5B6472] leading-relaxed">{s.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-10 sm:mt-14 text-center">
-          <Button
-            asChild
-            size="lg"
-            className="rounded-xl h-12 px-8 text-sm font-semibold shadow-md transition-all duration-200 min-h-[48px] w-full sm:w-auto"
-          >
-            <Link
-              to="/book"
-              onClick={() => trackFunnelEvent("book_click", { location: "how_it_works" })}
-            >
-              Book Your Repair →
-            </Link>
-          </Button>
-        </div>
-      </div>
-    </section>
-  );
-}
+// ── Service Options ───────────────────────────────────────────────────────────
 
-function WhyUs() {
-  const points: { id: string; content: React.ReactNode }[] = [
-    { id: "p1", content: "Experienced technicians based at our London Road workshop" },
-    { id: "p2", content: "High-grade replacement parts with strict quality checks" },
-    { id: "p3", content: "Transparent fixed pricing without hidden fees" },
-    { id: "p4", content: "12-Month Warranty covering parts and labour" },
-    {
-      id: "p5",
-      content: (
-        <span>
-          <Link to="/privacy" className="underline hover:text-indigo-600 font-semibold transition">
-            Data privacy guaranteed
-          </Link>
-          {" — your personal data is safe"}
-        </span>
-      ),
-    },
-    { id: "p6", content: "Tracked courier return for all mail-in repairs" },
-  ];
-  return (
-    <section className="py-16 sm:py-24 bg-white">
-      <div className="container-x grid gap-10 sm:gap-16 lg:grid-cols-2 lg:items-center">
-        <div className="relative">
-          <img
-            src={technicianImg}
-            alt="MR. KHAN Technician repairing device motherboard"
-            width={1400}
-            height={1000}
-            loading="lazy"
-            className="rounded-2xl shadow-xl w-full h-auto object-cover aspect-[4/3] border border-[#E6EAF0]"
-          />
-          <div className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 bg-white/95 backdrop-blur-md border border-[#E6EAF0] rounded-xl p-3 sm:p-4 shadow-lg max-w-[calc(100%-1.5rem)]">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-emerald-50 grid place-items-center shrink-0">
-                <ShieldCheck className="h-5 w-5 text-emerald-600" />
-              </div>
-              <div>
-                <div className="font-bold text-sm text-[#0B1220]">12-Month Warranty</div>
-                <div className="text-xs text-[#5B6472]">Full parts and labour cover</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="space-y-5 sm:space-y-6">
-          <p className="text-xs uppercase tracking-widest text-indigo-600 font-bold">
-            Experienced Technicians · Quality Repairs
-          </p>
-          <h2 className="font-display font-extrabold text-2xl sm:text-4xl text-[#0B1220] tracking-tight">
-            Local Phone Repair You Can Trust
-          </h2>
-          <p className="text-[#5B6472] leading-relaxed text-sm sm:text-base">
-            We are a local phone repair team based in Liverpool. Our technicians repair phones every day and work with customers across Liverpool and the surrounding areas. You can visit our workshop on London Road or book a home repair or mail-in service.
-          </p>
-          <ul className="grid gap-3 pt-2">
-            {points.map((item) => (
-              <li key={item.id} className="flex items-start gap-3 text-sm font-medium text-[#0B1220]">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
-                <span>{item.content}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ReviewsSection() {
-  return (
-    <section className="py-16 sm:py-24 bg-surface">
-      <div className="container-x">
-        <SectionHeader
-          eyebrow="Reviews"
-          title="What Our Customers Say"
-          description={`Rated ${business.rating.stars} out of 5 on Google`}
-        />
-        <div className="mt-10 sm:mt-14">
-          <ReviewsCarousel />
-        </div>
-        <div className="mt-10 flex flex-col items-center gap-6">
-          <Button asChild variant="outline" className="rounded-full min-h-[44px]">
-            <a href={business.googleReviewUrl} target="_blank" rel="noreferrer">
-              <Star className="mr-2 h-4 w-4 fill-amber-400 text-amber-400" />
-              Leave a Google review
-            </a>
-          </Button>
-
-          {/* Decision Stage Primary CTA Box */}
-          <div className="w-full max-w-2xl p-5 sm:p-8 rounded-3xl bg-indigo-500/5 dark:bg-indigo-500/10 border border-indigo-500/20 text-center space-y-4 shadow-xs mt-4">
-            <h3 className="font-display font-bold text-xl sm:text-2xl text-foreground">
-              Local Phone Repair in Liverpool
-            </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
-              Same-day repairs covered by our 12-month warranty.
-            </p>
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-              <Button
-                asChild
-                size="lg"
-                className="rounded-full h-12 px-8 text-sm font-semibold min-h-[48px]"
-              >
-                <Link
-                  to="/book"
-                  onClick={() =>
-                    trackFunnelEvent("book_click", { location: "reviews_decision_stage" })
-                  }
-                >
-                  Book Repair <ChevronRight className="ml-1.5 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="rounded-full h-12 px-6 text-sm font-semibold border-border bg-card/80 min-h-[48px]"
-              >
-                <a href={telLink()}>
-                  <Phone className="mr-2 h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                  Call {business.phone}
-                </a>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ServiceOptionsSection() {
+function ServiceOptions() {
   const opts = [
     {
       icon: Wrench,
-      img: walkinIllustration,
-      title: "Walk-in Repair",
-      desc: "Visit our Liverpool workshop. Most repairs are completed in 30–60 minutes.",
-      cta: "Book Walk-in Repair →",
-      to: "/book" as const,
+      title: "Visit Our Shop",
+      desc: "Bring your device to our London Road repair counter. Most repairs are assessed while you wait.",
+      cta: "Get in Touch",
+      to: "/contact" as const,
     },
     {
       icon: HomeIcon,
-      img: homeVisitIllustration,
-      title: "Home Repair",
-      desc: "We come to you. Book a repair at your home or workplace across Liverpool and nearby areas.",
-      cta: "Book Home Visit →",
+      title: "Home or Call-out",
+      desc: "Contact us to check availability for a repair at your home or workplace across Liverpool.",
+      cta: "Book Home Visit",
       to: "/home-repair" as const,
     },
     {
       icon: Package,
-      img: mailinIllustration,
       title: "Mail-in Repair",
-      desc: "Send your phone to us by tracked post. We will repair it and arrange its return.",
-      cta: "Book Mail-in Repair →",
+      desc: "Contact us before posting your device — we'll confirm the repair and return it tracked.",
+      cta: "Mail-in Details",
       to: "/mail-in" as const,
     },
   ];
   return (
-    <section className="py-16 sm:py-24 bg-background">
+    <section className="py-16 sm:py-24 bg-white border-y border-[#e3e5e8]">
       <div className="container-x">
-        <SectionHeader eyebrow="Choose your service" title="Repair Options" />
-        <div className="mt-10 sm:mt-14 grid gap-6 sm:gap-8 md:grid-cols-3">
+        <SectionHeader eyebrow="Choose what works for you" title="Repair options" />
+        <div className="mt-10 sm:mt-14 grid gap-5 md:grid-cols-3">
           {opts.map((o) => (
-            <Card
+            <div
               key={o.title}
-              className="border-border/70 group hover:border-indigo-500/40 hover:shadow-lg transition-all duration-300 bg-card overflow-hidden"
+              className="flex flex-col p-6 rounded-[14px] border border-[#e3e5e8] bg-white"
             >
-              <CardContent className="p-5 sm:p-8 flex flex-col justify-between h-full">
-                <div>
-                  <div className="relative rounded-2xl overflow-hidden bg-slate-50/80 dark:bg-slate-900/40 border border-border/70 p-4 mb-6 flex items-center justify-center aspect-[16/10]">
-                    <img
-                      src={o.img}
-                      alt={o.title}
-                      width={400}
-                      height={250}
-                      className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-screen scale-125 group-hover:scale-135 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                      <o.icon className="h-5 w-5" />
-                    </div>
-                    <h3 className="font-display font-semibold text-xl text-foreground">
-                      {o.title}
-                    </h3>
-                  </div>
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{o.desc}</p>
-                </div>
-                <Button
-                  asChild
-                  variant="link"
-                  className="mt-6 px-0 text-indigo-600 dark:text-indigo-400 font-semibold justify-start min-h-[44px]"
-                >
-                  <Link
-                    to={o.to}
-                    onClick={() =>
-                      trackFunnelEvent("book_click", {
-                        location: "service_options",
-                        service: o.title,
-                      })
-                    }
-                  >
-                    {o.cta}
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+              <div className="h-11 w-11 rounded-[10px] bg-[#f7f7f5] border border-[#e3e5e8] grid place-items-center mb-4">
+                <o.icon className="h-5 w-5 text-[#e21b23]" />
+              </div>
+              <h3 className="font-display font-bold text-[18px] text-[#111318]">{o.title}</h3>
+              <p className="mt-2 text-[15px] text-[#5f6670] leading-relaxed flex-1">{o.desc}</p>
+              <Link
+                to={o.to}
+                onClick={() =>
+                  trackFunnelEvent("book_click", { location: "service_options", service: o.title })
+                }
+                className="mt-5 inline-flex items-center gap-1.5 text-[#e21b23] font-semibold text-sm hover:underline min-h-[44px]"
+              >
+                {o.cta} <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
           ))}
         </div>
       </div>
@@ -584,47 +383,238 @@ function ServiceOptionsSection() {
   );
 }
 
-function QuoteSection() {
+// ── Local Trust ───────────────────────────────────────────────────────────────
+
+function LocalTrust() {
+  const benefits = [
+    "Clear advice and cost before any repair begins",
+    "Support and warranty after the repair is complete",
+    "Repairs for phones, tablets and laptops",
+    "Convenient location on Liverpool's London Road",
+  ];
   return (
-    <section className="py-16 sm:py-24 bg-surface" id="quote">
-      <div className="container-x grid gap-8 sm:gap-12 lg:grid-cols-2 lg:items-center">
-        <div>
-          <p className="text-xs uppercase tracking-widest text-indigo-600 dark:text-indigo-400 font-bold">
-            Free quote
-          </p>
-          <h2 className="mt-3 font-display font-bold text-2xl sm:text-4xl">
-            Not sure of the cost?
-            <br />
-            Get a free estimate.
-          </h2>
-          <p className="mt-4 text-muted-foreground text-sm sm:text-base">
-            Tell us what is wrong with your phone. We will review the details and get back to you with an estimated price.
-          </p>
+    <section className="py-16 sm:py-24 bg-[#f7f7f5]">
+      <div className="container-x grid gap-10 sm:gap-16 lg:grid-cols-2 lg:items-center">
+        <div className="relative">
           <img
-            src={devicesImg}
-            alt="Various devices repaired by MR. KHAN"
+            src={technicianImg}
+            alt="MR. KHAN technician at the repair bench on London Road, Liverpool"
             width={1400}
-            height={900}
+            height={1000}
             loading="lazy"
-            className="mt-6 sm:mt-8 rounded-2xl w-full h-auto object-cover aspect-[16/10] border border-border"
+            className="rounded-[16px] w-full h-auto object-cover aspect-[4/3] border border-[#e3e5e8]"
           />
+          {/* Address badge */}
+          <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto bg-white border border-[#e3e5e8] rounded-[12px] p-4 shadow-md max-w-[calc(100%-2rem)]">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-[#e21b23]/10 grid place-items-center shrink-0">
+                <MapPin className="h-5 w-5 text-[#e21b23]" />
+              </div>
+              <div>
+                <div className="font-bold text-sm text-[#111318]">{business.address.line1}</div>
+                <div className="text-xs text-[#5f6670]">
+                  {business.address.city}, {business.address.postcode}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <QuoteForm />
+
+        <div className="space-y-5">
+          <p className="text-xs uppercase tracking-[0.16em] text-[#e21b23] font-bold">
+            Liverpool Phone Repair Shop
+          </p>
+          <h2 className="font-display font-extrabold text-[1.9rem] sm:text-[2.4rem] text-[#111318] tracking-tight leading-tight">
+            Local repairs from a shop you can visit
+          </h2>
+          <p className="text-[#5f6670] leading-relaxed text-[15px] sm:text-base">
+            We are a phone repair shop based on London Road in Liverpool. You can walk in with your
+            device, get it assessed and have most common repairs completed in the same visit.
+          </p>
+          <ul className="grid gap-3 pt-1">
+            {benefits.map((b) => (
+              <li key={b} className="flex items-start gap-3 text-[15px] text-[#111318]">
+                <CheckCircle2 className="h-5 w-5 text-[#e21b23] shrink-0 mt-0.5" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="pt-2 flex flex-col sm:flex-row gap-3">
+            <Link
+              to="/contact"
+              onClick={() => trackFunnelEvent("book_click", { location: "local_trust" })}
+              className="inline-flex items-center justify-center px-6 py-3 rounded-[8px] bg-[#e21b23] text-white font-semibold text-sm hover:bg-[#c41018] transition-colors min-h-[48px]"
+            >
+              Contact the Shop
+            </Link>
+            <a
+              href={telLink()}
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[8px] border border-[#e3e5e8] bg-white text-[#111318] font-semibold text-sm hover:bg-[#f7f7f5] transition-colors min-h-[48px]"
+            >
+              <Phone className="h-4 w-4 text-[#e21b23]" />
+              Call {business.phone}
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
+// ── How It Works ──────────────────────────────────────────────────────────────
+
+function HowItWorks() {
+  const steps = [
+    {
+      n: "1",
+      title: "Tell us the problem",
+      desc: "Call, message or visit the shop. Tell us what's wrong and which device you have.",
+    },
+    {
+      n: "2",
+      title: "Get clear advice",
+      desc: "We explain the repair, what's involved and the expected cost before any work begins.",
+    },
+    {
+      n: "3",
+      title: "Repair and collect",
+      desc: "We complete the work and provide your invoice and warranty information on collection.",
+    },
+  ];
+  return (
+    <section className="py-16 sm:py-24 bg-white border-y border-[#e3e5e8]">
+      <div className="container-x">
+        <SectionHeader
+          eyebrow="Simple Process"
+          title="How it works"
+          description="Three straightforward steps from first contact to collection."
+        />
+        <div className="mt-10 sm:mt-14 grid gap-5 md:grid-cols-3">
+          {steps.map((s, i) => (
+            <div
+              key={s.n}
+              className="relative p-6 rounded-[14px] border border-[#e3e5e8] bg-[#f7f7f5]"
+            >
+              {/* Step connector line (desktop) */}
+              {i < steps.length - 1 && (
+                <div
+                  className="hidden md:block absolute top-[2.6rem] left-full w-5 h-px bg-[#e3e5e8] z-10"
+                  aria-hidden="true"
+                />
+              )}
+              <div className="text-[2.2rem] font-mono font-extrabold text-[#e21b23] leading-none mb-4">
+                {s.n}
+              </div>
+              <h3 className="font-display font-bold text-[17px] text-[#111318]">{s.title}</h3>
+              <p className="mt-2 text-sm text-[#5f6670] leading-relaxed">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link
+            to="/contact"
+            onClick={() => trackFunnelEvent("book_click", { location: "how_it_works" })}
+            className="inline-flex items-center justify-center px-7 py-3 rounded-[8px] bg-[#e21b23] text-white font-semibold text-sm hover:bg-[#c41018] transition-colors min-h-[48px]"
+          >
+            Contact the Shop
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Reviews ───────────────────────────────────────────────────────────────────
+
+function ReviewsSection() {
+  return (
+    <section className="py-16 sm:py-24 bg-[#f7f7f5]">
+      <div className="container-x">
+        <SectionHeader
+          eyebrow="Reviews"
+          title="Reviews from our customers"
+          description="Rated 4.9 out of 5 on Google by verified customers."
+        />
+        <div className="mt-10 sm:mt-14">
+          <ReviewsCarousel />
+        </div>
+        <div className="mt-8 flex justify-center">
+          <a
+            href={business.googleReviewUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-[8px] border border-[#e3e5e8] bg-white text-[#111318] font-semibold text-sm hover:bg-[#f7f7f5] hover:border-[#e21b23]/40 transition-colors min-h-[48px]"
+          >
+            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+            Read All Google Reviews
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Services Overview ─────────────────────────────────────────────────────────
+
+function ServicesOverview() {
+  const categories = [
+    {
+      title: "Mobile Phone Repairs",
+      desc: "iPhone, Samsung, Google Pixel, Huawei, Xiaomi and all major brands.",
+      to: "/services" as const,
+    },
+    {
+      title: "Tablet & iPad Repairs",
+      desc: "iPad, Samsung Tab and other tablet screen and battery repairs.",
+      to: "/services" as const,
+    },
+    {
+      title: "Laptop & Computer Repairs",
+      desc: "Screen replacement, battery, keyboard, software and data recovery.",
+      to: "/services" as const,
+    },
+    {
+      title: "Phone Buying & Selling",
+      desc: "We buy and sell used phones — visit the shop for a trade-in price.",
+      to: "/buy-sell" as const,
+    },
+  ];
+  return (
+    <section className="py-16 sm:py-24 bg-white border-t border-[#e3e5e8]">
+      <div className="container-x">
+        <SectionHeader eyebrow="Our Services" title="What we repair and sell" />
+        <div className="mt-10 sm:mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {categories.map((c) => (
+            <Link
+              key={c.title}
+              to={c.to}
+              className="group flex flex-col p-5 rounded-[12px] border border-[#e3e5e8] bg-[#f7f7f5] hover:border-[#e21b23]/30 hover:bg-white transition-all"
+            >
+              <h3 className="font-display font-bold text-[16px] text-[#111318]">{c.title}</h3>
+              <p className="mt-2 text-sm text-[#5f6670] leading-snug flex-1">{c.desc}</p>
+              <span className="mt-4 flex items-center gap-1 text-[#e21b23] font-semibold text-xs group-hover:gap-2 transition-all">
+                Learn more <ChevronRight className="h-3.5 w-3.5" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── FAQ ───────────────────────────────────────────────────────────────────────
+
 function FaqSection() {
   return (
-    <section className="py-16 sm:py-24">
+    <section className="py-16 sm:py-24 bg-[#f7f7f5] border-t border-[#e3e5e8]">
       <div className="container-x max-w-3xl">
-        <SectionHeader eyebrow="FAQ" title="Phone Repair FAQs" />
+        <SectionHeader eyebrow="FAQ" title="Common questions" />
         <div className="mt-8 sm:mt-12">
           <FaqAccordion />
         </div>
         <div className="mt-8 sm:mt-10 text-center">
-          <Button asChild variant="outline" className="rounded-full min-h-[44px]">
+          <Button asChild variant="outline" className="rounded-[8px] min-h-[44px] border-[#e3e5e8]">
             <Link to="/faq">View all FAQs</Link>
           </Button>
         </div>
@@ -633,63 +623,63 @@ function FaqSection() {
   );
 }
 
+// ── Map / Location ────────────────────────────────────────────────────────────
+
 function MapSection() {
   const directionsUrl = business.social.google;
   return (
-    <section className="py-16 sm:py-20 border-t border-border bg-background">
+    <section className="py-16 sm:py-20 border-t border-[#e3e5e8] bg-white">
       <div className="container-x">
         <SectionHeader
-          eyebrow="Liverpool Workshop"
-          title="Visit Our Liverpool Repair Centre"
-          description="We are based on London Road in Liverpool. Visit us for a same-day repair or contact us to book your repair."
+          eyebrow="Find Us"
+          title="Visit MR. KHAN in Liverpool"
+          description="We are on London Road — drop in with your device or contact us before travelling."
         />
-        <div className="mt-8 sm:mt-10 flex flex-col md:block relative rounded-3xl overflow-hidden border border-border/80 shadow-md min-h-[380px] md:aspect-[16/7]">
-          <div className="p-4 sm:p-5 rounded-2xl bg-card/95 backdrop-blur-md border border-border shadow-xl max-w-sm z-10 space-y-3 m-3 md:m-0 md:absolute md:top-4 md:left-4">
-            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-xs uppercase tracking-wider">
-              <MapPin className="h-4 w-4 shrink-0" /> Liverpool Repair Workshop
+        <div className="mt-8 sm:mt-10 flex flex-col md:block relative rounded-[18px] overflow-hidden border border-[#e3e5e8] min-h-[380px] md:aspect-[16/7]">
+          {/* Info card */}
+          <div className="p-5 rounded-[14px] bg-white border border-[#e3e5e8] shadow-md max-w-sm z-10 space-y-3 m-4 md:m-0 md:absolute md:top-5 md:left-5">
+            <div className="flex items-center gap-2 text-[#e21b23] font-bold text-xs uppercase tracking-wider">
+              <MapPin className="h-4 w-4 shrink-0" /> Liverpool Repair Shop
             </div>
             <div>
-              <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
+              <div className="text-[10px] uppercase font-bold text-[#5f6670] tracking-wider">
                 Address
               </div>
-              <div className="text-sm font-semibold text-foreground leading-snug mt-0.5">
+              <div className="text-sm font-semibold text-[#111318] leading-snug mt-0.5">
                 {business.address.line1}, {business.address.city} {business.address.postcode}
               </div>
-              <div className="text-xs text-muted-foreground mt-0.5">
-                Located inside Liverpool Post Office
-              </div>
             </div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-foreground pt-1 border-t border-border/60">
-              <Phone className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" /> {business.phone}
+            <div className="flex items-center gap-2 text-xs font-semibold text-[#111318] pt-1 border-t border-[#e3e5e8]">
+              <Phone className="h-3.5 w-3.5 text-[#e21b23] shrink-0" />
+              <a href={telLink()} className="hover:text-[#e21b23] transition-colors">
+                {business.phone}
+              </a>
             </div>
-            <div className="pt-2 flex items-center gap-2">
-              <Button
-                asChild
-                size="sm"
-                className="rounded-xl h-10 px-4 text-xs font-semibold min-h-[40px]"
+            <div className="pt-1 flex items-center gap-2">
+              <a
+                href={directionsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#e21b23] text-white text-xs font-semibold hover:bg-[#c41018] transition-colors min-h-[40px]"
               >
-                <a href={directionsUrl} target="_blank" rel="noreferrer">
-                  <Navigation className="h-3.5 w-3.5 mr-1.5" />
-                  Get Directions
-                </a>
-              </Button>
-              <Button
-                asChild
-                size="sm"
-                variant="outline"
-                className="rounded-xl h-10 px-3 text-xs font-semibold min-h-[40px]"
+                <Navigation className="h-3.5 w-3.5" />
+                Get Directions
+              </a>
+              <a
+                href={telLink()}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] border border-[#e3e5e8] bg-white text-[#111318] text-xs font-semibold hover:bg-[#f7f7f5] transition-colors min-h-[40px]"
               >
-                <a href={telLink()}>
-                  <Phone className="h-3.5 w-3.5 mr-1 text-indigo-600 dark:text-indigo-400" />
-                  Call
-                </a>
-              </Button>
+                <Phone className="h-3.5 w-3.5 text-[#e21b23]" />
+                Call
+              </a>
             </div>
           </div>
+
+          {/* Map embed */}
           <iframe
-            title="MR. KHAN Liverpool Workshop Location"
+            title="MR. KHAN Liverpool — 83-85 London Road location map"
             src={business.googleMapsEmbed}
-            className="w-full h-full min-h-[320px] md:min-h-[380px]"
+            className="w-full h-full min-h-[300px] md:min-h-[380px]"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
@@ -699,80 +689,75 @@ function MapSection() {
   );
 }
 
+// ── Final CTA ─────────────────────────────────────────────────────────────────
+
 function FinalCtaSection() {
   return (
-    <section className="py-24 bg-[#050B1A] text-white relative overflow-hidden">
-      <div className="container-x max-w-4xl text-center space-y-6 relative z-10">
-        <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight">
-          Phone Broken? Let's Get It Fixed.
+    <section className="py-20 sm:py-24 bg-[#07101d] text-white">
+      <div className="container-x max-w-3xl text-center space-y-5">
+        <h2 className="font-display font-extrabold text-[2rem] sm:text-[2.6rem] tracking-tight">
+          Need help with your device?
         </h2>
-        <p className="text-slate-300 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
-          Same-day repairs. Experienced technicians. Clear pricing. Book online or visit our London Road workshop today.
+        <p className="text-slate-300 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
+          Tell us what's wrong and we'll explain the next step.
         </p>
-        <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-          <Button
-            asChild
-            size="lg"
-            className="rounded-xl h-13 px-8 text-base font-semibold shadow-xl shadow-indigo-600/30 transition-all"
+        <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link
+            to="/contact"
+            onClick={() => trackFunnelEvent("book_click", { location: "final_cta" })}
+            className="inline-flex items-center justify-center px-8 py-3.5 rounded-[8px] bg-[#e21b23] text-white font-semibold text-base hover:bg-[#c41018] transition-colors min-h-[52px] w-full sm:w-auto"
           >
-            <Link
-              to="/book"
-              onClick={() => trackFunnelEvent("book_click", { location: "final_cta" })}
-            >
-              Book Your Repair <ChevronRight className="ml-1.5 h-4 w-4" />
-            </Link>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="rounded-xl h-13 px-7 text-base font-semibold border-white/20 bg-white/10 hover:bg-white/20 text-white"
+            Get a Repair Quote
+          </Link>
+          <a
+            href={whatsappLink("Hi MR. KHAN, I need help with my device.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-[8px] bg-[#25d366] text-white font-semibold text-base hover:bg-[#1da851] transition-colors min-h-[52px] w-full sm:w-auto"
           >
-            <a href={telLink()}>
-              <Phone className="mr-2 h-4 w-4 text-indigo-400" />
-              Call Us: {business.phone}
-            </a>
-          </Button>
+            <MessageCircle className="h-5 w-5" />
+            Message on WhatsApp
+          </a>
         </div>
+        <p className="text-slate-400 text-sm pt-2">
+          Or call us on{" "}
+          <a
+            href={telLink()}
+            className="text-white font-semibold hover:text-[#e21b23] transition-colors"
+          >
+            {business.phone}
+          </a>
+        </p>
       </div>
     </section>
   );
 }
 
-export function SectionHeader({
+// ── Shared Section Header ─────────────────────────────────────────────────────
+
+function SectionHeader({
   eyebrow,
   title,
   description,
-  dark,
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
-  dark?: boolean;
 }) {
   return (
     <div className="text-center max-w-2xl mx-auto">
       {eyebrow && (
-        <p
-          className={`text-xs uppercase tracking-widest font-semibold ${dark ? "text-blue-400" : "text-blue-600 dark:text-blue-400"}`}
-        >
+        <p className="text-xs uppercase tracking-[0.16em] font-bold text-[#e21b23] mb-3">
           {eyebrow}
         </p>
       )}
-      <h2
-        className={`mt-3 font-display font-bold text-3xl md:text-4xl lg:text-5xl tracking-tight ${dark ? "text-white" : ""}`}
-      >
+      <h2 className="font-display font-extrabold text-[1.8rem] sm:text-[2.2rem] lg:text-[2.6rem] tracking-tight text-[#111318]">
         {title}
       </h2>
       {description && (
-        <p
-          className={`mt-4 text-base md:text-lg ${dark ? "text-slate-300" : "text-muted-foreground"}`}
-        >
-          {description}
-        </p>
+        <p className="mt-3 text-base sm:text-lg text-[#5f6670] leading-relaxed">{description}</p>
       )}
     </div>
   );
 }
 
-export default Home;

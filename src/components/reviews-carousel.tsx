@@ -28,11 +28,20 @@ export function ReviewsCarousel() {
     );
   }
 
-  const items = (dbReviews ?? []).map((r: any) => ({
-    name: r.author || r.name,
-    city: r.location || r.city,
-    stars: r.rating !== undefined ? r.rating : r.stars,
-    text: r.body || r.text,
+  const items = (dbReviews ?? []).map((r) => ({
+    name:
+      (r as { author?: string; name?: string }).author ||
+      (r as { author?: string; name?: string }).name ||
+      "Customer",
+    city:
+      (r as { location?: string | null; city?: string }).location ||
+      (r as { location?: string | null; city?: string }).city ||
+      "UK",
+    stars: typeof r.rating === "number" ? r.rating : 5,
+    text:
+      (r as { body?: string; text?: string }).body ||
+      (r as { body?: string; text?: string }).text ||
+      "",
   }));
 
   if (items.length === 0) {
@@ -47,7 +56,7 @@ export function ReviewsCarousel() {
           {business.rating.stars} / 5.0 Rating on Google
         </h3>
         <p className="text-sm text-[#5B6472]">
-          Read over {business.rating.reviews}+ verified customer reviews directly on Google Reviews.
+          Read verified customer reviews directly on Google Reviews.
         </p>
         <div>
           <a

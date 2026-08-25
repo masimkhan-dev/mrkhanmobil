@@ -37,7 +37,7 @@ export const Route = createFileRoute("/home-repair")({
             time off work, no travel.
           </p>
           <Button asChild size="lg" className="mt-8 rounded-full">
-            <Link to="/book">Book a home visit</Link>
+            <Link to="/contact">Contact us about a home visit</Link>
           </Button>
         </div>
       </section>

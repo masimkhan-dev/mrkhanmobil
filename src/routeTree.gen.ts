@@ -17,6 +17,7 @@ import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as BookRouteImport } from './routes/book'
+import { Route as BuySellRouteImport } from './routes/buy-sell'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiePolicyRouteImport } from './routes/cookie-policy'
 import { Route as CookiesRouteImport } from './routes/cookies'
@@ -39,14 +40,15 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as RepairsCityRouteImport } from './routes/repairs.$city'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
-import { Route as AuthenticatedAdminCitiesRouteImport } from './routes/_authenticated/admin.cities'
-import { Route as AuthenticatedAdminDevicesRouteImport } from './routes/_authenticated/admin.devices'
-import { Route as AuthenticatedAdminFaqsRouteImport } from './routes/_authenticated/admin.faqs'
-import { Route as AuthenticatedAdminGalleryRouteImport } from './routes/_authenticated/admin.gallery'
-import { Route as AuthenticatedAdminRepairTypesRouteImport } from './routes/_authenticated/admin.repair-types'
-import { Route as AuthenticatedAdminReviewsRouteImport } from './routes/_authenticated/admin.reviews'
-import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin.services'
+import { Route as AuthenticatedAdminBuyRouteImport } from './routes/_authenticated/admin.buy'
+import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin.customers'
+import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin.invoices'
+import { Route as AuthenticatedAdminRepairRouteImport } from './routes/_authenticated/admin.repair'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
+import { Route as AuthenticatedAdminSellRouteImport } from './routes/_authenticated/admin.sell'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
+import { Route as AuthenticatedAdminStockRouteImport } from './routes/_authenticated/admin.stock'
+import { Route as AuthenticatedAdminSuppliersRouteImport } from './routes/_authenticated/admin.suppliers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -85,6 +87,11 @@ const BlogRoute = BlogRouteImport.update({
 const BookRoute = BookRouteImport.update({
   id: '/book',
   path: '/book',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuySellRoute = BuySellRouteImport.update({
+  id: '/buy-sell',
+  path: '/buy-sell',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -197,51 +204,55 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => ServicesRoute,
 } as any)
-const AuthenticatedAdminCitiesRoute =
-  AuthenticatedAdminCitiesRouteImport.update({
-    id: '/cities',
-    path: '/cities',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminDevicesRoute =
-  AuthenticatedAdminDevicesRouteImport.update({
-    id: '/devices',
-    path: '/devices',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminFaqsRoute = AuthenticatedAdminFaqsRouteImport.update({
-  id: '/faqs',
-  path: '/faqs',
+const AuthenticatedAdminBuyRoute = AuthenticatedAdminBuyRouteImport.update({
+  id: '/buy',
+  path: '/buy',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const AuthenticatedAdminGalleryRoute =
-  AuthenticatedAdminGalleryRouteImport.update({
-    id: '/gallery',
-    path: '/gallery',
+const AuthenticatedAdminCustomersRoute =
+  AuthenticatedAdminCustomersRouteImport.update({
+    id: '/customers',
+    path: '/customers',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminRepairTypesRoute =
-  AuthenticatedAdminRepairTypesRouteImport.update({
-    id: '/repair-types',
-    path: '/repair-types',
+const AuthenticatedAdminInvoicesRoute =
+  AuthenticatedAdminInvoicesRouteImport.update({
+    id: '/invoices',
+    path: '/invoices',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminReviewsRoute =
-  AuthenticatedAdminReviewsRouteImport.update({
-    id: '/reviews',
-    path: '/reviews',
+const AuthenticatedAdminRepairRoute =
+  AuthenticatedAdminRepairRouteImport.update({
+    id: '/repair',
+    path: '/repair',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminServicesRoute =
-  AuthenticatedAdminServicesRouteImport.update({
-    id: '/services',
-    path: '/services',
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminSellRoute = AuthenticatedAdminSellRouteImport.update({
+  id: '/sell',
+  path: '/sell',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminSettingsRoute =
   AuthenticatedAdminSettingsRouteImport.update({
     id: '/settings',
     path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminStockRoute = AuthenticatedAdminStockRouteImport.update({
+  id: '/stock',
+  path: '/stock',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminSuppliersRoute =
+  AuthenticatedAdminSuppliersRouteImport.update({
+    id: '/suppliers',
+    path: '/suppliers',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 
@@ -253,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/book': typeof BookRoute
+  '/buy-sell': typeof BuySellRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/cookies': typeof CookiesRoute
@@ -275,14 +287,15 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/repairs/$city': typeof RepairsCityRoute
   '/services/$slug': typeof ServicesSlugRoute
-  '/admin/cities': typeof AuthenticatedAdminCitiesRoute
-  '/admin/devices': typeof AuthenticatedAdminDevicesRoute
-  '/admin/faqs': typeof AuthenticatedAdminFaqsRoute
-  '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/admin/repair-types': typeof AuthenticatedAdminRepairTypesRoute
-  '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
-  '/admin/services': typeof AuthenticatedAdminServicesRoute
+  '/admin/buy': typeof AuthenticatedAdminBuyRoute
+  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
+  '/admin/repair': typeof AuthenticatedAdminRepairRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/sell': typeof AuthenticatedAdminSellRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/stock': typeof AuthenticatedAdminStockRoute
+  '/admin/suppliers': typeof AuthenticatedAdminSuppliersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -292,6 +305,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/book': typeof BookRoute
+  '/buy-sell': typeof BuySellRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/cookies': typeof CookiesRoute
@@ -314,14 +328,15 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/repairs/$city': typeof RepairsCityRoute
   '/services/$slug': typeof ServicesSlugRoute
-  '/admin/cities': typeof AuthenticatedAdminCitiesRoute
-  '/admin/devices': typeof AuthenticatedAdminDevicesRoute
-  '/admin/faqs': typeof AuthenticatedAdminFaqsRoute
-  '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/admin/repair-types': typeof AuthenticatedAdminRepairTypesRoute
-  '/admin/reviews': typeof AuthenticatedAdminReviewsRoute
-  '/admin/services': typeof AuthenticatedAdminServicesRoute
+  '/admin/buy': typeof AuthenticatedAdminBuyRoute
+  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
+  '/admin/repair': typeof AuthenticatedAdminRepairRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/sell': typeof AuthenticatedAdminSellRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/stock': typeof AuthenticatedAdminStockRoute
+  '/admin/suppliers': typeof AuthenticatedAdminSuppliersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -333,6 +348,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/book': typeof BookRoute
+  '/buy-sell': typeof BuySellRoute
   '/contact': typeof ContactRoute
   '/cookie-policy': typeof CookiePolicyRoute
   '/cookies': typeof CookiesRoute
@@ -355,14 +371,15 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/repairs/$city': typeof RepairsCityRoute
   '/services/$slug': typeof ServicesSlugRoute
-  '/_authenticated/admin/cities': typeof AuthenticatedAdminCitiesRoute
-  '/_authenticated/admin/devices': typeof AuthenticatedAdminDevicesRoute
-  '/_authenticated/admin/faqs': typeof AuthenticatedAdminFaqsRoute
-  '/_authenticated/admin/gallery': typeof AuthenticatedAdminGalleryRoute
-  '/_authenticated/admin/repair-types': typeof AuthenticatedAdminRepairTypesRoute
-  '/_authenticated/admin/reviews': typeof AuthenticatedAdminReviewsRoute
-  '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRoute
+  '/_authenticated/admin/buy': typeof AuthenticatedAdminBuyRoute
+  '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
+  '/_authenticated/admin/repair': typeof AuthenticatedAdminRepairRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/sell': typeof AuthenticatedAdminSellRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/stock': typeof AuthenticatedAdminStockRoute
+  '/_authenticated/admin/suppliers': typeof AuthenticatedAdminSuppliersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -374,6 +391,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/book'
+    | '/buy-sell'
     | '/contact'
     | '/cookie-policy'
     | '/cookies'
@@ -396,14 +414,15 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/repairs/$city'
     | '/services/$slug'
-    | '/admin/cities'
-    | '/admin/devices'
-    | '/admin/faqs'
-    | '/admin/gallery'
-    | '/admin/repair-types'
-    | '/admin/reviews'
-    | '/admin/services'
+    | '/admin/buy'
+    | '/admin/customers'
+    | '/admin/invoices'
+    | '/admin/repair'
+    | '/admin/reports'
+    | '/admin/sell'
     | '/admin/settings'
+    | '/admin/stock'
+    | '/admin/suppliers'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -413,6 +432,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/book'
+    | '/buy-sell'
     | '/contact'
     | '/cookie-policy'
     | '/cookies'
@@ -435,14 +455,15 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/repairs/$city'
     | '/services/$slug'
-    | '/admin/cities'
-    | '/admin/devices'
-    | '/admin/faqs'
-    | '/admin/gallery'
-    | '/admin/repair-types'
-    | '/admin/reviews'
-    | '/admin/services'
+    | '/admin/buy'
+    | '/admin/customers'
+    | '/admin/invoices'
+    | '/admin/repair'
+    | '/admin/reports'
+    | '/admin/sell'
     | '/admin/settings'
+    | '/admin/stock'
+    | '/admin/suppliers'
   id:
     | '__root__'
     | '/'
@@ -453,6 +474,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/book'
+    | '/buy-sell'
     | '/contact'
     | '/cookie-policy'
     | '/cookies'
@@ -475,14 +497,15 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/repairs/$city'
     | '/services/$slug'
-    | '/_authenticated/admin/cities'
-    | '/_authenticated/admin/devices'
-    | '/_authenticated/admin/faqs'
-    | '/_authenticated/admin/gallery'
-    | '/_authenticated/admin/repair-types'
-    | '/_authenticated/admin/reviews'
-    | '/_authenticated/admin/services'
+    | '/_authenticated/admin/buy'
+    | '/_authenticated/admin/customers'
+    | '/_authenticated/admin/invoices'
+    | '/_authenticated/admin/repair'
+    | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/sell'
     | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/stock'
+    | '/_authenticated/admin/suppliers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -494,6 +517,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
   BookRoute: typeof BookRoute
+  BuySellRoute: typeof BuySellRoute
   ContactRoute: typeof ContactRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
   CookiesRoute: typeof CookiesRoute
@@ -571,6 +595,13 @@ declare module '@tanstack/react-router' {
       path: '/book'
       fullPath: '/book'
       preLoaderRoute: typeof BookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buy-sell': {
+      id: '/buy-sell'
+      path: '/buy-sell'
+      fullPath: '/buy-sell'
+      preLoaderRoute: typeof BuySellRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -727,53 +758,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof ServicesRoute
     }
-    '/_authenticated/admin/cities': {
-      id: '/_authenticated/admin/cities'
-      path: '/cities'
-      fullPath: '/admin/cities'
-      preLoaderRoute: typeof AuthenticatedAdminCitiesRouteImport
+    '/_authenticated/admin/buy': {
+      id: '/_authenticated/admin/buy'
+      path: '/buy'
+      fullPath: '/admin/buy'
+      preLoaderRoute: typeof AuthenticatedAdminBuyRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/devices': {
-      id: '/_authenticated/admin/devices'
-      path: '/devices'
-      fullPath: '/admin/devices'
-      preLoaderRoute: typeof AuthenticatedAdminDevicesRouteImport
+    '/_authenticated/admin/customers': {
+      id: '/_authenticated/admin/customers'
+      path: '/customers'
+      fullPath: '/admin/customers'
+      preLoaderRoute: typeof AuthenticatedAdminCustomersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/faqs': {
-      id: '/_authenticated/admin/faqs'
-      path: '/faqs'
-      fullPath: '/admin/faqs'
-      preLoaderRoute: typeof AuthenticatedAdminFaqsRouteImport
+    '/_authenticated/admin/invoices': {
+      id: '/_authenticated/admin/invoices'
+      path: '/invoices'
+      fullPath: '/admin/invoices'
+      preLoaderRoute: typeof AuthenticatedAdminInvoicesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/gallery': {
-      id: '/_authenticated/admin/gallery'
-      path: '/gallery'
-      fullPath: '/admin/gallery'
-      preLoaderRoute: typeof AuthenticatedAdminGalleryRouteImport
+    '/_authenticated/admin/repair': {
+      id: '/_authenticated/admin/repair'
+      path: '/repair'
+      fullPath: '/admin/repair'
+      preLoaderRoute: typeof AuthenticatedAdminRepairRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/repair-types': {
-      id: '/_authenticated/admin/repair-types'
-      path: '/repair-types'
-      fullPath: '/admin/repair-types'
-      preLoaderRoute: typeof AuthenticatedAdminRepairTypesRouteImport
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/reviews': {
-      id: '/_authenticated/admin/reviews'
-      path: '/reviews'
-      fullPath: '/admin/reviews'
-      preLoaderRoute: typeof AuthenticatedAdminReviewsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/services': {
-      id: '/_authenticated/admin/services'
-      path: '/services'
-      fullPath: '/admin/services'
-      preLoaderRoute: typeof AuthenticatedAdminServicesRouteImport
+    '/_authenticated/admin/sell': {
+      id: '/_authenticated/admin/sell'
+      path: '/sell'
+      fullPath: '/admin/sell'
+      preLoaderRoute: typeof AuthenticatedAdminSellRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/settings': {
@@ -783,29 +807,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/stock': {
+      id: '/_authenticated/admin/stock'
+      path: '/stock'
+      fullPath: '/admin/stock'
+      preLoaderRoute: typeof AuthenticatedAdminStockRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/suppliers': {
+      id: '/_authenticated/admin/suppliers'
+      path: '/suppliers'
+      fullPath: '/admin/suppliers'
+      preLoaderRoute: typeof AuthenticatedAdminSuppliersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
-  AuthenticatedAdminCitiesRoute: typeof AuthenticatedAdminCitiesRoute
-  AuthenticatedAdminDevicesRoute: typeof AuthenticatedAdminDevicesRoute
-  AuthenticatedAdminFaqsRoute: typeof AuthenticatedAdminFaqsRoute
-  AuthenticatedAdminGalleryRoute: typeof AuthenticatedAdminGalleryRoute
-  AuthenticatedAdminRepairTypesRoute: typeof AuthenticatedAdminRepairTypesRoute
-  AuthenticatedAdminReviewsRoute: typeof AuthenticatedAdminReviewsRoute
-  AuthenticatedAdminServicesRoute: typeof AuthenticatedAdminServicesRoute
+  AuthenticatedAdminBuyRoute: typeof AuthenticatedAdminBuyRoute
+  AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
+  AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
+  AuthenticatedAdminRepairRoute: typeof AuthenticatedAdminRepairRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminSellRoute: typeof AuthenticatedAdminSellRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminStockRoute: typeof AuthenticatedAdminStockRoute
+  AuthenticatedAdminSuppliersRoute: typeof AuthenticatedAdminSuppliersRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
-  AuthenticatedAdminCitiesRoute: AuthenticatedAdminCitiesRoute,
-  AuthenticatedAdminDevicesRoute: AuthenticatedAdminDevicesRoute,
-  AuthenticatedAdminFaqsRoute: AuthenticatedAdminFaqsRoute,
-  AuthenticatedAdminGalleryRoute: AuthenticatedAdminGalleryRoute,
-  AuthenticatedAdminRepairTypesRoute: AuthenticatedAdminRepairTypesRoute,
-  AuthenticatedAdminReviewsRoute: AuthenticatedAdminReviewsRoute,
-  AuthenticatedAdminServicesRoute: AuthenticatedAdminServicesRoute,
+  AuthenticatedAdminBuyRoute: AuthenticatedAdminBuyRoute,
+  AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
+  AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
+  AuthenticatedAdminRepairRoute: AuthenticatedAdminRepairRoute,
+  AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+  AuthenticatedAdminSellRoute: AuthenticatedAdminSellRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+  AuthenticatedAdminStockRoute: AuthenticatedAdminStockRoute,
+  AuthenticatedAdminSuppliersRoute: AuthenticatedAdminSuppliersRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
@@ -853,6 +893,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
   BookRoute: BookRoute,
+  BuySellRoute: BuySellRoute,
   ContactRoute: ContactRoute,
   CookiePolicyRoute: CookiePolicyRoute,
   CookiesRoute: CookiesRoute,

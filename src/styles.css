@@ -51,6 +51,19 @@
   --color-ink-secondary: #5b6472;
   --color-ink-muted: #8a93a1;
   --color-divider: #e6eaf0;
+
+  /* Public site tokens — MR KHAN brand red accent (separate from admin --accent) */
+  --public-accent: #e21b23;
+  --public-accent-hover: #c41018;
+  --public-accent-fg: #ffffff;
+  --public-bg: #f7f7f5;
+  --public-surface: #ffffff;
+  --public-ink: #111318;
+  --public-muted: #5f6670;
+  --public-border: #e3e5e8;
+  --public-dark: #07101d;
+  --public-whatsapp: #25d366;
+  --public-whatsapp-hover: #1da851;
 }
 
 :root {
@@ -224,10 +237,70 @@
   }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(226, 27, 35, 0.4); }
-  50% { box-shadow: 0 0 0 10px rgba(226, 27, 35, 0); }
+/* Disable spin buttons and wheel incrementing on numeric inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-.animate-pulse-glow { animation: pulse-glow 2s infinite; }
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
 
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(226, 27, 35, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(226, 27, 35, 0);
+  }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
 
+/* ── Counter Mode Design Tokens ──────────────────────────────────────────────── */
+:root {
+  /* Brand accent — used ONLY for: primary CTA, active nav, selected controls, focus */
+  --kimi-accent: #0f4c75;
+  --kimi-accent-hover: #0d3f61;
+  --kimi-accent-ring: rgba(15, 76, 117, 0.2);
+  --kimi-accent-bg: #e8f0fe; /* very light tint for active nav bg */
+  --kimi-accent-text: #0f4c75; /* text on light surfaces */
+
+  /* Surfaces */
+  --kimi-color-surface: #ffffff;
+  --kimi-color-page-bg: #f8f9fa;
+  --kimi-color-border: #e2e8f0;
+
+  /* Text */
+  --kimi-color-text-primary: #0f172a;
+  --kimi-color-text-secondary: #475569;
+  --kimi-color-text-tertiary: #94a3b8;
+
+  /* Semantic */
+  --kimi-color-success-bg: #f0fdf4;
+  --kimi-color-success-border: #bbf7d0;
+  --kimi-color-success-text: #15803d;
+  --kimi-color-warning-bg: #fffbeb;
+  --kimi-color-warning-border: #fde68a;
+  --kimi-color-warning-text: #b45309;
+  --kimi-color-danger-bg: #fef2f2;
+  --kimi-color-danger-border: #fecaca;
+  --kimi-color-danger-text: #b91c1c;
+
+  /* Font */
+  --kimi-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Radius scale */
+  --kimi-radius-input: 8px; /* inputs, small controls */
+  --kimi-radius-btn: 6px; /* buttons */
+  --kimi-radius-card: 12px; /* cards, sections */
+}
+
+@utility tabular-money {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}

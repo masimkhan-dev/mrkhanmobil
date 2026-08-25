@@ -30,23 +30,28 @@ export const Route = createFileRoute("/accessibility")({
         </div>
         <h1 className="font-display font-bold text-4xl md:text-5xl">Accessibility Statement</h1>
         <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-          {business.name} is committed to ensuring digital accessibility for people with disabilities.
-          We are continually improving the user experience for everyone and applying the relevant
-          accessibility standards.
+          {business.name} is committed to ensuring digital accessibility for people with
+          disabilities. We are continually improving the user experience for everyone and applying
+          the relevant accessibility standards.
         </p>
 
         <div className="prose prose-lg mt-10 max-w-none text-foreground/85 space-y-6">
           <div>
-            <h2 className="font-display font-semibold text-2xl text-foreground mb-3">Conformance Status</h2>
+            <h2 className="font-display font-semibold text-2xl text-foreground mb-3">
+              Conformance Status
+            </h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              We aim to meet the **Web Content Accessibility Guidelines (WCAG) 2.1 Level AA** standards.
-              These guidelines define how to make web content more accessible for people with disabilities,
-              more user-friendly for everyone, and compatible with assistive technologies.
+              We aim to meet the **Web Content Accessibility Guidelines (WCAG) 2.1 Level AA**
+              standards. These guidelines define how to make web content more accessible for people
+              with disabilities, more user-friendly for everyone, and compatible with assistive
+              technologies.
             </p>
           </div>
 
           <div>
-            <h2 className="font-display font-semibold text-2xl text-foreground mb-3">Measures We Take</h2>
+            <h2 className="font-display font-semibold text-2xl text-foreground mb-3">
+              Measures We Take
+            </h2>
             <ul className="text-sm space-y-2 text-muted-foreground list-disc pl-5">
               <li>Include accessibility features in our design and development workflow</li>
               <li>Provide keyboard navigation support and visible focus indicators</li>
@@ -57,10 +62,12 @@ export const Route = createFileRoute("/accessibility")({
           </div>
 
           <div className="p-6 rounded-2xl bg-muted/40 border border-border space-y-4">
-            <h2 className="font-display font-semibold text-xl text-foreground">Feedback & Contact</h2>
+            <h2 className="font-display font-semibold text-xl text-foreground">
+              Feedback & Contact
+            </h2>
             <p className="text-sm text-muted-foreground">
-              If you experience any difficulty accessing information on our website or require content in an
-              alternative format (such as large print or audio), please get in touch:
+              If you experience any difficulty accessing information on our website or require
+              content in an alternative format (such as large print or audio), please get in touch:
             </p>
 
             <ul className="space-y-3 text-sm font-medium">
@@ -89,7 +96,7 @@ export const Route = createFileRoute("/accessibility")({
 
           <div className="pt-4 border-t border-border">
             <p className="text-xs text-muted-foreground">
-              Alternative formats of our content are available on request.  
+              Alternative formats of our content are available on request.
               <br />
               Last updated: July 2026
             </p>

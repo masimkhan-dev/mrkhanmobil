@@ -13,11 +13,10 @@ import { useServerFn } from "@tanstack/react-start";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { SiteHeader, StickyMobileBar } from "@/components/site-header";
+import { SiteHeader } from "@/components/site-header";
 import { TopBar } from "@/components/top-bar";
 import { SiteFooter } from "@/components/site-footer";
 import { Toaster } from "@/components/ui/sonner";
-import { FloatingWhatsApp } from "@/components/floating-whatsapp";
 import { TopLoadingBar } from "@/components/top-loading-bar";
 import { BackToTop } from "@/components/back-to-top";
 import { MobileStickyCTA } from "@/components/mobile-sticky-cta";
@@ -104,7 +103,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:image", content: `${business.url}/og-home.png` },
       { property: "og:url", content: `${business.url}/` },
-      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
+      {
+        name: "robots",
+        content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Phone Repair Liverpool | Same-Day Fix | MR. KHAN" },
       {
@@ -166,7 +168,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           aggregateRating: {
             "@type": "AggregateRating",
             ratingValue: "4.9",
-            reviewCount: "847",
           },
           areaServed: {
             "@type": "City",
@@ -200,7 +201,6 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-
 function AppLayout() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
@@ -208,6 +208,23 @@ function AppLayout() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  // Prevent accidental number incrementing on mouse wheel scroll across all forms
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      const active = document.activeElement;
+      if (
+        active instanceof HTMLInputElement &&
+        (active.type === "number" ||
+          active.inputMode === "decimal" ||
+          active.inputMode === "numeric")
+      ) {
+        active.blur();
+      }
+    };
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, []);
 
   const getSettings = useServerFn(getPublicSiteSettings);
   const { data: settings } = useQuery({
@@ -218,12 +235,11 @@ function AppLayout() {
   });
 
   const announcement = settings?.announcement as
-    | { enabled?: boolean; text?: string; link?: string }
-    | undefined;
+    { enabled?: boolean; text?: string; link?: string } | undefined;
 
   if (isAdminRoute) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col bg-background" suppressHydrationWarning>
         <main className="flex-1">
           <Outlet />
         </main>
@@ -232,7 +248,7 @@ function AppLayout() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col" suppressHydrationWarning>
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:outline-none font-semibold text-sm"

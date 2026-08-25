@@ -52,10 +52,12 @@ export function FaqAccordion({ limit }: { limit?: number }) {
   });
 
   const rawItems = dbFaqs && dbFaqs.length > 0 ? dbFaqs : faqs;
-  const mapped = rawItems.map((f: any) => ({
-    q: f.question || f.q,
-    a: f.answer || f.a,
-  }));
+  const mapped = rawItems.map(
+    (f: { question?: string; q?: string; answer?: string; a?: string }) => ({
+      q: f.question || f.q || "",
+      a: f.answer || f.a || "",
+    }),
+  );
   const items = limit ? mapped.slice(0, limit) : mapped;
 
   return (
