@@ -10,6 +10,7 @@ import {
   Filter,
   PackagePlus,
   PackageSearch,
+  Pencil,
   RotateCcw,
   Search,
   ShoppingBag,
@@ -51,6 +52,7 @@ function StockManagementPage() {
   const [statusFilter, setStatusFilter] = useState<StockStatusFilter>("IN_STOCK");
   const [brandFilter, setBrandFilter] = useState<string>("ALL");
   const [showFinancials, setShowFinancials] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState<StockDevice | null>(null);
   const [archiveTarget, setArchiveTarget] = useState<StockDevice | null>(null);
   const [archiveReason, setArchiveReason] = useState("Returned to supplier / written off");
   const [archiveBusy, setArchiveBusy] = useState(false);
@@ -317,6 +319,29 @@ function StockManagementPage() {
 
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-1.5">
+                      {/* View Details */}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedDetail(device)}
+                        className="rounded-md border border-slate-200 p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors min-h-[32px] min-w-[32px] flex items-center justify-center"
+                        title="View Details"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                      </button>
+
+                      {/* Edit Stock Item */}
+                      {me?.isAdmin && (
+                        <Link
+                          to="/admin/buy"
+                          search={{ editId: device.id }}
+                          className="rounded-md border border-slate-200 p-1.5 text-slate-600 hover:text-[var(--kimi-accent)] hover:bg-[var(--kimi-accent-bg)] transition-colors min-h-[32px] min-w-[32px] flex items-center justify-center"
+                          title="Edit Stock Item"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Link>
+                      )}
+
+                      {/* Sell (if IN_STOCK) */}
                       {device.status === "IN_STOCK" && (
                         <Link
                           to="/admin/sell"
@@ -326,14 +351,17 @@ function StockManagementPage() {
                         </Link>
                       )}
 
-                      <button
-                        type="button"
-                        onClick={() => setArchiveTarget(device)}
-                        className="rounded-md border border-slate-200 p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors min-h-[32px] min-w-[32px] flex items-center justify-center"
-                        title="Archive record"
-                      >
-                        <Archive className="h-3.5 w-3.5" />
-                      </button>
+                      {/* Archive (if IN_STOCK) */}
+                      {device.status === "IN_STOCK" && me?.isAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => setArchiveTarget(device)}
+                          className="rounded-md border border-slate-200 p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors min-h-[32px] min-w-[32px] flex items-center justify-center"
+                          title="Archive record"
+                        >
+                          <Archive className="h-3.5 w-3.5" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -342,6 +370,109 @@ function StockManagementPage() {
           </tbody>
         )}
       </DataTable>
+
+      {/* ── View Details Modal ────────────────────────────────────────────── */}
+      {selectedDetail && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in">
+          <div className="relative w-full max-w-lg rounded-xl border border-slate-200 bg-white p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="text-[16px] font-black text-slate-900">
+                  {selectedDetail.device_make} {selectedDetail.device_model}
+                </h3>
+                <p className="text-[12px] text-slate-500">
+                  SKU: STK-{selectedDetail.id.substring(0, 8).toUpperCase()} · Added{" "}
+                  {new Date(selectedDetail.created_at).toLocaleDateString("en-GB")}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedDetail(null)}
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5 text-[13px] bg-slate-50 p-3.5 rounded-lg border border-slate-100">
+              <div>
+                <span className="text-slate-400 block text-[11px] font-bold uppercase">Spec</span>
+                <span className="font-semibold text-slate-800">
+                  {selectedDetail.storage || "N/A"} · {selectedDetail.colour || "Standard"}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[11px] font-bold uppercase">
+                  Condition
+                </span>
+                <span className="font-semibold text-slate-800">
+                  {selectedDetail.device_condition}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[11px] font-bold uppercase">IMEI</span>
+                <span className="font-mono font-semibold text-slate-800">
+                  {selectedDetail.imei || "—"}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[11px] font-bold uppercase">Serial</span>
+                <span className="font-mono text-slate-800">{selectedDetail.serial || "—"}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[11px] font-bold uppercase">
+                  Selling Price
+                </span>
+                <span className="font-black text-emerald-700">
+                  {formatPence(selectedDetail.expected_sale_price_pence || 0)}
+                </span>
+              </div>
+              {me?.isAdmin && (
+                <div>
+                  <span className="text-slate-400 block text-[11px] font-bold uppercase">
+                    Cost Price
+                  </span>
+                  <span className="font-bold text-slate-800">
+                    {formatPence(selectedDetail.purchase_price_pence || 0)}
+                  </span>
+                </div>
+              )}
+              <div>
+                <span className="text-slate-400 block text-[11px] font-bold uppercase">Status</span>
+                <StatusBadge status={selectedDetail.status} />
+              </div>
+              <div>
+                <span className="text-slate-400 block text-[11px] font-bold uppercase">
+                  Days in Stock
+                </span>
+                <span className="font-semibold text-slate-800">
+                  {calculateDaysInStock(selectedDetail.created_at)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+              {me?.isAdmin && (
+                <Link
+                  to="/admin/buy"
+                  search={{ editId: selectedDetail.id }}
+                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3.5 py-2 text-[13px] font-bold text-slate-700 hover:bg-slate-50"
+                >
+                  <Pencil className="h-3.5 w-3.5 text-slate-500" />
+                  Edit Item
+                </Link>
+              )}
+              <button
+                type="button"
+                onClick={() => setSelectedDetail(null)}
+                className="ml-auto rounded-lg bg-[var(--kimi-accent)] px-4 py-2 text-[13px] font-bold text-white hover:bg-[var(--kimi-accent-hover)]"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Archive Confirmation Modal ────────────────────────────────────── */}
       {archiveTarget && (

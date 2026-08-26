@@ -162,21 +162,30 @@ function generateA4InvoiceHtml(ctx: {
     warrantyDays,
   } = ctx;
 
-  const partyLabel = kind === "PURCHASE" ? "Seller / Supplier" : "Customer";
+  const partyLabel = kind === "PURCHASE" ? "Seller" : "Customer";
   const partyName = String(
     invoice.customer_name ?? invoice.supplier_name ?? invoice.party_name ?? "Walk-in Customer",
   );
   const partyPhone = String(
     invoice.customer_phone ?? invoice.supplier_phone ?? invoice.party_phone ?? "—",
   );
+  const partyEmail = invoice.supplier_email ? String(invoice.supplier_email) : null;
+  const partyAddress = invoice.supplier_address ? String(invoice.supplier_address) : null;
+  const purchaseDate = invoice.purchase_date ? String(invoice.purchase_date) : null;
   const idRef = invoice.id_reference ? String(invoice.id_reference) : null;
 
   const deviceMake = String(invoice.device_make ?? "");
   const deviceModel = String(invoice.device_model ?? "");
   const deviceName = `${deviceMake} ${deviceModel}`.trim() || "Mobile Device";
-  const imeiOrSerial = String(invoice.imei ?? invoice.serial ?? invoice.imei_serial ?? "N/A");
+  const imei1 = invoice.imei ? String(invoice.imei) : null;
+  const imei2 = invoice.serial && kind === "PURCHASE" ? null : null; // serial stored separately
+  const serialNum = invoice.serial ? String(invoice.serial) : null;
+  const imeiOrSerial = imei1 ?? serialNum ?? String(invoice.imei_serial ?? "N/A");
   const condition = invoice.device_condition ? String(invoice.device_condition) : null;
   const storageColour = [invoice.storage, invoice.colour].filter(Boolean).join(" · ");
+  const batteryHealth = invoice.battery_health ? String(invoice.battery_health) : null;
+  const networkStatus = invoice.network_status ? String(invoice.network_status) : null;
+  const accessories = invoice.accessories ? String(invoice.accessories) : null;
   const terms = resolveTerms(kind, invoice);
 
   // Itemized service description
@@ -191,8 +200,8 @@ function generateA4InvoiceHtml(ctx: {
     itemDescription = `${deviceName} ${storageColour ? `(${storageColour})` : ""}`;
     itemSubtext = `Condition: ${condition || "Used"} · IMEI/Serial: ${imeiOrSerial}`;
   } else {
-    itemDescription = `Purchase of ${deviceName} ${storageColour ? `(${storageColour})` : ""}`;
-    itemSubtext = `Condition: ${condition || "Used"} · IMEI/Serial: ${imeiOrSerial}`;
+    itemDescription = `Phone Purchase — ${deviceName} ${storageColour ? `(${storageColour})` : ""}`;
+    itemSubtext = `Condition: ${condition || "Used"} · IMEI: ${imei1 || "—"}${serialNum ? ` · Serial: ${serialNum}` : ""}`;
   }
 
   return `<!doctype html>
@@ -481,16 +490,24 @@ function generateA4InvoiceHtml(ctx: {
         <div class="card-title">${escapeHtml(partyLabel)} Information</div>
         <div class="info-row"><span>Name:</span> <strong>${escapeHtml(partyName)}</strong></div>
         <div class="info-row"><span>Phone:</span> <strong>${escapeHtml(partyPhone)}</strong></div>
+        ${partyEmail ? `<div class="info-row"><span>Email:</span> <strong>${escapeHtml(partyEmail)}</strong></div>` : ""}
+        ${partyAddress ? `<div class="info-row"><span>Address:</span> <strong>${escapeHtml(partyAddress)}</strong></div>` : ""}
         ${idRef ? `<div class="info-row"><span>ID Ref:</span> <strong>${escapeHtml(idRef)}</strong></div>` : ""}
         ${invoice.payment_method ? `<div class="info-row"><span>Payment:</span> <strong>${escapeHtml(String(invoice.payment_method).replace(/_/g, " "))}</strong></div>` : ""}
+        ${purchaseDate ? `<div class="info-row"><span>Purchase Date:</span> <strong>${escapeHtml(purchaseDate)}</strong></div>` : ""}
       </div>
       <div class="info-card">
         <div class="card-title">Device Information</div>
         <div class="info-row"><span>Device:</span> <strong>${escapeHtml(deviceName)}</strong></div>
-        <div class="info-row"><span>IMEI / Serial:</span> <strong>${escapeHtml(imeiOrSerial)}</strong></div>
+        ${imei1 ? `<div class="info-row"><span>IMEI 1:</span> <strong>${escapeHtml(imei1)}</strong></div>` : ""}
+        ${!imei1 && serialNum ? `<div class="info-row"><span>Serial:</span> <strong>${escapeHtml(serialNum)}</strong></div>` : ""}
+        ${imei1 && serialNum ? `<div class="info-row"><span>Serial:</span> <strong>${escapeHtml(serialNum)}</strong></div>` : ""}
         ${storageColour ? `<div class="info-row"><span>Spec:</span> <strong>${escapeHtml(storageColour)}</strong></div>` : ""}
         ${condition ? `<div class="info-row"><span>Condition:</span> <strong>${escapeHtml(condition)}</strong></div>` : ""}
-        <div class="info-row"><span>Warranty:</span> <strong>${escapeHtml(warrantyDays)}</strong></div>
+        ${batteryHealth ? `<div class="info-row"><span>Battery:</span> <strong>${escapeHtml(batteryHealth)}%</strong></div>` : ""}
+        ${networkStatus ? `<div class="info-row"><span>Network:</span> <strong>${escapeHtml(networkStatus)}</strong></div>` : ""}
+        ${accessories ? `<div class="info-row"><span>Accessories:</span> <strong>${escapeHtml(accessories)}</strong></div>` : ""}
+        ${kind !== "PURCHASE" ? `<div class="info-row"><span>Warranty:</span> <strong>${escapeHtml(warrantyDays)}</strong></div>` : ""}
       </div>
     </div>
 
@@ -546,7 +563,8 @@ function generateA4InvoiceHtml(ctx: {
       <div class="terms-title">${escapeHtml(terms.heading)}</div>
       ${terms.points
         .map(
-          (p) => `<p style="margin-bottom: 3px;"><strong>${escapeHtml(p.title)}:</strong> ${escapeHtml(p.body)}</p>`,
+          (p) =>
+            `<p style="margin-bottom: 3px;"><strong>${escapeHtml(p.title)}:</strong> ${escapeHtml(p.body)}</p>`,
         )
         .join("")}
 
@@ -569,13 +587,19 @@ function generateA4InvoiceHtml(ctx: {
     ${
       kind === "PURCHASE"
         ? `
-      <div class="signatures-purchase" style="margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 11px; color: #374151;">
+      <div style="margin-top: 20px; padding: 10px 14px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 11px; color: #374151; line-height: 1.5;">
+        <strong style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280;">Seller Declaration</strong>
+        <p style="margin-top: 4px; font-style: italic; color: #111827;">
+          &ldquo;I confirm that I am the lawful owner of this device, the information provided is correct, and I have received the agreed payment.&rdquo;
+        </p>
+      </div>
+      <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 11px; color: #374151;">
         <div>
-          <div style="margin-bottom: 16px;">Seller Name: ____________________________________</div>
+          <div style="margin-bottom: 20px;">Seller Name: ____________________________________</div>
           <div>Seller Signature: _______________________________</div>
         </div>
         <div>
-          <div style="margin-bottom: 16px;">Date: ___________________________________________</div>
+          <div style="margin-bottom: 20px;">Date: ___________________________________________</div>
           <div>Authorised Shop Signature: ______________________</div>
         </div>
       </div>`
@@ -637,9 +661,15 @@ function generate80mmThermalHtml(ctx: {
   const partyPhone = String(
     invoice.customer_phone ?? invoice.supplier_phone ?? invoice.party_phone ?? "",
   );
+  const partyEmail = invoice.supplier_email ? String(invoice.supplier_email) : "";
   const deviceName =
     `${invoice.device_make ?? ""} ${invoice.device_model ?? ""}`.trim() || "Mobile Device";
-  const imeiOrSerial = String(invoice.imei ?? invoice.serial ?? invoice.imei_serial ?? "");
+  const imei1 = invoice.imei ? String(invoice.imei) : "";
+  const serialNum = invoice.serial ? String(invoice.serial) : "";
+  const imeiOrSerial = imei1 || serialNum || String(invoice.imei_serial ?? "");
+  const batteryHealth80 = invoice.battery_health ? String(invoice.battery_health) : "";
+  const networkStatus80 = invoice.network_status ? String(invoice.network_status) : "";
+  const accessories80 = invoice.accessories ? String(invoice.accessories) : "";
   const problem = invoice.problem ? String(invoice.problem) : "";
   const repairWork = invoice.repair_work ? String(invoice.repair_work) : "";
   const terms = resolveTerms(kind, invoice);
@@ -724,18 +754,21 @@ function generate80mmThermalHtml(ctx: {
     <strong class="text-right">${escapeHtml(partyName)}</strong>
   </div>
   ${partyPhone ? `<div class="row"><span>Phone:</span><strong class="text-right">${escapeHtml(partyPhone)}</strong></div>` : ""}
+  ${kind === "PURCHASE" && partyEmail ? `<div class="row"><span>Email:</span><strong class="text-right">${escapeHtml(partyEmail)}</strong></div>` : ""}
 
   <div class="row">
     <span>Device:</span>
     <strong class="text-right">${escapeHtml(deviceName)}</strong>
   </div>
-  ${imeiOrSerial ? `<div class="row"><span>IMEI/SN:</span><strong class="text-right">${escapeHtml(imeiOrSerial)}</strong></div>` : ""}
+  ${kind === "PURCHASE" && imei1 ? `<div class="row"><span>IMEI 1:</span><strong class="text-right">${escapeHtml(imei1)}</strong></div>` : ""}
+  ${kind !== "PURCHASE" && imeiOrSerial ? `<div class="row"><span>IMEI/SN:</span><strong class="text-right">${escapeHtml(imeiOrSerial)}</strong></div>` : ""}
+  ${kind === "PURCHASE" && serialNum ? `<div class="row"><span>Serial:</span><strong class="text-right">${escapeHtml(serialNum)}</strong></div>` : ""}
   ${problem ? `<div class="row"><span>Problem:</span><strong class="text-right">${escapeHtml(problem)}</strong></div>` : ""}
   ${repairWork ? `<div class="row"><span>Work:</span><strong class="text-right">${escapeHtml(repairWork)}</strong></div>` : ""}
-  <div class="row">
-    <span>Warranty:</span>
-    <strong class="text-right">${escapeHtml(warrantyDays)}</strong>
-  </div>
+  ${batteryHealth80 && kind === "PURCHASE" ? `<div class="row"><span>Battery:</span><strong class="text-right">${escapeHtml(batteryHealth80)}%</strong></div>` : ""}
+  ${networkStatus80 && kind === "PURCHASE" ? `<div class="row"><span>Network:</span><strong class="text-right">${escapeHtml(networkStatus80)}</strong></div>` : ""}
+  ${accessories80 && kind === "PURCHASE" ? `<div class="row"><span>Accessories:</span><strong class="text-right">${escapeHtml(accessories80)}</strong></div>` : ""}
+  ${kind !== "PURCHASE" ? `<div class="row"><span>Warranty:</span><strong class="text-right">${escapeHtml(warrantyDays)}</strong></div>` : ""}
 
   <div class="divider-solid"></div>
 
@@ -764,7 +797,8 @@ function generate80mmThermalHtml(ctx: {
     </div>
     ${terms.points
       .map(
-        (p) => `<div style="margin-bottom: 3px;"><strong>${escapeHtml(p.title)}:</strong> ${escapeHtml(p.body)}</div>`,
+        (p) =>
+          `<div style="margin-bottom: 3px;"><strong>${escapeHtml(p.title)}:</strong> ${escapeHtml(p.body)}</div>`,
       )
       .join("")}
     
@@ -786,7 +820,8 @@ function generate80mmThermalHtml(ctx: {
     kind === "PURCHASE"
       ? `
   <div class="divider"></div>
-  <div style="font-size: 8.5px; line-height: 1.4; margin: 6px 0;">
+  <div style="font-size: 8.5px; line-height: 1.45; margin: 6px 0; color: #111;">
+    <div style="font-style: italic; margin-bottom: 5px;">&ldquo;I confirm that I am the lawful owner of this device, the information provided is correct, and I have received the agreed payment.&rdquo;</div>
     <div>Seller Sig: _______________________________</div>
     <div style="margin-top: 4px;">Date: ______________________________________</div>
   </div>`

@@ -32,6 +32,7 @@ export type PartySummary = {
 
 export type StockDevice = {
   id: string;
+  purchase_invoice_id?: string | null;
   device_make: string;
   device_model: string;
   storage: string | null;

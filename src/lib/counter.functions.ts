@@ -52,6 +52,9 @@ export const PurchaseInput = z
     supplier_id: z.string().uuid().optional(),
     supplier_name: requiredText(100),
     supplier_phone: z.string().trim().min(1).max(30),
+    supplier_email: optionalText(200),
+    supplier_address: optionalText(300),
+    purchase_date: z.string().date().optional(),
     id_reference: optionalText(100),
     seller_note: optionalText(1000),
     terms_snapshot: z.any().optional(),
@@ -62,6 +65,9 @@ export const PurchaseInput = z
     imei: optionalText(30),
     serial: optionalText(80),
     device_condition: requiredText(100),
+    battery_health: optionalText(20),
+    network_status: optionalText(50),
+    accessories: optionalText(200),
     purchase_price_pence: money,
     paid_pence: money,
     expected_sale_price_pence: money.optional(),
@@ -416,3 +422,260 @@ export const voidCounterInvoice = createServerFn({ method: "POST" })
       p_reason: data.reason,
     }),
   );
+
+export type StockDeviceDetail = StockDevice & {
+  purchase_invoice?: {
+    id: string;
+    invoice_number: string;
+    supplier_id?: string | null;
+    supplier_name: string;
+    supplier_phone: string;
+    supplier_email?: string | null;
+    supplier_address?: string | null;
+    seller_note?: string | null;
+    purchase_price_pence: number;
+    paid_pence: number;
+    payment_method?: string | null;
+    created_at: string;
+  } | null;
+  sale_invoice?: {
+    id: string;
+    invoice_number: string;
+    customer_name: string;
+    customer_phone: string;
+    total_pence: number;
+    created_at: string;
+  } | null;
+  movement_note?: string | null;
+};
+
+export const getStockDevice = createServerFn({ method: "POST" })
+  .validator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data }): Promise<StockDeviceDetail> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: stockRow, error: stockErr } = await (supabaseAdmin as any)
+      .from("stock_devices")
+      .select("*")
+      .eq("id", data.id)
+      .single();
+
+    if (stockErr || !stockRow) throw new Error(stockErr?.message || "Stock device not found.");
+
+    let purchaseInvoice = null;
+    if (stockRow.purchase_invoice_id) {
+      const { data: pInv } = await (supabaseAdmin as any)
+        .from("purchase_invoices")
+        .select(
+          "id, invoice_number, supplier_id, supplier_name, supplier_phone, seller_note, purchase_price_pence, paid_pence, payment_method, created_at",
+        )
+        .eq("id", stockRow.purchase_invoice_id)
+        .maybeSingle();
+      if (pInv) purchaseInvoice = pInv;
+    }
+
+    let saleInvoice = null;
+    if (stockRow.status === "SOLD") {
+      const { data: sInv } = await (supabaseAdmin as any)
+        .from("sale_invoices")
+        .select("id, invoice_number, customer_name, customer_phone, total_pence, created_at")
+        .eq("stock_device_id", stockRow.id)
+        .eq("status", "FINAL")
+        .maybeSingle();
+      if (sInv) saleInvoice = sInv;
+    }
+
+    const { data: movement } = await (supabaseAdmin as any)
+      .from("stock_movements")
+      .select("note")
+      .eq("stock_device_id", stockRow.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    return {
+      ...stockRow,
+      purchase_invoice: purchaseInvoice,
+      sale_invoice: saleInvoice,
+      movement_note: movement?.note || null,
+    };
+  });
+
+export const UpdateStockInput = z.object({
+  id: z.string().uuid(),
+  device_make: z.string().trim().min(1).max(80).optional(),
+  device_model: z.string().trim().min(1).max(120).optional(),
+  storage: z.string().trim().max(40).optional().nullable(),
+  colour: z.string().trim().max(40).optional().nullable(),
+  imei: z.string().trim().max(30).optional().nullable(),
+  serial: z.string().trim().max(80).optional().nullable(),
+  device_condition: z.string().trim().min(1).max(100),
+  purchase_price_pence: z.number().int().min(0).optional(),
+  expected_sale_price_pence: z.number().int().min(0).optional().nullable(),
+  notes: z.string().trim().max(3000).optional().nullable(),
+});
+
+export const updateStockDevice = createServerFn({ method: "POST" })
+  .validator((data: unknown) => UpdateStockInput.parse(data))
+  .handler(async ({ data }) => {
+    const { getMyRole } = await import("@/lib/admin.functions");
+    const role = await getMyRole();
+    if (!role?.isAdmin) {
+      throw new Error("Unauthorized: Only administrators can edit stock records.");
+    }
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Fetch existing stock device
+    const { data: existing, error: findErr } = await (supabaseAdmin as any)
+      .from("stock_devices")
+      .select("*")
+      .eq("id", data.id)
+      .single();
+
+    if (findErr || !existing) throw new Error("Stock item not found.");
+    if (existing.status !== "IN_STOCK") {
+      throw new Error(
+        `Cannot edit stock item: status is ${existing.status}. Only active (IN_STOCK) items can be modified.`,
+      );
+    }
+
+    const isSellerLinked = Boolean(existing.purchase_invoice_id);
+
+    // Reject tampering attempts on seller-purchased items
+    if (isSellerLinked) {
+      if (data.device_make && data.device_make.trim() !== existing.device_make) {
+        throw new Error(
+          "Cannot edit brand of a phone purchased from a seller (locked to purchase invoice).",
+        );
+      }
+      if (data.device_model && data.device_model.trim() !== existing.device_model) {
+        throw new Error(
+          "Cannot edit model of a phone purchased from a seller (locked to purchase invoice).",
+        );
+      }
+      if (
+        data.purchase_price_pence !== undefined &&
+        data.purchase_price_pence !== existing.purchase_price_pence
+      ) {
+        throw new Error(
+          "Cannot edit purchase cost of a phone purchased from a seller (locked to purchase invoice).",
+        );
+      }
+      const incomingImei = data.imei ? data.imei.replace(/[\s-]/g, "") : null;
+      if (incomingImei && existing.imei && incomingImei !== existing.imei) {
+        throw new Error(
+          "Cannot edit IMEI of a phone purchased from a seller (locked to purchase invoice).",
+        );
+      }
+    }
+
+    // Atomic duplicate IMEI validation
+    const cleanImei = data.imei ? data.imei.replace(/[\s-]/g, "") : null;
+    if (cleanImei && !/^\d{15}$/.test(cleanImei)) {
+      throw new Error("IMEI must contain exactly 15 numeric digits.");
+    }
+
+    if (cleanImei && cleanImei !== existing.imei) {
+      const { data: dup } = await (supabaseAdmin as any)
+        .from("stock_devices")
+        .select("id, device_make, device_model")
+        .eq("imei", cleanImei)
+        .neq("id", data.id)
+        .in("status", ["IN_STOCK", "SOLD"])
+        .limit(1)
+        .maybeSingle();
+
+      if (dup) {
+        throw new Error(
+          `This IMEI is already in use by ${dup.device_make} ${dup.device_model} (SKU: STK-${dup.id.substring(0, 8).toUpperCase()}).`,
+        );
+      }
+    }
+
+    // Prepare whitelisted update payload
+    const updatePayload: Record<string, unknown> = {
+      device_condition: data.device_condition.trim(),
+      expected_sale_price_pence: data.expected_sale_price_pence ?? null,
+      updated_at: new Date().toISOString(),
+    };
+
+    // For direct stock entries only, allow updating device identity & cost
+    if (!isSellerLinked) {
+      if (data.device_make) updatePayload.device_make = data.device_make.trim();
+      if (data.device_model) updatePayload.device_model = data.device_model.trim();
+      if (data.storage !== undefined) updatePayload.storage = data.storage || null;
+      if (data.colour !== undefined) updatePayload.colour = data.colour || null;
+      if (data.imei !== undefined) updatePayload.imei = cleanImei;
+      if (data.serial !== undefined) updatePayload.serial = data.serial?.trim() || null;
+      if (data.purchase_price_pence !== undefined) {
+        updatePayload.purchase_price_pence = data.purchase_price_pence;
+      }
+    }
+
+    // Compute change diffs for detailed audit
+    const diffs: string[] = [];
+    if (
+      updatePayload.device_condition &&
+      updatePayload.device_condition !== existing.device_condition
+    ) {
+      diffs.push(`Condition: "${existing.device_condition}" → "${updatePayload.device_condition}"`);
+    }
+    if (
+      updatePayload.expected_sale_price_pence !== undefined &&
+      updatePayload.expected_sale_price_pence !== existing.expected_sale_price_pence
+    ) {
+      diffs.push(
+        `Selling Price: ${existing.expected_sale_price_pence ?? 0}p → ${updatePayload.expected_sale_price_pence ?? 0}p`,
+      );
+    }
+    if (
+      updatePayload.purchase_price_pence !== undefined &&
+      updatePayload.purchase_price_pence !== existing.purchase_price_pence
+    ) {
+      diffs.push(
+        `Cost: ${existing.purchase_price_pence ?? 0}p → ${updatePayload.purchase_price_pence ?? 0}p`,
+      );
+    }
+    if (updatePayload.device_make && updatePayload.device_make !== existing.device_make) {
+      diffs.push(`Brand: "${existing.device_make}" → "${updatePayload.device_make}"`);
+    }
+    if (updatePayload.device_model && updatePayload.device_model !== existing.device_model) {
+      diffs.push(`Model: "${existing.device_model}" → "${updatePayload.device_model}"`);
+    }
+    if (updatePayload.storage !== undefined && updatePayload.storage !== existing.storage) {
+      diffs.push(`Storage: "${existing.storage || "None"}" → "${updatePayload.storage || "None"}"`);
+    }
+    if (updatePayload.colour !== undefined && updatePayload.colour !== existing.colour) {
+      diffs.push(`Colour: "${existing.colour || "None"}" → "${updatePayload.colour || "None"}"`);
+    }
+    if (updatePayload.imei !== undefined && updatePayload.imei !== existing.imei) {
+      diffs.push(`IMEI: "${existing.imei || "None"}" → "${updatePayload.imei || "None"}"`);
+    }
+    if (updatePayload.serial !== undefined && updatePayload.serial !== existing.serial) {
+      diffs.push(`Serial: "${existing.serial || "None"}" → "${updatePayload.serial || "None"}"`);
+    }
+
+    const { data: updated, error: updateErr } = await (supabaseAdmin as any)
+      .from("stock_devices")
+      .update(updatePayload)
+      .eq("id", data.id)
+      .select()
+      .single();
+
+    if (updateErr) throw new Error(updateErr.message);
+
+    // Record structured audit log in stock_movements
+    const auditSummary =
+      diffs.length > 0
+        ? `Updated fields: [${diffs.join(", ")}]${data.notes ? ` | Notes: ${data.notes}` : ""}`
+        : `Stock item saved${data.notes ? ` | Notes: ${data.notes}` : ""}`;
+
+    await (supabaseAdmin as any).from("stock_movements").insert({
+      stock_device_id: data.id,
+      movement_type: "UPDATED",
+      reference: "STOCK_EDIT",
+      note: auditSummary,
+    });
+
+    return updated;
+  });

@@ -107,84 +107,37 @@ function CounterAdminLayout() {
 
   return (
     <div className="min-h-screen bg-[var(--kimi-color-page-bg)] pb-16 lg:pb-0">
-      {/* ── Top Header ─────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white">
-        <div className="flex h-14 items-center gap-3 px-4 lg:px-6">
-          {/* Mobile drawer toggle */}
-          <button
-            className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center"
-            onClick={() => setDrawerOpen(true)}
-            aria-label="Open menu"
+      {/* ── Compact Sticky Top Navigation Bar (60-64px) ────────────────────── */}
+      <header className="sticky top-0 z-40 h-15 border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-xs">
+        <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-3 px-4 sm:px-6">
+          {/* Left: Hamburger (mobile) + Brand Logo */}
+          <div className="flex items-center gap-3">
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 lg:hidden"
+              onClick={() => setDrawerOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+
+            <Link to="/admin" className="flex items-center gap-2.5 shrink-0">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--kimi-accent)] text-[12px] font-black text-white tracking-wider shadow-sm">
+                MK
+              </span>
+              <div className="leading-tight">
+                <p className="text-[14px] font-black text-slate-900 tracking-tight">MR KHAN</p>
+                <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-[var(--kimi-accent)]">
+                  Counter POS
+                </p>
+              </div>
+            </Link>
+          </div>
+
+          {/* Center: Desktop Horizontal Navigation Links */}
+          <nav
+            className="hidden lg:flex items-center gap-1 overflow-x-auto py-1"
+            aria-label="Top navigation"
           >
-            <Menu className="h-5 w-5" />
-          </button>
-
-          {/* Brand Logo */}
-          <Link to="/admin" className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--kimi-accent)] text-[12px] font-black text-white tracking-wider shadow-sm">
-              MK
-            </span>
-            <div className="leading-tight">
-              <p className="text-[14px] font-black text-slate-900 tracking-tight">MR KHAN</p>
-              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--kimi-accent)]">
-                Counter POS
-              </p>
-            </div>
-          </Link>
-
-          {/* Right Header — Role badge & Sign out */}
-          <div className="ml-auto flex items-center gap-3">
-            <div className="hidden text-right sm:block">
-              <p className="text-[13px] font-bold text-slate-900">
-                {me?.isAdmin ? "Owner (Admin)" : "Counter Staff"}
-              </p>
-              <p className="text-[11px] text-slate-400">UK Retail Counter</p>
-            </div>
-            <button
-              onClick={signOut}
-              title="Sign out"
-              className="flex items-center gap-1.5 rounded-[var(--kimi-radius-btn)] border border-slate-200 px-3 py-2 text-[13px] font-medium text-slate-600 hover:bg-slate-50 transition-colors min-h-[44px]"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Sign out</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* ── Mobile Drawer Overlay ────────────────────────────────────────────── */}
-      {drawerOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs lg:hidden"
-          onClick={() => setDrawerOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* ── Main Layout Wrapper ────────────────────────────────────────────── */}
-      <div className="flex min-h-[calc(100vh-3.5rem)]">
-        {/* ── Desktop Sidebar ──────────────────────────────────────────────── */}
-        <aside
-          className={cn(
-            "fixed inset-y-0 left-0 z-50 flex w-[230px] flex-col border-r border-slate-200 bg-white transition-transform duration-200 lg:sticky lg:top-14 lg:z-10 lg:h-[calc(100vh-3.5rem)] lg:translate-x-0",
-            drawerOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full",
-          )}
-        >
-          {/* Mobile close bar */}
-          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 lg:hidden">
-            <span className="text-[12px] font-bold uppercase tracking-wider text-slate-400">
-              Menu Navigation
-            </span>
-            <button
-              onClick={() => setDrawerOpen(false)}
-              aria-label="Close menu"
-              className="rounded-lg p-2 hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
-            >
-              <X className="h-4 w-4 text-slate-600" />
-            </button>
-          </div>
-
-          <nav className="flex-1 overflow-y-auto p-3 space-y-1" aria-label="Sidebar navigation">
             {NAV_ITEMS.map((item) => {
               const active = item.exact
                 ? location.pathname === item.to
@@ -193,24 +146,18 @@ function CounterAdminLayout() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  onClick={() => setDrawerOpen(false)}
                   className={cn(
-                    "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-semibold transition-colors min-h-[44px]",
+                    "flex items-center gap-2 rounded-lg px-3.5 py-2 text-[13px] font-semibold transition-all shrink-0",
                     active
-                      ? "bg-slate-100 text-slate-900"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+                      ? "bg-[var(--kimi-accent-bg)] text-[var(--kimi-accent)] shadow-xs font-bold"
+                      : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900",
                   )}
                   aria-current={active ? "page" : undefined}
                 >
-                  {active && (
-                    <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full bg-[var(--kimi-accent)]" />
-                  )}
                   <item.icon
                     className={cn(
                       "h-4 w-4 shrink-0",
-                      active
-                        ? "text-[var(--kimi-accent)]"
-                        : "text-slate-400 group-hover:text-slate-600",
+                      active ? "text-[var(--kimi-accent)]" : "text-slate-400",
                     )}
                   />
                   {item.label}
@@ -219,21 +166,112 @@ function CounterAdminLayout() {
             })}
           </nav>
 
-          {/* Sidebar Footer */}
-          <div className="border-t border-slate-100 p-3 text-center">
-            <p className="text-[11px] text-slate-400">
-              © {new Date().getFullYear()} MR KHAN MOBILES
-            </p>
+          {/* Right: Owner Role Badge & Sign Out */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="hidden sm:block text-right pr-1">
+              <p className="text-[12px] font-bold text-slate-900 leading-tight">
+                {me?.isAdmin ? "Owner (Admin)" : "Counter Staff"}
+              </p>
+              <p className="text-[10px] text-slate-400">UK Retail Counter</p>
+            </div>
+            <button
+              onClick={signOut}
+              title="Sign out"
+              className="flex items-center gap-1.5 rounded-[var(--kimi-radius-btn)] border border-slate-200 bg-white px-3 py-1.5 text-[12px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-red-600 hover:border-red-200 transition-colors h-9"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Sign out</span>
+            </button>
           </div>
-        </aside>
+        </div>
+      </header>
 
-        {/* ── Main Workspace ───────────────────────────────────────────────── */}
-        <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
-          <div className="mx-auto max-w-[1280px]">
-            {isDashboard ? <CounterHomeScreen me={me} /> : <Outlet />}
+      {/* ── Mobile Navigation Drawer (Hamburger) ────────────────────────────── */}
+      {drawerOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs lg:hidden"
+            onClick={() => setDrawerOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col border-r border-slate-200 bg-white shadow-2xl lg:hidden">
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3.5">
+              <div className="flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--kimi-accent)] text-[11px] font-black text-white">
+                  MK
+                </span>
+                <span className="text-[13px] font-bold text-slate-900">MR KHAN Counter</span>
+              </div>
+              <button
+                onClick={() => setDrawerOpen(false)}
+                aria-label="Close menu"
+                className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Drawer Nav Items */}
+            <nav
+              className="flex-1 overflow-y-auto p-3 space-y-1"
+              aria-label="Mobile menu navigation"
+            >
+              {NAV_ITEMS.map((item) => {
+                const active = item.exact
+                  ? location.pathname === item.to
+                  : location.pathname.startsWith(item.to);
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setDrawerOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-semibold transition-colors min-h-[44px]",
+                      active
+                        ? "bg-[var(--kimi-accent-bg)] text-[var(--kimi-accent)]"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
+                    )}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    <item.icon
+                      className={cn(
+                        "h-4 w-4 shrink-0",
+                        active ? "text-[var(--kimi-accent)]" : "text-slate-400",
+                      )}
+                    />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Drawer Footer */}
+            <div className="border-t border-slate-100 p-3 space-y-2">
+              <div className="px-2 py-1">
+                <p className="text-[12px] font-bold text-slate-900">
+                  {me?.isAdmin ? "Owner (Admin)" : "Counter Staff"}
+                </p>
+                <p className="text-[10px] text-slate-400">UK Retail Counter</p>
+              </div>
+              <button
+                onClick={signOut}
+                className="flex w-full items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-[13px] font-semibold text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </button>
+            </div>
           </div>
-        </main>
-      </div>
+        </>
+      )}
+
+      {/* ── Main Workspace (Full Width, recovered horizontal space) ─────────── */}
+      <main className="min-w-0 flex-1 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+        <div className="mx-auto max-w-[1400px]">
+          {isDashboard ? <CounterHomeScreen me={me} /> : <Outlet />}
+        </div>
+      </main>
 
       {/* ── Tablet / Mobile Bottom Navigation Bar ────────────────────────────── */}
       <nav

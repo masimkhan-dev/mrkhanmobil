@@ -75,10 +75,25 @@ export const inputErrorBase =
 
 // ─── Inline Error Component ───────────────────────────────────────────────────
 
-export function InlineError({ message, className }: { message?: string; className?: string }) {
+export function InlineError({
+  id,
+  message,
+  className,
+}: {
+  id?: string;
+  message?: string;
+  className?: string;
+}) {
   if (!message) return null;
   return (
-    <div className={cn("mt-1.5 flex items-center gap-1.5 text-[13px] font-medium text-red-600", className)}>
+    <div
+      id={id}
+      role="alert"
+      className={cn(
+        "mt-1.5 flex items-center gap-1.5 text-[13px] font-medium text-red-600",
+        className,
+      )}
+    >
       <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
       <span>{message}</span>
     </div>
@@ -191,11 +206,11 @@ export function PaymentMethodSelector({
 // ─── Condition Chips ───────────────────────────────────────────────────────────
 
 export const CONDITION_OPTIONS = [
-  { value: "New", label: "New", desc: "Brand new sealed" },
-  { value: "Excellent", label: "Excellent", desc: "Flawless / Grade A" },
-  { value: "Good", label: "Good", desc: "Minor signs of use" },
-  { value: "Fair", label: "Fair", desc: "Visible wear / scratches" },
-  { value: "Faulty", label: "Faulty", desc: "Requires repair / parts" },
+  { value: "New", label: "New — Sealed", desc: "Brand new, sealed box" },
+  { value: "Grade A", label: "Grade A", desc: "Excellent, no wear" },
+  { value: "Grade B", label: "Grade B", desc: "Minor wear" },
+  { value: "Grade C", label: "Grade C", desc: "Visible wear" },
+  { value: "Faulty", label: "Faulty", desc: "Repair or parts" },
 ] as const;
 
 export function ConditionChips({

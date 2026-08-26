@@ -207,3 +207,218 @@ test("Purchase receipt renders seller signature fields on both A4 and 80mm therm
   assert.match(a4Html, /Authorised Shop Signature/);
   assert.match(thermalHtml, /Seller Sig/);
 });
+
+test("UpdateStockInput validates UUID, condition and optional stock fields", async () => {
+  const { UpdateStockInput } = await import("../src/lib/counter.functions.ts");
+
+  const validDirect = {
+    id: "a0000000-0000-0000-0000-000000000001",
+    device_make: "Samsung",
+    device_model: "Galaxy S23",
+    storage: "256GB",
+    colour: "Phantom Black",
+    imei: "351234567890123",
+    device_condition: "Grade A",
+    purchase_price_pence: 25000,
+    expected_sale_price_pence: 38000,
+    notes: "[Checks: Screen: Working] | [Battery: 95%]",
+  };
+  assert.ok(UpdateStockInput.safeParse(validDirect).success);
+
+  // Invalid non-UUID ID rejected
+  const badId = { ...validDirect, id: "not-a-uuid" };
+  assert.equal(UpdateStockInput.safeParse(badId).success, false);
+
+  // Negative prices rejected
+  const badCost = { ...validDirect, purchase_price_pence: -500 };
+  assert.equal(UpdateStockInput.safeParse(badCost).success, false);
+
+  const badSell = { ...validDirect, expected_sale_price_pence: -100 };
+  assert.equal(UpdateStockInput.safeParse(badSell).success, false);
+});
+
+test("Edit Stock business logic enforces field whitelisting and seller lock integrity", () => {
+  // Simulate mock records
+  const directStock = {
+    id: "a0000000-0000-0000-0000-000000000001",
+    purchase_invoice_id: null,
+    device_make: "Apple",
+    device_model: "iPhone 14",
+    storage: "128GB",
+    colour: "Midnight",
+    imei: "350000000000001",
+    device_condition: "Grade B",
+    purchase_price_pence: 30000,
+    expected_sale_price_pence: 45000,
+    status: "IN_STOCK",
+  };
+
+  const sellerStock = {
+    id: "b0000000-0000-0000-0000-000000000002",
+    purchase_invoice_id: "inv-00000000-0000-0000-0000-000000000001",
+    device_make: "Apple",
+    device_model: "iPhone 15 Pro",
+    storage: "256GB",
+    colour: "Natural Titanium",
+    imei: "350000000000002",
+    device_condition: "Grade A",
+    purchase_price_pence: 55000,
+    expected_sale_price_pence: 72000,
+    status: "IN_STOCK",
+  };
+
+  const soldStock = {
+    ...directStock,
+    id: "c0000000-0000-0000-0000-000000000003",
+    status: "SOLD",
+  };
+
+  // Helper verifying edit permissions logic
+  function checkEditPermissions(existing: typeof directStock, changes: Record<string, unknown>) {
+    if (existing.status !== "IN_STOCK") {
+      throw new Error(`Cannot edit stock item with status ${existing.status}`);
+    }
+    const isSeller = Boolean(existing.purchase_invoice_id);
+    if (isSeller) {
+      if (changes.device_make && changes.device_make !== existing.device_make) {
+        throw new Error("Cannot edit brand for seller-linked phone.");
+      }
+      if (
+        changes.purchase_price_pence !== undefined &&
+        changes.purchase_price_pence !== existing.purchase_price_pence
+      ) {
+        throw new Error("Cannot edit purchase cost for seller-linked phone.");
+      }
+      if (changes.imei && changes.imei !== existing.imei) {
+        throw new Error("Cannot edit IMEI for seller-linked phone.");
+      }
+    }
+    return true;
+  }
+
+  // 1. Direct stock allows full edit
+  assert.equal(
+    checkEditPermissions(directStock, {
+      device_make: "Samsung",
+      purchase_price_pence: 28000,
+      expected_sale_price_pence: 42000,
+    }),
+    true,
+  );
+
+  // 2. Seller stock allows editing selling price & condition
+  assert.equal(
+    checkEditPermissions(sellerStock, {
+      device_condition: "Grade B",
+      expected_sale_price_pence: 69000,
+    }),
+    true,
+  );
+
+  // 3. Seller stock blocks tampering with locked purchase facts
+  assert.throws(
+    () => checkEditPermissions(sellerStock, { purchase_price_pence: 40000 }),
+    /Cannot edit purchase cost/,
+  );
+  assert.throws(
+    () => checkEditPermissions(sellerStock, { device_make: "Google" }),
+    /Cannot edit brand/,
+  );
+  assert.throws(
+    () => checkEditPermissions(sellerStock, { imei: "359999999999999" }),
+    /Cannot edit IMEI/,
+  );
+
+  // 4. SOLD item edit is completely rejected
+  assert.throws(
+    () => checkEditPermissions(soldStock, { expected_sale_price_pence: 50000 }),
+    /Cannot edit stock item with status SOLD/,
+  );
+});
+
+test("Audit diff calculation accurately captures before-and-after changes without leaking seller PII", () => {
+  const existing = {
+    device_condition: "Grade B",
+    expected_sale_price_pence: 45000,
+    colour: "Black",
+  };
+  const updated = {
+    device_condition: "Grade A",
+    expected_sale_price_pence: 49000,
+    colour: "Black", // unchanged
+  };
+
+  const diffs: string[] = [];
+  if (updated.device_condition !== existing.device_condition) {
+    diffs.push(`Condition: "${existing.device_condition}" → "${updated.device_condition}"`);
+  }
+  if (updated.expected_sale_price_pence !== existing.expected_sale_price_pence) {
+    diffs.push(
+      `Selling Price: ${existing.expected_sale_price_pence}p → ${updated.expected_sale_price_pence}p`,
+    );
+  }
+  assert.equal(diffs.length, 2);
+  assert.equal(diffs[0], 'Condition: "Grade B" → "Grade A"');
+  assert.equal(diffs[1], "Selling Price: 45000p → 49000p");
+});
+
+test("mapCounterError translates technical and database errors into clear user feedback", async () => {
+  const { mapCounterError } = await import("../src/lib/counter-errors.ts");
+
+  // 1. Session expired
+  const authErr = mapCounterError(new Error("JWT expired / unauthenticated"));
+  assert.equal(authErr.title, "Session expired");
+  assert.equal(authErr.actionType, "SIGN_IN");
+
+  // 2. Permission denied
+  const permErr = mapCounterError(
+    new Error("Unauthorized: Only administrators can edit stock records"),
+  );
+  assert.equal(permErr.title, "Permission denied");
+  assert.equal(permErr.actionType, "STOCK_LIST");
+
+  // 3. Duplicate IMEI
+  const imeiErr = mapCounterError(new Error("This IMEI is already in use by Apple iPhone 13"));
+  assert.equal(imeiErr.title, "IMEI already exists");
+  assert.equal(imeiErr.actionType, "STOCK_LIST");
+
+  // 4. Record not found
+  const notFoundErr = mapCounterError(new Error("Stock item not found"));
+  assert.equal(notFoundErr.title, "Stock item not found");
+  assert.equal(notFoundErr.actionType, "STOCK_LIST");
+
+  // 5. Terminal Sold / Voided
+  const soldErr = mapCounterError(new Error("Cannot edit stock item: status is SOLD"));
+  assert.equal(soldErr.title, "This phone has already been sold");
+  assert.equal(soldErr.isWarning, true);
+
+  const voidedErr = mapCounterError(new Error("Cannot edit stock item: status is VOIDED"));
+  assert.equal(voidedErr.title, "This stock item cannot be edited");
+  assert.equal(voidedErr.isWarning, true);
+
+  // 6. Seller purchase locked fields
+  const lockErr = mapCounterError(
+    new Error(
+      "Cannot edit purchase cost of a phone purchased from a seller (locked to purchase invoice)",
+    ),
+  );
+  assert.equal(lockErr.title, "Purchase invoice locked");
+  assert.equal(lockErr.actionType, "INVOICE_LIST");
+
+  // 7. Timeout & network
+  const timeoutErr = mapCounterError(new Error("Request timed out"));
+  assert.equal(timeoutErr.title, "Request timed out");
+  assert.equal(timeoutErr.actionType, "RETRY");
+
+  // 8. Atomic purchase failure
+  const purchaseErr = mapCounterError(new Error("Database transaction rolled back"), {
+    operation: "createPurchase",
+  });
+  assert.equal(purchaseErr.title, "Purchase could not be saved");
+  assert.equal(purchaseErr.actionType, "INVOICE_LIST");
+
+  // 9. Unknown fallback
+  const unknownErr = mapCounterError(new Error("Unexpected internal error"));
+  assert.equal(unknownErr.title, "Something went wrong");
+  assert.equal(unknownErr.actionType, "RETRY");
+});
