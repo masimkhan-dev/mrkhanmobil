@@ -188,27 +188,23 @@ export const STANDARD_TERMS = {
     ],
   },
   SALE: {
-    heading: "Purchase & Warranty Information",
+    heading: "Sale & Warranty Terms",
     points: [
       {
-        title: "1. DEVICE CONDITION",
-        body: "The device is sold in the condition and specification shown on this invoice. Any known and accepted faults should be recorded at the time of sale.",
+        title: "Device Condition",
+        body: "The device is sold in the condition and specification stated on this invoice.",
       },
       {
-        title: "2. WARRANTY",
-        body: "The shop warranty applies for the period shown on this invoice. It is provided in addition to the customer’s statutory rights and does not replace them.",
+        title: "Shop Warranty",
+        body: "Any applicable shop warranty is provided in addition to, and does not affect, your statutory rights.",
       },
       {
-        title: "3. WARRANTY EXCLUSIONS",
-        body: "The shop warranty does not cover issues caused by accidental or liquid damage, misuse, neglect, or third-party tampering that directly caused the fault after purchase.",
+        title: "Warranty Exclusions",
+        body: "Warranty does not cover accidental or liquid damage, misuse, neglect, or unauthorised tampering that caused the fault.",
       },
       {
-        title: "4. RETURNS",
-        body: "In-store change-of-mind returns are not normally accepted unless agreed at the time of sale. Qualifying online, telephone and mail-order sales may carry a 14-day cancellation right.",
-      },
-      {
-        title: "5. CUSTOMER SUPPORT",
-        body: "Please keep this invoice as proof of purchase. If a problem occurs, contact us or visit our Liverpool shop with the device so that we can inspect and assist you. Your statutory rights are not affected.",
+        title: "Proof of Purchase",
+        body: "Please retain this receipt as proof of purchase. Customer statutory rights are not affected.",
       },
     ],
   },

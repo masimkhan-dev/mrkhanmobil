@@ -20,7 +20,7 @@ interface TermsSnapshotData {
   additional_agreement?: string;
 }
 
-function resolveTerms(kind: InvoiceKind, invoice: InvoiceDetail) {
+function resolveTerms(kind: InvoiceKind, invoice: InvoiceDetail, hasWarranty = false) {
   let snap: TermsSnapshotData | null = null;
   if (invoice.terms_snapshot) {
     if (typeof invoice.terms_snapshot === "object") {
@@ -35,8 +35,45 @@ function resolveTerms(kind: InvoiceKind, invoice: InvoiceDetail) {
   }
 
   const defaultTerms = STANDARD_TERMS[kind];
-  const heading = snap?.heading ?? defaultTerms?.heading ?? "Terms & Warranty Information";
-  const points = snap?.points ?? defaultTerms?.points ?? [];
+  let heading = snap?.heading ?? defaultTerms?.heading ?? "Terms & Warranty Information";
+  let points = snap?.points ?? defaultTerms?.points ?? [];
+
+  if (kind === "SALE") {
+    if (!hasWarranty) {
+      heading = "Sale Terms";
+      points = [
+        {
+          title: "Device Condition",
+          body: "The device is sold in the condition and specification stated on this invoice.",
+        },
+        {
+          title: "Proof of Purchase",
+          body: "Please retain this receipt as proof of purchase. Your statutory rights under UK consumer law are not affected.",
+        },
+      ];
+    } else {
+      heading = "Sale & Warranty Terms";
+      points = [
+        {
+          title: "Device Condition",
+          body: "The device is sold in the condition and specification stated on this invoice.",
+        },
+        {
+          title: "Shop Warranty",
+          body: "The shop warranty applies for the period stated on this invoice. It is provided in addition to, and does not affect, your statutory rights.",
+        },
+        {
+          title: "Warranty Exclusions",
+          body: "Warranty does not cover accidental or liquid damage, misuse, neglect, or unauthorised tampering that caused the fault.",
+        },
+        {
+          title: "Proof of Purchase",
+          body: "Please retain this receipt as proof of purchase. Your statutory rights under UK consumer law are not affected.",
+        },
+      ];
+    }
+  }
+
   const version = snap?.version ?? TERMS_VERSION;
   const additional = String(
     snap?.additional_agreement ??
@@ -65,9 +102,9 @@ export function buildCounterInvoiceHtml(
 
   const invoiceNumber = String(invoice.invoice_number ?? "INV");
   const barcodeSvg = generateCode128BarcodeSvg(invoiceNumber, {
-    height: paper === "80MM" ? 36 : 42,
-    moduleWidth: paper === "80MM" ? 1.25 : 1.45,
-    showLabel: true,
+    height: paper === "80MM" ? 32 : 36,
+    moduleWidth: paper === "80MM" ? 1.25 : 1.35,
+    showLabel: false,
   });
 
   const createdAt = new Date(invoice.created_at || Date.now());
@@ -88,8 +125,10 @@ export function buildCounterInvoiceHtml(
   const discountPence = Number(invoice.discount_pence ?? 0);
   const paidPence = Number(invoice.paid_pence ?? 0);
   const balancePence = Number(invoice.balance_pence ?? Math.max(0, totalPence - paidPence));
-  let warrantyDays = invoice.warranty_days ? `${invoice.warranty_days} Days` : "None";
-  if (invoice.warranty_notes) {
+  const rawWarranty = invoice.warranty_days ? Number(invoice.warranty_days) : 0;
+  const hasWarranty = rawWarranty > 0;
+  let warrantyDays = hasWarranty ? `${invoice.warranty_days} Days` : "None";
+  if (invoice.warranty_notes && hasWarranty) {
     warrantyDays += ` (${invoice.warranty_notes})`;
   }
 
@@ -120,6 +159,7 @@ export function buildCounterInvoiceHtml(
     paidPence,
     balancePence,
     warrantyDays,
+    hasWarranty,
   };
 
   return paper === "A4" ? generateA4InvoiceHtml(ctx) : generate80mmThermalHtml(ctx);
@@ -143,6 +183,7 @@ function generateA4InvoiceHtml(ctx: {
   paidPence: number;
   balancePence: number;
   warrantyDays: string;
+  hasWarranty: boolean;
 }) {
   const {
     kind,
@@ -160,15 +201,25 @@ function generateA4InvoiceHtml(ctx: {
     paidPence,
     balancePence,
     warrantyDays,
+    hasWarranty,
   } = ctx;
 
   const partyLabel = kind === "PURCHASE" ? "Seller" : "Customer";
   const partyName = String(
     invoice.customer_name ?? invoice.supplier_name ?? invoice.party_name ?? "Walk-in Customer",
   );
-  const partyPhone = String(
-    invoice.customer_phone ?? invoice.supplier_phone ?? invoice.party_phone ?? "—",
-  );
+  const rawPartyPhone = String(
+    invoice.customer_phone ?? invoice.supplier_phone ?? invoice.party_phone ?? "",
+  ).trim();
+  const isInvalidPhone =
+    !rawPartyPhone ||
+    rawPartyPhone === "—" ||
+    rawPartyPhone === "-" ||
+    rawPartyPhone.toLowerCase().includes("walk-in") ||
+    rawPartyPhone.toLowerCase().includes("walk in") ||
+    rawPartyPhone.toLowerCase() === "n/a" ||
+    rawPartyPhone.toLowerCase() === "none";
+  const partyPhone = isInvalidPhone ? null : rawPartyPhone;
   const partyEmail = invoice.supplier_email ? String(invoice.supplier_email) : null;
   const partyAddress = invoice.supplier_address ? String(invoice.supplier_address) : null;
   const purchaseDate = invoice.purchase_date ? String(invoice.purchase_date) : null;
@@ -178,7 +229,6 @@ function generateA4InvoiceHtml(ctx: {
   const deviceModel = String(invoice.device_model ?? "");
   const deviceName = `${deviceMake} ${deviceModel}`.trim() || "Mobile Device";
   const imei1 = invoice.imei ? String(invoice.imei) : null;
-  const imei2 = invoice.serial && kind === "PURCHASE" ? null : null; // serial stored separately
   const serialNum = invoice.serial ? String(invoice.serial) : null;
   const imeiOrSerial = imei1 ?? serialNum ?? String(invoice.imei_serial ?? "N/A");
   const condition = invoice.device_condition ? String(invoice.device_condition) : null;
@@ -186,22 +236,27 @@ function generateA4InvoiceHtml(ctx: {
   const batteryHealth = invoice.battery_health ? String(invoice.battery_health) : null;
   const networkStatus = invoice.network_status ? String(invoice.network_status) : null;
   const accessories = invoice.accessories ? String(invoice.accessories) : null;
-  const terms = resolveTerms(kind, invoice);
+  const terms = resolveTerms(kind, invoice, hasWarranty);
 
   // Itemized service description
   let itemDescription = "";
   let itemSubtext = "";
+  let tableHeaderTitle = "Description";
+
   if (kind === "REPAIR") {
+    tableHeaderTitle = "Description & Work Specification";
     itemDescription = String(invoice.problem || "Device Repair Service");
     itemSubtext = invoice.repair_work
       ? `Work Specification: ${String(invoice.repair_work)}`
       : "Diagnostic inspection, component service & functional quality testing";
   } else if (kind === "SALE") {
-    itemDescription = `${deviceName} ${storageColour ? `(${storageColour})` : ""}`;
-    itemSubtext = `Condition: ${condition || "Used"} · IMEI/Serial: ${imeiOrSerial}`;
+    tableHeaderTitle = "Item Description";
+    itemDescription = `Handset Sale — ${deviceName}`;
+    itemSubtext = "";
   } else {
-    itemDescription = `Phone Purchase — ${deviceName} ${storageColour ? `(${storageColour})` : ""}`;
-    itemSubtext = `Condition: ${condition || "Used"} · IMEI: ${imei1 || "—"}${serialNum ? ` · Serial: ${serialNum}` : ""}`;
+    tableHeaderTitle = "Device Purchased";
+    itemDescription = `Device Purchase — ${deviceName}`;
+    itemSubtext = "";
   }
 
   return `<!doctype html>
@@ -212,19 +267,30 @@ function generateA4InvoiceHtml(ctx: {
   <style>
     @page {
       size: A4 portrait;
-      margin: 12mm 15mm;
+      margin: 10mm 12mm;
     }
     @media print {
       html, body {
         margin: 0 !important;
         padding: 0 !important;
         background: #ffffff !important;
+        color: #111827 !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
       .invoice-container {
         box-shadow: none !important;
         max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .info-card, table.items-table, .summary-wrap, .terms-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
       }
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -232,8 +298,8 @@ function generateA4InvoiceHtml(ctx: {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       color: #111827;
       background: #ffffff;
-      font-size: 13px;
-      line-height: 1.5;
+      font-size: 12.5px;
+      line-height: 1.45;
       padding: 0;
       word-break: break-word;
       overflow-wrap: anywhere;
@@ -248,10 +314,10 @@ function generateA4InvoiceHtml(ctx: {
       border: 2px dashed #dc2626;
       color: #991b1b;
       font-weight: 800;
-      font-size: 15px;
+      font-size: 14px;
       text-align: center;
-      padding: 8px 12px;
-      margin-bottom: 16px;
+      padding: 6px 10px;
+      margin-bottom: 14px;
       border-radius: 6px;
       letter-spacing: 2px;
     }
@@ -260,34 +326,27 @@ function generateA4InvoiceHtml(ctx: {
       justify-content: space-between;
       align-items: flex-start;
       border-bottom: 2px solid #FC4B01;
-      padding-bottom: 16px;
-      margin-bottom: 18px;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
     }
     .invoice-logo {
-      height: 46px;
+      height: 44px;
       width: auto;
-      max-width: 200px;
+      max-width: 190px;
       object-fit: contain;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       display: block;
     }
-    .brand-title {
-      font-size: 24px;
-      font-weight: 900;
-      color: #FC4B01;
-      letter-spacing: -0.5px;
-      line-height: 1.1;
-    }
     .brand-legal {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 600;
-      color: #4b5563;
+      color: #374151;
       margin-top: 2px;
     }
     .brand-contact {
       font-size: 11px;
       color: #6b7280;
-      margin-top: 4px;
+      margin-top: 3px;
       line-height: 1.4;
     }
     .meta-box {
@@ -301,15 +360,15 @@ function generateA4InvoiceHtml(ctx: {
       background: #FFF1EB;
       color: #FC4B01;
       font-weight: 800;
-      font-size: 11px;
-      letter-spacing: 1px;
-      padding: 4px 10px;
+      font-size: 10.5px;
+      letter-spacing: 0.8px;
+      padding: 4px 9px;
       border-radius: 4px;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
     .inv-num {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       color: #111827;
     }
@@ -325,20 +384,20 @@ function generateA4InvoiceHtml(ctx: {
     .grid-two {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 18px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
     .info-card {
       background: #f9fafb;
       border: 1px solid #e5e7eb;
       border-radius: 6px;
-      padding: 11px 13px;
+      padding: 10px 12px;
     }
     .card-title {
       font-size: 10px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       color: #6b7280;
       margin-bottom: 6px;
       border-bottom: 1px solid #e5e7eb;
@@ -362,7 +421,7 @@ function generateA4InvoiceHtml(ctx: {
     table.items-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     table.items-table th {
       background: #f3f4f6;
@@ -372,7 +431,7 @@ function generateA4InvoiceHtml(ctx: {
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      padding: 8px 10px;
+      padding: 7px 10px;
       color: #374151;
       text-align: left;
     }
@@ -381,10 +440,10 @@ function generateA4InvoiceHtml(ctx: {
       text-align: right;
     }
     table.items-table td {
-      padding: 10px;
+      padding: 9px 10px;
       border-bottom: 1px solid #e5e7eb;
       vertical-align: top;
-      font-size: 13px;
+      font-size: 12.5px;
     }
     .item-desc {
       font-weight: 700;
@@ -399,44 +458,44 @@ function generateA4InvoiceHtml(ctx: {
     .summary-wrap {
       display: flex;
       justify-content: flex-end;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     .summary-box {
-      width: 280px;
+      width: 270px;
       border-radius: 6px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
-      padding: 10px 14px;
+      padding: 9px 12px;
     }
     .sum-row {
       display: flex;
       justify-content: space-between;
-      font-size: 12.5px;
-      margin-bottom: 4px;
+      font-size: 12px;
+      margin-bottom: 3px;
       color: #4b5563;
     }
     .sum-row.total-row {
       border-top: 2px solid #FC4B01;
-      padding-top: 6px;
-      margin-top: 5px;
-      font-size: 15px;
+      padding-top: 5px;
+      margin-top: 4px;
+      font-size: 14.5px;
       font-weight: 800;
       color: #FC4B01;
     }
     .sum-row.balance-row {
       border-top: 1px solid #e5e7eb;
-      padding-top: 5px;
+      padding-top: 4px;
       margin-top: 4px;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       color: ${balancePence > 0 ? "#b45309" : "#047857"};
     }
     .terms-box {
       border-top: 1px solid #e5e7eb;
-      padding-top: 12px;
-      font-size: 10px;
+      padding-top: 10px;
+      font-size: 9.5px;
       color: #6b7280;
-      line-height: 1.45;
+      line-height: 1.4;
     }
     .terms-title {
       font-weight: 700;
@@ -446,26 +505,14 @@ function generateA4InvoiceHtml(ctx: {
       letter-spacing: 0.5px;
       margin-bottom: 3px;
     }
-    .signatures {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 30px;
-      padding-top: 10px;
-    }
-    .sig-line {
-      width: 200px;
-      border-top: 1px solid #9ca3af;
-      padding-top: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #4b5563;
-      text-align: center;
-    }
     .footer-note {
       text-align: center;
-      margin-top: 16px;
+      margin-top: 14px;
       font-size: 10px;
-      color: #9ca3af;
+      color: #6b7280;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 8px;
+      line-height: 1.4;
     }
   </style>
 </head>
@@ -497,7 +544,7 @@ function generateA4InvoiceHtml(ctx: {
       <div class="info-card">
         <div class="card-title">${escapeHtml(partyLabel)} Information</div>
         <div class="info-row"><span>Name:</span> <strong>${escapeHtml(partyName)}</strong></div>
-        <div class="info-row"><span>Phone:</span> <strong>${escapeHtml(partyPhone)}</strong></div>
+        ${partyPhone ? `<div class="info-row"><span>Phone:</span> <strong>${escapeHtml(partyPhone)}</strong></div>` : ""}
         ${partyEmail ? `<div class="info-row"><span>Email:</span> <strong>${escapeHtml(partyEmail)}</strong></div>` : ""}
         ${partyAddress ? `<div class="info-row"><span>Address:</span> <strong>${escapeHtml(partyAddress)}</strong></div>` : ""}
         ${idRef ? `<div class="info-row"><span>ID Ref:</span> <strong>${escapeHtml(idRef)}</strong></div>` : ""}
@@ -507,11 +554,11 @@ function generateA4InvoiceHtml(ctx: {
       <div class="info-card">
         <div class="card-title">Device Information</div>
         <div class="info-row"><span>Device:</span> <strong>${escapeHtml(deviceName)}</strong></div>
-        ${imei1 ? `<div class="info-row"><span>IMEI 1:</span> <strong>${escapeHtml(imei1)}</strong></div>` : ""}
+        ${storageColour ? `<div class="info-row"><span>Specification:</span> <strong>${escapeHtml(storageColour)}</strong></div>` : ""}
+        ${condition ? `<div class="info-row"><span>Condition:</span> <strong>${escapeHtml(condition)}</strong></div>` : ""}
+        ${imei1 ? `<div class="info-row"><span>IMEI:</span> <strong>${escapeHtml(imei1)}</strong></div>` : ""}
         ${!imei1 && serialNum ? `<div class="info-row"><span>Serial:</span> <strong>${escapeHtml(serialNum)}</strong></div>` : ""}
         ${imei1 && serialNum ? `<div class="info-row"><span>Serial:</span> <strong>${escapeHtml(serialNum)}</strong></div>` : ""}
-        ${storageColour ? `<div class="info-row"><span>Spec:</span> <strong>${escapeHtml(storageColour)}</strong></div>` : ""}
-        ${condition ? `<div class="info-row"><span>Condition:</span> <strong>${escapeHtml(condition)}</strong></div>` : ""}
         ${batteryHealth ? `<div class="info-row"><span>Battery:</span> <strong>${escapeHtml(batteryHealth)}%</strong></div>` : ""}
         ${networkStatus ? `<div class="info-row"><span>Network:</span> <strong>${escapeHtml(networkStatus)}</strong></div>` : ""}
         ${accessories ? `<div class="info-row"><span>Accessories:</span> <strong>${escapeHtml(accessories)}</strong></div>` : ""}
@@ -523,8 +570,8 @@ function generateA4InvoiceHtml(ctx: {
     <table class="items-table">
       <thead>
         <tr>
-          <th>Description &amp; Work Specification</th>
-          <th style="width: 100px;" class="text-right">Warranty</th>
+          <th>${escapeHtml(tableHeaderTitle)}</th>
+          ${hasWarranty ? '<th style="width: 105px;" class="text-right">Warranty</th>' : ""}
           <th style="width: 110px;" class="text-right">Amount</th>
         </tr>
       </thead>
@@ -532,9 +579,9 @@ function generateA4InvoiceHtml(ctx: {
         <tr>
           <td>
             <div class="item-desc">${escapeHtml(itemDescription)}</div>
-            <div class="item-sub">${escapeHtml(itemSubtext)}</div>
+            ${itemSubtext ? `<div class="item-sub">${escapeHtml(itemSubtext)}</div>` : ""}
           </td>
-          <td class="text-right">${escapeHtml(warrantyDays)}</td>
+          ${hasWarranty ? `<td class="text-right">${escapeHtml(warrantyDays)}</td>` : ""}
           <td class="text-right" style="font-weight: 700; color: #111827;">${escapeHtml(formatPence(totalPence))}</td>
         </tr>
       </tbody>
@@ -561,7 +608,7 @@ function generateA4InvoiceHtml(ctx: {
         </div>
         <div class="sum-row balance-row">
           <span>${balancePence > 0 ? "Balance Due:" : "Balance:"}</span>
-          <span>${escapeHtml(formatPence(balancePence))}</span>
+          <span>${balancePence > 0 ? escapeHtml(formatPence(balancePence)) : "Paid in Full (£0.00)"}</span>
         </div>
       </div>
     </div>
@@ -572,55 +619,47 @@ function generateA4InvoiceHtml(ctx: {
       ${terms.points
         .map(
           (p) =>
-            `<p style="margin-bottom: 3px;"><strong>${escapeHtml(p.title)}:</strong> ${escapeHtml(p.body)}</p>`,
+            `<p style="margin-bottom: 2.5px;"><strong>${escapeHtml(p.title)}:</strong> ${escapeHtml(p.body)}</p>`,
         )
         .join("")}
 
       ${
         terms.additional
           ? `
-        <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed #d1d5db;">
+        <div style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed #d1d5db;">
           <strong style="color: #111827;">Additional Agreement for This Invoice:</strong>
           <p style="margin-top: 2px; color: #111827;">${escapeHtml(terms.additional)}</p>
         </div>`
           : ""
       }
-      
-      <div style="margin-top: 6px; font-size: 9px; color: #9ca3af; text-align: right;">
-        Terms Version: ${escapeHtml(terms.version)}
-      </div>
     </div>
 
-    <!-- Signatures -->
+    <!-- Signatures (Only for Purchase / Trade-in) -->
     ${
       kind === "PURCHASE"
         ? `
-      <div style="margin-top: 20px; padding: 10px 14px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 11px; color: #374151; line-height: 1.5;">
-        <strong style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280;">Seller Declaration</strong>
-        <p style="margin-top: 4px; font-style: italic; color: #111827;">
+      <div style="margin-top: 16px; padding: 8px 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 10.5px; color: #374151; line-height: 1.45;">
+        <strong style="font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280;">Seller Declaration</strong>
+        <p style="margin-top: 3px; font-style: italic; color: #111827;">
           &ldquo;I confirm that I am the lawful owner of this device, the information provided is correct, and I have received the agreed payment.&rdquo;
         </p>
       </div>
-      <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 11px; color: #374151;">
+      <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; font-size: 10.5px; color: #374151;">
         <div>
-          <div style="margin-bottom: 20px;">Seller Name: ____________________________________</div>
+          <div style="margin-bottom: 18px;">Seller Name: ____________________________________</div>
           <div>Seller Signature: _______________________________</div>
         </div>
         <div>
-          <div style="margin-bottom: 20px;">Date: ___________________________________________</div>
+          <div style="margin-bottom: 18px;">Date: ___________________________________________</div>
           <div>Authorised Shop Signature: ______________________</div>
         </div>
       </div>`
-        : `
-      <div class="signatures">
-        <div class="sig-line">Customer Signature</div>
-        <div class="sig-line">Authorised Shop Signature</div>
-      </div>`
+        : ""
     }
 
-    <div class="footer-note" style="margin-top: 18px; line-height: 1.4; border-top: 1px solid #e5e7eb; padding-top: 10px;">
-      ${escapeHtml(business.name)} · ${escapeHtml(business.legalName)} · ${escapeHtml(business.address.line1)}, ${escapeHtml(business.address.city)}, ${escapeHtml(business.address.postcode)} · Tel: ${escapeHtml(business.phone)} · Email: ${escapeHtml(business.email)}<br>
-      Thank you for choosing ${escapeHtml(business.name)}. Professional Mobile Repairs, Sales &amp; Accessories
+    <div class="footer-note">
+      Thank you for choosing ${escapeHtml(business.name)}.<br>
+      Your statutory rights under UK consumer law are not affected.
     </div>
   </div>
 </body>
@@ -645,6 +684,7 @@ function generate80mmThermalHtml(ctx: {
   paidPence: number;
   balancePence: number;
   warrantyDays: string;
+  hasWarranty: boolean;
 }) {
   const {
     kind,
@@ -661,14 +701,24 @@ function generate80mmThermalHtml(ctx: {
     paidPence,
     balancePence,
     warrantyDays,
+    hasWarranty,
   } = ctx;
 
   const partyName = String(
     invoice.customer_name ?? invoice.supplier_name ?? invoice.party_name ?? "Walk-in Customer",
   );
-  const partyPhone = String(
+  const rawPartyPhone = String(
     invoice.customer_phone ?? invoice.supplier_phone ?? invoice.party_phone ?? "",
-  );
+  ).trim();
+  const isInvalidPhone =
+    !rawPartyPhone ||
+    rawPartyPhone === "—" ||
+    rawPartyPhone === "-" ||
+    rawPartyPhone.toLowerCase().includes("walk-in") ||
+    rawPartyPhone.toLowerCase().includes("walk in") ||
+    rawPartyPhone.toLowerCase() === "n/a" ||
+    rawPartyPhone.toLowerCase() === "none";
+  const partyPhone = isInvalidPhone ? null : rawPartyPhone;
   const partyEmail = invoice.supplier_email ? String(invoice.supplier_email) : "";
   const deviceName =
     `${invoice.device_make ?? ""} ${invoice.device_model ?? ""}`.trim() || "Mobile Device";
@@ -680,7 +730,7 @@ function generate80mmThermalHtml(ctx: {
   const accessories80 = invoice.accessories ? String(invoice.accessories) : "";
   const problem = invoice.problem ? String(invoice.problem) : "";
   const repairWork = invoice.repair_work ? String(invoice.repair_work) : "";
-  const terms = resolveTerms(kind, invoice);
+  const terms = resolveTerms(kind, invoice, hasWarranty);
 
   return `<!doctype html>
 <html lang="en">
@@ -720,16 +770,16 @@ function generate80mmThermalHtml(ctx: {
     .text-center { text-align: center; }
     .text-right { text-align: right; }
     .bold { font-weight: bold; }
-    .brand-name { font-size: 17px; font-weight: 900; letter-spacing: 0.5px; }
+    .brand-name { font-size: 16px; font-weight: 900; letter-spacing: 0.5px; }
     .brand-sub { font-size: 10px; margin-top: 2px; }
-    .divider { border-top: 1px dashed #000; margin: 7px 0; }
-    .divider-solid { border-top: 1px solid #000; margin: 7px 0; }
+    .divider { border-top: 1px dashed #000; margin: 6px 0; }
+    .divider-solid { border-top: 1px solid #000; margin: 6px 0; }
     .row { display: flex; justify-content: space-between; gap: 6px; margin: 3px 0; font-size: 11.5px; }
     .row span { color: #222; flex-shrink: 0; }
-    .total-row { font-size: 14.5px; font-weight: 900; margin: 6px 0; }
+    .total-row { font-size: 14px; font-weight: 900; margin: 5px 0; }
     .barcode-box { margin: 6px 0; text-align: center; }
-    .void-banner { border: 2px solid #000; padding: 4px; text-align: center; font-weight: bold; margin-bottom: 7px; font-size: 12px; }
-    .footer { font-size: 9.5px; text-align: center; margin-top: 10px; line-height: 1.35; }
+    .void-banner { border: 2px solid #000; padding: 4px; text-align: center; font-weight: bold; margin-bottom: 6px; font-size: 12px; }
+    .footer { font-size: 9.5px; text-align: center; margin-top: 8px; line-height: 1.35; }
   </style>
 </head>
 <body>
@@ -768,7 +818,7 @@ function generate80mmThermalHtml(ctx: {
     <span>Device:</span>
     <strong class="text-right">${escapeHtml(deviceName)}</strong>
   </div>
-  ${kind === "PURCHASE" && imei1 ? `<div class="row"><span>IMEI 1:</span><strong class="text-right">${escapeHtml(imei1)}</strong></div>` : ""}
+  ${kind === "PURCHASE" && imei1 ? `<div class="row"><span>IMEI:</span><strong class="text-right">${escapeHtml(imei1)}</strong></div>` : ""}
   ${kind !== "PURCHASE" && imeiOrSerial ? `<div class="row"><span>IMEI/SN:</span><strong class="text-right">${escapeHtml(imeiOrSerial)}</strong></div>` : ""}
   ${kind === "PURCHASE" && serialNum ? `<div class="row"><span>Serial:</span><strong class="text-right">${escapeHtml(serialNum)}</strong></div>` : ""}
   ${problem ? `<div class="row"><span>Problem:</span><strong class="text-right">${escapeHtml(problem)}</strong></div>` : ""}
@@ -794,44 +844,41 @@ function generate80mmThermalHtml(ctx: {
   
   <div class="row bold">
     <span>${balancePence > 0 ? "BALANCE DUE:" : "BALANCE:"}</span>
-    <strong class="text-right">${escapeHtml(formatPence(balancePence))}</strong>
+    <strong class="text-right">${balancePence > 0 ? escapeHtml(formatPence(balancePence)) : "Paid in Full (£0.00)"}</strong>
   </div>
 
   <div class="divider"></div>
 
-  <div class="terms-section" style="font-size: 8.5px; line-height: 1.35; margin: 6px 0; color: #111;">
-    <div class="bold text-center" style="margin-bottom: 4px; font-size: 9.5px; text-transform: uppercase;">
+  <div class="terms-section" style="font-size: 8px; line-height: 1.35; margin: 5px 0; color: #111;">
+    <div class="bold text-center" style="margin-bottom: 3px; font-size: 9px; text-transform: uppercase;">
       ${escapeHtml(terms.heading)}
     </div>
     ${terms.points
       .map(
         (p) =>
-          `<div style="margin-bottom: 3px;"><strong>${escapeHtml(p.title)}:</strong> ${escapeHtml(p.body)}</div>`,
+          `<div style="margin-bottom: 2px;"><strong>${escapeHtml(p.title)}:</strong> ${escapeHtml(p.body)}</div>`,
       )
       .join("")}
     
     ${
       terms.additional
         ? `
-      <div style="margin-top: 5px; padding-top: 4px; border-top: 1px dashed #000;">
-        <strong>Additional Agreement for This Invoice:</strong><br>
+      <div style="margin-top: 4px; padding-top: 3px; border-top: 1px dashed #000;">
+        <strong>Additional Agreement:</strong><br>
         ${escapeHtml(terms.additional)}
       </div>`
         : ""
     }
-    <div style="font-size: 8px; color: #555; text-align: center; margin-top: 5px;">
-      Terms Version: ${escapeHtml(terms.version)}
-    </div>
   </div>
 
   ${
     kind === "PURCHASE"
       ? `
   <div class="divider"></div>
-  <div style="font-size: 8.5px; line-height: 1.45; margin: 6px 0; color: #111;">
-    <div style="font-style: italic; margin-bottom: 5px;">&ldquo;I confirm that I am the lawful owner of this device, the information provided is correct, and I have received the agreed payment.&rdquo;</div>
+  <div style="font-size: 8px; line-height: 1.4; margin: 5px 0; color: #111;">
+    <div style="font-style: italic; margin-bottom: 4px;">&ldquo;I confirm that I am the lawful owner of this device, the info provided is correct, and I received payment.&rdquo;</div>
     <div>Seller Sig: _______________________________</div>
-    <div style="margin-top: 4px;">Date: ______________________________________</div>
+    <div style="margin-top: 3px;">Date: ______________________________________</div>
   </div>`
       : ""
   }
@@ -839,11 +886,11 @@ function generate80mmThermalHtml(ctx: {
   <div class="divider"></div>
 
   <div class="footer">
-    ${escapeHtml(business.name)} · ${escapeHtml(business.legalName)}<br>
-    ${escapeHtml(business.address.line1)}, ${escapeHtml(business.address.city)}, ${escapeHtml(business.address.postcode)}<br>
-    Tel: ${escapeHtml(business.phone)} · Email: ${escapeHtml(business.email)}<br>
+    ${escapeHtml(business.name)}<br>
+    ${escapeHtml(business.address.line1)}, ${escapeHtml(business.address.postcode)}<br>
+    Tel: ${escapeHtml(business.phone)}<br>
     <strong>Thank you for choosing ${escapeHtml(business.name)}!</strong><br>
-    Professional Mobile Repairs, Sales &amp; Accessories
+    Your statutory rights under UK consumer law are not affected.
   </div>
 </body>
 </html>`;

@@ -345,3 +345,23 @@ input[type="number"] {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
 }
+
+/* ── Print Media Optimization ────────────────────────────────────────────────── */
+@media print {
+  header,
+  nav,
+  footer,
+  aside,
+  button,
+  .no-print,
+  [data-sonner-toaster],
+  [data-radix-popper-content-wrapper],
+  [role="dialog"] > button {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
