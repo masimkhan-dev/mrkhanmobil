@@ -263,6 +263,14 @@ function generateA4InvoiceHtml(ctx: {
       padding-bottom: 16px;
       margin-bottom: 18px;
     }
+    .invoice-logo {
+      height: 46px;
+      width: auto;
+      max-width: 200px;
+      object-fit: contain;
+      margin-bottom: 5px;
+      display: block;
+    }
     .brand-title {
       font-size: 24px;
       font-weight: 900;
@@ -468,7 +476,7 @@ function generateA4InvoiceHtml(ctx: {
     <!-- Header -->
     <div class="header">
       <div>
-        <h1 class="brand-title">${escapeHtml(business.name)}</h1>
+        <img src="/logo.png" alt="${escapeHtml(business.name)}" class="invoice-logo" />
         <p class="brand-legal">${escapeHtml(business.legalName)}</p>
         <p class="brand-contact">
           ${escapeHtml(business.address.line1)}, ${escapeHtml(business.address.city)} ${escapeHtml(business.address.postcode)}<br>
@@ -903,6 +911,14 @@ export function buildStatementHtml(
       justify-content: space-between;
       align-items: flex-start;
     }
+    .statement-logo {
+      height: 42px;
+      width: auto;
+      max-width: 180px;
+      object-fit: contain;
+      margin-bottom: 4px;
+      display: block;
+    }
     .title {
       font-size: 22px;
       font-weight: 900;
@@ -950,7 +966,7 @@ export function buildStatementHtml(
 <body>
   <div class="header">
     <div>
-      <div class="title">${escapeHtml(business.name)}</div>
+      <img src="/logo.png" alt="${escapeHtml(business.name)}" class="statement-logo" />
       <p style="font-size: 11px; color: #6b7280; margin-top: 2px;">
         ${escapeHtml(business.address.line1)}, ${escapeHtml(business.address.city)} ${escapeHtml(business.address.postcode)} · Tel: ${escapeHtml(business.phone)}
       </p>
