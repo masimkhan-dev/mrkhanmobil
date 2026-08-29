@@ -300,7 +300,7 @@ export function LedgerPage({ type }: { type: "CUSTOMER" | "SUPPLIER" }) {
                   placeholder="e.g. Cash advance, Bank transfer ref..."
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 focus:border-[#0f4c75] focus:outline-none focus:ring-2 focus:ring-[#0f4c75]/20"
+                  className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
                 />
               </div>
               <div className="sm:col-span-2">
@@ -451,7 +451,7 @@ export function LedgerPage({ type }: { type: "CUSTOMER" | "SUPPLIER" }) {
           <button
             type="button"
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 rounded-xl bg-[#0f4c75] px-4 py-2.5 text-[14px] font-bold text-white shadow-sm transition hover:bg-[#0d3f61]"
+            className="flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-[14px] font-bold text-white shadow-sm transition hover:bg-brand-hover"
           >
             <UserPlus className="h-4 w-4" />
             {isCustomer ? "+ Add Customer" : "+ Add Supplier"}
@@ -465,7 +465,7 @@ export function LedgerPage({ type }: { type: "CUSTOMER" | "SUPPLIER" }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={`Search ${isCustomer ? "customer" : "supplier"} name or phone…`}
-          className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-4 text-[15px] text-slate-900 placeholder:text-slate-400 focus:border-[#0f4c75] focus:outline-none focus:ring-2 focus:ring-[#0f4c75]/20"
+          className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-4 text-[15px] text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
         />
       </div>
 
@@ -491,7 +491,7 @@ export function LedgerPage({ type }: { type: "CUSTOMER" | "SUPPLIER" }) {
               <button
                 type="button"
                 onClick={() => setShowAddModal(true)}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#0f4c75] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#0d3f61]"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-hover"
               >
                 <Plus className="h-4 w-4" />
                 {isCustomer ? "Add Customer" : "Add Supplier"}
@@ -554,7 +554,7 @@ export function LedgerPage({ type }: { type: "CUSTOMER" | "SUPPLIER" }) {
           <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
               <div className="flex items-center gap-2">
-                <UserPlus className="h-5 w-5 text-[#0f4c75]" />
+                <UserPlus className="h-5 w-5 text-brand" />
                 <h2 className="text-[16px] font-bold text-slate-900">
                   {isCustomer ? "Add New Customer" : "Add New Supplier"}
                 </h2>

@@ -88,12 +88,11 @@ function BuySellPage() {
       {/* ── Hero Section ─────────────────────────────────────────────────── */}
       <section className="relative bg-[#07101d] text-white pt-14 sm:pt-20 pb-20 sm:pb-24 overflow-hidden">
         {/* Ambient background glows */}
-        <div className="absolute top-0 right-1/4 w-[500px] h-[350px] bg-red-600/10 blur-[130px] pointer-events-none rounded-full" />
-        <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] bg-blue-600/10 blur-[140px] pointer-events-none rounded-full" />
+        <div className="absolute top-0 right-1/4 w-[500px] h-[350px] bg-brand/15 blur-[130px] pointer-events-none rounded-full" />
 
         <div className="container-x relative z-10 max-w-4xl text-center">
           {/* Eyebrow */}
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#e21b23] mb-4">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand mb-4">
             Mobile Phones, Accessories &amp; Electronics in Liverpool
           </p>
 
@@ -112,7 +111,7 @@ function BuySellPage() {
           <div className="mt-8 flex flex-col sm:flex-row gap-3.5 justify-center items-center">
             <a
               href="#accessories"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-[8px] bg-[#e21b23] text-white font-bold text-base hover:bg-[#c41018] transition-colors min-h-[52px] w-full sm:w-auto shadow-md"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-[8px] bg-brand text-white font-bold text-base hover:bg-brand-hover transition-colors min-h-[52px] w-full sm:w-auto shadow-md"
             >
               Shop Phones &amp; Accessories
             </a>
@@ -127,12 +126,12 @@ function BuySellPage() {
           {/* Quick shop address strip */}
           <div className="mt-8 pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm text-slate-400">
             <span className="flex items-center gap-1.5">
-              <MapPin className="h-4 w-4 text-[#e21b23]" />
+              <MapPin className="h-4 w-4 text-brand" />
               {business.address.line1}, {business.address.city} {business.address.postcode}
             </span>
             <span className="hidden sm:inline text-slate-600">·</span>
             <span className="flex items-center gap-1.5">
-              <Phone className="h-4 w-4 text-[#e21b23]" />
+              <Phone className="h-4 w-4 text-brand" />
               Call {business.phone}
             </span>
           </div>
@@ -144,30 +143,30 @@ function BuySellPage() {
         <div className="container-x">
           <div className="grid gap-8 lg:grid-cols-2">
             {/* Card 1: Looking to Buy a Phone */}
-            <div className="flex flex-col justify-between p-7 sm:p-9 rounded-2xl bg-[#f7f7f5] border border-[#e3e5e8] hover:border-[#e21b23]/30 transition-all shadow-xs">
+            <div className="flex flex-col justify-between p-7 sm:p-9 rounded-2xl bg-[#f7f7f5] border border-[#e3e5e8] hover:border-brand/30 transition-all shadow-xs">
               <div>
                 <div className="h-12 w-12 rounded-xl bg-white border border-[#e3e5e8] grid place-items-center mb-5 shadow-xs">
-                  <Smartphone className="h-6 w-6 text-[#e21b23]" />
+                  <Smartphone className="h-6 w-6 text-brand" />
                 </div>
                 <h2 className="font-display font-bold text-[24px] sm:text-[28px] text-[#111318] leading-tight">
                   Looking to Buy a Phone?
                 </h2>
                 <p className="mt-3 text-[15px] sm:text-base text-[#5f6670] leading-relaxed">
-                  We offer a selection of new and pre-owned mobile phones. Tell us the model, storage
-                  and budget you need, and our team will check what is currently available.
+                  We offer a selection of new and pre-owned mobile phones. Tell us the model,
+                  storage and budget you need, and our team will check what is currently available.
                 </p>
 
                 <ul className="mt-5 space-y-2.5">
                   <li className="flex items-center gap-2.5 text-sm text-[#111318] font-medium">
-                    <CheckCircle2 className="h-4 w-4 text-[#e21b23] shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-brand shrink-0" />
                     <span>Apple iPhone, Samsung Galaxy &amp; popular Android handsets</span>
                   </li>
                   <li className="flex items-center gap-2.5 text-sm text-[#111318] font-medium">
-                    <CheckCircle2 className="h-4 w-4 text-[#e21b23] shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-brand shrink-0" />
                     <span>Fully tested, IMEI checked with written shop invoice</span>
                   </li>
                   <li className="flex items-center gap-2.5 text-sm text-[#111318] font-medium">
-                    <CheckCircle2 className="h-4 w-4 text-[#e21b23] shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-brand shrink-0" />
                     <span>Warranty coverage included on purchases</span>
                   </li>
                 </ul>
@@ -196,34 +195,36 @@ function BuySellPage() {
 
             {/* Card 2: Looking to Sell Your Phone */}
             <div
-              className="flex flex-col justify-between p-7 sm:p-9 rounded-2xl bg-[#f7f7f5] border border-[#e3e5e8] hover:border-[#e21b23]/30 transition-all shadow-xs"
+              className="flex flex-col justify-between p-7 sm:p-9 rounded-2xl bg-[#f7f7f5] border border-[#e3e5e8] hover:border-brand/30 transition-all shadow-xs"
               id="sell-phone"
             >
               <div>
                 <div className="h-12 w-12 rounded-xl bg-white border border-[#e3e5e8] grid place-items-center mb-5 shadow-xs">
-                  <BadgePoundSterling className="h-6 w-6 text-[#e21b23]" />
+                  <BadgePoundSterling className="h-6 w-6 text-brand" />
                 </div>
                 <h2 className="font-display font-bold text-[24px] sm:text-[28px] text-[#111318] leading-tight">
                   Looking to Sell Your Phone?
                 </h2>
                 <p className="mt-3 text-[15px] sm:text-base text-[#5f6670] leading-relaxed">
-                  Bring your phone to our Liverpool shop for an in-person assessment. We will check its
-                  condition and provide a clear purchase or trade-in price.
+                  Bring your phone to our Liverpool shop for an in-person assessment. We will check
+                  its condition and provide a clear purchase or trade-in price.
                 </p>
 
                 {/* Notice box */}
                 <div className="mt-5 p-3.5 rounded-xl bg-amber-50 border border-amber-200/80 flex items-start gap-2.5 text-xs sm:text-sm text-amber-900 leading-snug">
                   <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
-                  <span>Please remove personal accounts and back up your data before visiting.</span>
+                  <span>
+                    Please remove personal accounts and back up your data before visiting.
+                  </span>
                 </div>
 
                 <ul className="mt-4 space-y-2">
                   <li className="flex items-center gap-2.5 text-sm text-[#111318] font-medium">
-                    <CheckCircle2 className="h-4 w-4 text-[#e21b23] shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-brand shrink-0" />
                     <span>Instant same-day valuation and fast payout</span>
                   </li>
                   <li className="flex items-center gap-2.5 text-sm text-[#111318] font-medium">
-                    <CheckCircle2 className="h-4 w-4 text-[#e21b23] shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-brand shrink-0" />
                     <span>Trade-in against upgrades or repair services</span>
                   </li>
                 </ul>
@@ -242,7 +243,7 @@ function BuySellPage() {
                       service: "Get Price for Phone",
                     })
                   }
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-[8px] bg-[#e21b23] text-white font-bold text-sm hover:bg-[#c41018] transition-colors min-h-[48px]"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-[8px] bg-brand text-white font-bold text-sm hover:bg-brand-hover transition-colors min-h-[48px]"
                 >
                   <BadgePoundSterling className="h-4 w-4" />
                   Get a Price for Your Phone
@@ -257,15 +258,16 @@ function BuySellPage() {
       <section className="py-16 sm:py-24 bg-[#f7f7f5] border-y border-[#e3e5e8]" id="accessories">
         <div className="container-x">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#e21b23] font-bold">
+            <p className="text-xs uppercase tracking-[0.16em] text-brand font-bold">
               Everyday Tech Essentials
             </p>
             <h2 className="mt-2 font-display font-extrabold text-[1.9rem] sm:text-[2.5rem] text-[#111318] tracking-tight leading-tight">
               Mobile Accessories &amp; Electronics
             </h2>
             <p className="mt-3 text-sm sm:text-base text-[#5f6670] leading-relaxed">
-              We stock a wide range of mobile accessories and selected electronic devices. Stock changes
-              regularly — call or WhatsApp us to check whether a particular item is available.
+              We stock a wide range of mobile accessories and selected electronic devices. Stock
+              changes regularly — call or WhatsApp us to check whether a particular item is
+              available.
             </p>
           </div>
 
@@ -275,10 +277,10 @@ function BuySellPage() {
               return (
                 <div
                   key={item.title}
-                  className="flex flex-col p-6 rounded-2xl bg-white border border-[#e3e5e8] hover:border-[#e21b23]/30 hover:shadow-md transition-all"
+                  className="flex flex-col p-6 rounded-2xl bg-white border border-[#e3e5e8] hover:border-brand/30 hover:shadow-md transition-all"
                 >
                   <div className="h-11 w-11 rounded-xl bg-[#f7f7f5] border border-[#e3e5e8] grid place-items-center mb-4 shrink-0">
-                    <Icon className="h-5 w-5 text-[#e21b23]" />
+                    <Icon className="h-5 w-5 text-brand" />
                   </div>
                   <h3 className="font-display font-bold text-[17px] text-[#111318] leading-snug">
                     {item.title}
@@ -310,7 +312,7 @@ function BuySellPage() {
         <div className="container-x">
           <div className="rounded-3xl bg-[#07101d] text-white p-8 sm:p-12 lg:p-14 border border-slate-800 shadow-xl overflow-hidden grid gap-8 lg:grid-cols-2 lg:items-center">
             <div className="space-y-4">
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#e21b23]">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
                 In-Store Shopping &amp; Support
               </p>
               <h2 className="font-display font-extrabold text-[2rem] sm:text-[2.6rem] text-white tracking-tight leading-tight">
@@ -330,14 +332,14 @@ function BuySellPage() {
                   href={telLink()}
                   className="flex items-center gap-2 hover:text-white transition-colors"
                 >
-                  <Phone className="h-4 w-4 text-[#e21b23]" />
+                  <Phone className="h-4 w-4 text-brand" />
                   Call: {business.phone}
                 </a>
                 <a
                   href={`mailto:${business.email}`}
                   className="flex items-center gap-2 hover:text-white transition-colors"
                 >
-                  <Mail className="h-4 w-4 text-[#e21b23]" />
+                  <Mail className="h-4 w-4 text-brand" />
                   Email: {business.email}
                 </a>
               </div>
@@ -347,7 +349,7 @@ function BuySellPage() {
                   href={business.social.google}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-[8px] bg-[#e21b23] text-white font-bold text-sm hover:bg-[#c41018] transition-colors min-h-[48px]"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-[8px] bg-brand text-white font-bold text-sm hover:bg-brand-hover transition-colors min-h-[48px]"
                 >
                   <Navigation className="h-4 w-4" />
                   Get Directions
@@ -376,8 +378,8 @@ function BuySellPage() {
             What Are You Looking For?
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[#5f6670] leading-relaxed max-w-xl mx-auto">
-            Send us the product name, phone model or a photo of the accessory you need. Our team will
-            check availability and reply with the relevant details.
+            Send us the product name, phone model or a photo of the accessory you need. Our team
+            will check availability and reply with the relevant details.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3.5 justify-center">
@@ -402,7 +404,7 @@ function BuySellPage() {
               href={telLink()}
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-[8px] border border-[#e3e5e8] bg-white text-[#111318] font-bold text-sm hover:bg-slate-50 transition-colors min-h-[48px]"
             >
-              <Phone className="h-4 w-4 text-[#e21b23]" />
+              <Phone className="h-4 w-4 text-brand" />
               Call {business.phone}
             </a>
           </div>

@@ -22,8 +22,7 @@ export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
       {
-        title:
-          "Mobile Repair Services Liverpool | Screen, Battery, Water Damage | MR. KHAN",
+        title: "Mobile Repair Services Liverpool | Screen, Battery, Water Damage | MR. KHAN",
       },
       {
         name: "description",
@@ -135,7 +134,7 @@ function ServicesPage() {
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="bg-[#07101d] text-white py-16 sm:py-24 border-b border-white/10">
         <div className="container-x max-w-3xl text-center mx-auto">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#e21b23] mb-4">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand mb-4">
             Our Services
           </p>
           <h1 className="font-display font-extrabold text-[2.4rem] sm:text-[3.2rem] tracking-tight text-white">
@@ -201,7 +200,7 @@ function ServicesPage() {
           <div className="pt-3 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center px-7 py-3.5 rounded-[8px] bg-[#e21b23] text-white font-semibold text-base hover:bg-[#c41018] transition-colors min-h-[52px]"
+              className="inline-flex items-center justify-center px-7 py-3.5 rounded-[8px] bg-brand text-white font-semibold text-base hover:bg-brand-hover transition-colors min-h-[52px]"
             >
               Contact the Shop
             </Link>
@@ -238,21 +237,17 @@ function ServiceGrid({ items }: { items: RenderedService[] }) {
         return (
           <div
             key={s.slug}
-            className="group flex flex-col justify-between p-5 rounded-[14px] bg-white border border-[#e3e5e8] hover:border-[#e21b23]/30 hover:shadow-sm transition-all"
+            className="group flex flex-col justify-between p-5 rounded-[14px] bg-white border border-[#e3e5e8] hover:border-brand/30 hover:shadow-sm transition-all"
           >
             <div>
-              <Link
-                to="/services/$slug"
-                params={{ slug: s.slug }}
-                className="flex flex-col flex-1"
-              >
+              <Link to="/services/$slug" params={{ slug: s.slug }} className="flex flex-col flex-1">
                 {/* Icon */}
-                <div className="h-11 w-11 rounded-[10px] bg-[#f7f7f5] border border-[#e3e5e8] grid place-items-center mb-4 group-hover:bg-[#e21b23]/10 group-hover:border-[#e21b23]/20 transition-colors">
-                  <Icon className="h-5 w-5 text-[#5f6670] group-hover:text-[#e21b23] transition-colors" />
+                <div className="h-11 w-11 rounded-[10px] bg-[#f7f7f5] border border-[#e3e5e8] grid place-items-center mb-4 group-hover:bg-brand-subtle group-hover:border-brand/30 transition-colors">
+                  <Icon className="h-5 w-5 text-[#5f6670] group-hover:text-brand transition-colors" />
                 </div>
 
                 {/* Content */}
-                <h3 className="font-display font-bold text-[17px] text-[#111318] group-hover:text-[#e21b23] transition-colors">
+                <h3 className="font-display font-bold text-[17px] text-[#111318] group-hover:text-brand transition-colors">
                   {s.title}
                 </h3>
                 <p className="mt-1.5 text-sm text-[#5f6670] leading-snug">{s.short}</p>
@@ -266,7 +261,8 @@ function ServiceGrid({ items }: { items: RenderedService[] }) {
                     {s.priceFrom}
                   </div>
                   <p className="mt-1 text-[11px] text-[#5f6670] leading-snug">
-                    Final price depends on the device model, part option and condition. We’ll confirm before repair.
+                    Final price depends on the device model, part option and condition. We’ll
+                    confirm before repair.
                   </p>
                 </div>
               </Link>
@@ -296,7 +292,7 @@ function ServiceGrid({ items }: { items: RenderedService[] }) {
                 <Link
                   to="/services/$slug"
                   params={{ slug: s.slug }}
-                  className="inline-flex items-center gap-1 text-xs text-[#5f6670] hover:text-[#e21b23] font-medium py-1 transition-colors"
+                  className="inline-flex items-center gap-1 text-xs text-[#5f6670] hover:text-brand font-medium py-1 transition-colors"
                 >
                   View full details <ChevronRight className="h-3 w-3" />
                 </Link>
@@ -323,9 +319,7 @@ function PageSectionHeader({
   return (
     <div className="max-w-2xl">
       {eyebrow && (
-        <p className="text-xs uppercase tracking-[0.16em] font-bold text-[#e21b23] mb-3">
-          {eyebrow}
-        </p>
+        <p className="text-xs uppercase tracking-[0.16em] font-bold text-brand mb-3">{eyebrow}</p>
       )}
       <h2 className="font-display font-extrabold text-[1.7rem] sm:text-[2.1rem] tracking-tight text-[#111318]">
         {title}

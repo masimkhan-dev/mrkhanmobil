@@ -238,4 +238,3 @@ export const STANDARD_TERMS = {
     ],
   },
 } as const;
-

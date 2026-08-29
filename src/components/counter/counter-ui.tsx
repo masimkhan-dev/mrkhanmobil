@@ -73,7 +73,7 @@ export function PartyPicker({
         id="party-picker"
         value={selectedId}
         onChange={(e) => onSelect(parties.find((party) => party.id === e.target.value) ?? null)}
-        className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 focus:border-[#0f4c75] focus:outline-none focus:ring-2 focus:ring-[#0f4c75]/20"
+        className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-[15px] text-slate-900 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
       >
         <option value="">New person — enter details below</option>
         {parties.map((party) => (

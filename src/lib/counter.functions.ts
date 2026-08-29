@@ -231,6 +231,7 @@ export const createInternalStockDevice = createServerFn({ method: "POST" })
       // Fallback: Direct insert via supabaseAdmin without invoice/supplier
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const cleanImei = data.imei ? data.imei.replace(/[\s-]/g, "") : null;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: stockRow, error: stockErr } = await (supabaseAdmin as any)
         .from("stock_devices")
         .insert({
@@ -453,6 +454,7 @@ export const getStockDevice = createServerFn({ method: "POST" })
   .validator((data: unknown) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data }): Promise<StockDeviceDetail> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: stockRow, error: stockErr } = await (supabaseAdmin as any)
       .from("stock_devices")
       .select("*")
@@ -463,6 +465,7 @@ export const getStockDevice = createServerFn({ method: "POST" })
 
     let purchaseInvoice = null;
     if (stockRow.purchase_invoice_id) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: pInv } = await (supabaseAdmin as any)
         .from("purchase_invoices")
         .select(
@@ -475,6 +478,7 @@ export const getStockDevice = createServerFn({ method: "POST" })
 
     let saleInvoice = null;
     if (stockRow.status === "SOLD") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: sInv } = await (supabaseAdmin as any)
         .from("sale_invoices")
         .select("id, invoice_number, customer_name, customer_phone, total_pence, created_at")
@@ -484,6 +488,7 @@ export const getStockDevice = createServerFn({ method: "POST" })
       if (sInv) saleInvoice = sInv;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: movement } = await (supabaseAdmin as any)
       .from("stock_movements")
       .select("note")
@@ -526,6 +531,7 @@ export const updateStockDevice = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Fetch existing stock device
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: existing, error: findErr } = await (supabaseAdmin as any)
       .from("stock_devices")
       .select("*")
@@ -576,6 +582,7 @@ export const updateStockDevice = createServerFn({ method: "POST" })
     }
 
     if (cleanImei && cleanImei !== existing.imei) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data: dup } = await (supabaseAdmin as any)
         .from("stock_devices")
         .select("id, device_make, device_model")
@@ -655,6 +662,7 @@ export const updateStockDevice = createServerFn({ method: "POST" })
       diffs.push(`Serial: "${existing.serial || "None"}" → "${updatePayload.serial || "None"}"`);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: updated, error: updateErr } = await (supabaseAdmin as any)
       .from("stock_devices")
       .update(updatePayload)
@@ -670,6 +678,7 @@ export const updateStockDevice = createServerFn({ method: "POST" })
         ? `Updated fields: [${diffs.join(", ")}]${data.notes ? ` | Notes: ${data.notes}` : ""}`
         : `Stock item saved${data.notes ? ` | Notes: ${data.notes}` : ""}`;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (supabaseAdmin as any).from("stock_movements").insert({
       stock_device_id: data.id,
       movement_type: "UPDATED",

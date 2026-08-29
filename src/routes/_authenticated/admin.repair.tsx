@@ -385,7 +385,8 @@ function RepairInvoicePage() {
       <div className="flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50/80 px-4 py-3 text-[13px] text-blue-950">
         <ShieldCheck className="h-5 w-5 shrink-0 text-blue-700" />
         <p className="leading-snug">
-          <strong>Service Advisory:</strong> Repairs involving device opening may affect water-resistant seals. Customers should maintain a backup of important data before repair.
+          <strong>Service Advisory:</strong> Repairs involving device opening may affect
+          water-resistant seals. Customers should maintain a backup of important data before repair.
         </p>
       </div>
 
@@ -451,7 +452,7 @@ function RepairInvoicePage() {
                         key={c.id}
                         type="button"
                         onClick={() => handleSelectCustomer(c)}
-                        className="flex w-full items-center justify-between px-3 py-2.5 text-left text-[13px] hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
+                        className="flex w-full items-center justify-between px-3 py-2.5 text-left text-[13px] hover:bg-brand-subtle transition-colors border-b border-slate-50 last:border-0"
                       >
                         <div>
                           <p className="font-bold text-slate-900">{c.name}</p>
@@ -530,7 +531,7 @@ function RepairInvoicePage() {
                         key={i}
                         type="button"
                         onMouseDown={() => handleSelectDevice(d)}
-                        className="flex w-full items-center justify-between px-3.5 py-2 text-left text-[14px] font-medium hover:bg-blue-50 hover:text-[var(--kimi-accent)] transition-colors"
+                        className="flex w-full items-center justify-between px-3.5 py-2 text-left text-[14px] font-medium hover:bg-brand-subtle hover:text-[var(--kimi-accent)] transition-colors"
                       >
                         <span>{d}</span>
                         <span className="text-[11px] font-bold uppercase text-slate-400">

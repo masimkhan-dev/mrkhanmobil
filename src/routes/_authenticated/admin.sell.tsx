@@ -467,7 +467,7 @@ function SellPhonePage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="space-y-5">
             {/* Selected Phone Card */}
-            <div className="rounded-[var(--kimi-radius-card)] border-2 border-[var(--kimi-accent)] bg-blue-50/40 p-5 shadow-sm">
+            <div className="rounded-[var(--kimi-radius-card)] border-2 border-[var(--kimi-accent)] bg-brand-subtle/40 p-5 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2">
@@ -548,7 +548,7 @@ function SellPhonePage() {
                               key={c.id}
                               type="button"
                               onClick={() => handleSelectCustomer(c)}
-                              className="flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[13px] hover:bg-blue-50 transition-colors border-b border-slate-50"
+                              className="flex w-full items-center justify-between px-3.5 py-2.5 text-left text-[13px] hover:bg-brand-subtle transition-colors border-b border-slate-50"
                             >
                               <div>
                                 <p className="font-bold text-slate-900">{c.name}</p>
@@ -640,7 +640,7 @@ function SellPhonePage() {
                         <button
                           type="button"
                           onClick={() => setAmountPaid((finalTotalPence / 100).toFixed(2))}
-                          className="text-[12px] font-bold text-blue-600 hover:text-blue-800 hover:underline"
+                          className="text-[12px] font-bold text-brand hover:text-brand-hover hover:underline"
                         >
                           Pay Full (£{(finalTotalPence / 100).toFixed(2)})
                         </button>

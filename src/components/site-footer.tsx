@@ -36,25 +36,13 @@ export function SiteFooter() {
             <Link
               to="/"
               aria-label="MR. KHAN — return to homepage"
-              className="inline-flex items-center gap-3"
+              className="inline-flex items-center group"
             >
-              <div className="h-12 w-12 rounded-[10px] overflow-hidden bg-white border border-white/20 flex items-center justify-center p-0.5">
-                <img
-                  src={logoImg}
-                  alt="MR. KHAN logo"
-                  width={48}
-                  height={48}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div>
-                <div className="font-display font-extrabold text-[18px] leading-tight text-white">
-                  {business.name}
-                </div>
-                <div className="text-[11px] text-white/50 font-medium tracking-wide leading-tight">
-                  Mobile Repairs · Liverpool
-                </div>
-              </div>
+              <img
+                src={logoImg}
+                alt="MR. KHAN Liverpool"
+                className="h-14 sm:h-16 w-auto max-w-[240px] object-contain shrink-0 transition-transform duration-200 group-hover:scale-[1.02]"
+              />
             </Link>
 
             {/* Legal name */}
@@ -63,7 +51,7 @@ export function SiteFooter() {
             {/* Address */}
             <address className="not-italic space-y-1.5 text-sm text-white/70">
               <div className="flex items-start gap-2">
-                <MapPin className="h-4 w-4 text-[#e21b23] shrink-0 mt-0.5" />
+                <MapPin className="h-4 w-4 text-brand shrink-0 mt-0.5" />
                 <div>
                   <div>{business.address.line1}</div>
                   <div>
@@ -72,13 +60,13 @@ export function SiteFooter() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-[#e21b23] shrink-0" />
+                <Phone className="h-4 w-4 text-brand shrink-0" />
                 <a href={telLink()} className="hover:text-white transition-colors font-medium">
                   {business.phone}
                 </a>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-[#e21b23] shrink-0" />
+                <Mail className="h-4 w-4 text-brand shrink-0" />
                 <a href={`mailto:${business.email}`} className="hover:text-white transition-colors">
                   {business.email}
                 </a>
@@ -115,7 +103,7 @@ export function SiteFooter() {
               <li>
                 <Link
                   to="/services"
-                  className="text-sm text-[#e21b23] hover:text-white transition-colors font-semibold"
+                  className="text-sm text-brand hover:text-white transition-colors font-semibold"
                 >
                   All Repair Services →
                 </Link>
@@ -150,7 +138,7 @@ export function SiteFooter() {
                   className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
                   aria-label={`Call MR. KHAN on ${business.phone}`}
                 >
-                  <Phone className="h-4 w-4 text-[#e21b23] shrink-0" />
+                  <Phone className="h-4 w-4 text-brand shrink-0" />
                   {business.phone}
                 </a>
               </li>
@@ -171,7 +159,7 @@ export function SiteFooter() {
                   href={`mailto:${business.email}`}
                   className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
                 >
-                  <Mail className="h-4 w-4 text-[#e21b23] shrink-0" />
+                  <Mail className="h-4 w-4 text-brand shrink-0" />
                   {business.email}
                 </a>
               </li>

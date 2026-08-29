@@ -70,28 +70,30 @@ export function BrandLogo({ name, className = "h-5 w-5" }: BrandLogoProps) {
     // ── Google ──────────────────────────────────────────────────────────────
     case "google":
       return (
-        <svg
-          className={className}
-          viewBox="0 0 48 48"
-          aria-label="Google"
-          role="img"
-        >
-          <path fill="#4285F4" d="M43.61 20.08H24v7.84h11.08c-1.08 5.34-5.67 8.08-11.08 8.08-6.63 0-12-5.37-12-12s5.37-12 12-12c2.97 0 5.65 1.05 7.75 2.77l5.91-5.91C33.82 5.51 29.16 4 24 4 12.95 4 4 12.95 4 24s8.95 20 20 20c11.02 0 19.28-7.75 19.28-19.28 0-1.3-.13-2.56-.38-3.64h-.29z" />
-          <path fill="#34A853" d="M6.31 14.69l6.84 5.02C14.88 16.13 19.07 13 24 13c2.97 0 5.65 1.05 7.75 2.77l5.91-5.91C33.82 5.51 29.16 4 24 4 16.02 4 9.14 8.39 6.31 14.69z" />
-          <path fill="#FBBC05" d="M24 44c5.16 0 9.82-1.77 13.47-4.69l-6.23-5.26C29.22 35.66 26.73 36.5 24 36.5c-5.38 0-9.94-3.63-11.6-8.56l-6.87 5.3C8.95 39.5 15.97 44 24 44z" />
-          <path fill="#EA4335" d="M43.61 20.08H24v7.84h11.08c-.5 2.56-1.98 4.74-3.84 6.27l6.23 5.26c3.63-3.37 5.81-8.41 5.81-14.09 0-1.3-.13-2.56-.38-3.64h-.29z" />
+        <svg className={className} viewBox="0 0 48 48" aria-label="Google" role="img">
+          <path
+            fill="#4285F4"
+            d="M43.61 20.08H24v7.84h11.08c-1.08 5.34-5.67 8.08-11.08 8.08-6.63 0-12-5.37-12-12s5.37-12 12-12c2.97 0 5.65 1.05 7.75 2.77l5.91-5.91C33.82 5.51 29.16 4 24 4 12.95 4 4 12.95 4 24s8.95 20 20 20c11.02 0 19.28-7.75 19.28-19.28 0-1.3-.13-2.56-.38-3.64h-.29z"
+          />
+          <path
+            fill="#34A853"
+            d="M6.31 14.69l6.84 5.02C14.88 16.13 19.07 13 24 13c2.97 0 5.65 1.05 7.75 2.77l5.91-5.91C33.82 5.51 29.16 4 24 4 16.02 4 9.14 8.39 6.31 14.69z"
+          />
+          <path
+            fill="#FBBC05"
+            d="M24 44c5.16 0 9.82-1.77 13.47-4.69l-6.23-5.26C29.22 35.66 26.73 36.5 24 36.5c-5.38 0-9.94-3.63-11.6-8.56l-6.87 5.3C8.95 39.5 15.97 44 24 44z"
+          />
+          <path
+            fill="#EA4335"
+            d="M43.61 20.08H24v7.84h11.08c-.5 2.56-1.98 4.74-3.84 6.27l6.23 5.26c3.63-3.37 5.81-8.41 5.81-14.09 0-1.3-.13-2.56-.38-3.64h-.29z"
+          />
         </svg>
       );
 
     // ── Huawei ──────────────────────────────────────────────────────────────
     case "huawei":
       return (
-        <svg
-          className={className}
-          viewBox="0 0 100 100"
-          aria-label="Huawei"
-          role="img"
-        >
+        <svg className={className} viewBox="0 0 100 100" aria-label="Huawei" role="img">
           {/* Huawei flower logo — 4 petal shapes in official red */}
           <g fill="#CF0A2C">
             <ellipse cx="50" cy="28" rx="10" ry="24" transform="rotate(-45 50 50)" />
@@ -106,12 +108,7 @@ export function BrandLogo({ name, className = "h-5 w-5" }: BrandLogoProps) {
     // ── Xiaomi ──────────────────────────────────────────────────────────────
     case "xiaomi":
       return (
-        <svg
-          className={className}
-          viewBox="0 0 100 100"
-          aria-label="Xiaomi"
-          role="img"
-        >
+        <svg className={className} viewBox="0 0 100 100" aria-label="Xiaomi" role="img">
           {/* Xiaomi MI logo mark */}
           <rect x="5" y="5" width="90" height="90" rx="18" fill="#FF6900" />
           <rect x="18" y="22" width="16" height="56" rx="3" fill="#ffffff" />
@@ -125,12 +122,7 @@ export function BrandLogo({ name, className = "h-5 w-5" }: BrandLogoProps) {
     // ── Oppo ────────────────────────────────────────────────────────────────
     case "oppo":
       return (
-        <svg
-          className={className}
-          viewBox="0 0 100 100"
-          aria-label="Oppo"
-          role="img"
-        >
+        <svg className={className} viewBox="0 0 100 100" aria-label="Oppo" role="img">
           {/* Oppo ring logo */}
           <circle cx="50" cy="50" r="44" fill="none" stroke="#007DC5" strokeWidth="12" />
           <circle cx="50" cy="50" r="26" fill="none" stroke="#007DC5" strokeWidth="8" />
@@ -140,12 +132,7 @@ export function BrandLogo({ name, className = "h-5 w-5" }: BrandLogoProps) {
     // ── OnePlus ─────────────────────────────────────────────────────────────
     case "oneplus":
       return (
-        <svg
-          className={className}
-          viewBox="0 0 100 100"
-          aria-label="OnePlus"
-          role="img"
-        >
+        <svg className={className} viewBox="0 0 100 100" aria-label="OnePlus" role="img">
           {/* OnePlus 1+ mark */}
           <rect x="4" y="4" width="92" height="92" rx="12" fill="#F5010C" />
           {/* Vertical bar of + */}
@@ -158,12 +145,7 @@ export function BrandLogo({ name, className = "h-5 w-5" }: BrandLogoProps) {
     // ── Honor ───────────────────────────────────────────────────────────────
     case "honor":
       return (
-        <svg
-          className={className}
-          viewBox="0 0 100 100"
-          aria-label="Honor"
-          role="img"
-        >
+        <svg className={className} viewBox="0 0 100 100" aria-label="Honor" role="img">
           {/* Honor diamond / shield logo simplified */}
           <path d="M50 8L92 32v36L50 92 8 68V32z" fill="#C0282D" />
           <path d="M50 22l28 15v26L50 78 22 63V37z" fill="#ffffff" fillOpacity="0.15" />
@@ -176,30 +158,25 @@ export function BrandLogo({ name, className = "h-5 w-5" }: BrandLogoProps) {
     // ── Sony ────────────────────────────────────────────────────────────────
     case "sony":
       return (
-        <svg
-          className={className}
-          viewBox="0 0 100 40"
-          fill="#003087"
-          aria-label="Sony"
-          role="img"
-        >
+        <svg className={className} viewBox="0 0 100 40" fill="#003087" aria-label="Sony" role="img">
           {/* Sony wordmark bars (simplified S-O-N-Y) */}
           <rect x="0" y="10" width="100" height="5" rx="2.5" />
           <rect x="0" y="25" width="100" height="5" rx="2.5" />
           {/* S curve hint */}
-          <path d="M10 5 Q5 20 10 35" stroke="#003087" strokeWidth="5" fill="none" strokeLinecap="round" />
+          <path
+            d="M10 5 Q5 20 10 35"
+            stroke="#003087"
+            strokeWidth="5"
+            fill="none"
+            strokeLinecap="round"
+          />
         </svg>
       );
 
     // ── Nokia ───────────────────────────────────────────────────────────────
     case "nokia":
       return (
-        <svg
-          className={className}
-          viewBox="0 0 100 100"
-          aria-label="Nokia"
-          role="img"
-        >
+        <svg className={className} viewBox="0 0 100 100" aria-label="Nokia" role="img">
           {/* Nokia wordmark-inspired N shape */}
           <rect x="5" y="5" width="90" height="90" rx="14" fill="#005AFF" />
           {/* N letterform */}
@@ -212,12 +189,7 @@ export function BrandLogo({ name, className = "h-5 w-5" }: BrandLogoProps) {
     // ── Motorola ─────────────────────────────────────────────────────────────
     case "motorola":
       return (
-        <svg
-          className={className}
-          viewBox="0 0 100 100"
-          aria-label="Motorola"
-          role="img"
-        >
+        <svg className={className} viewBox="0 0 100 100" aria-label="Motorola" role="img">
           {/* Motorola batwing M */}
           <circle cx="50" cy="50" r="46" fill="#DA1F26" />
           {/* M batwing shape */}

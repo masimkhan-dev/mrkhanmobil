@@ -81,33 +81,25 @@ export function SiteHeader() {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center gap-3.5 shrink-0 py-1"
+              className="flex items-center shrink-0 py-1"
               aria-label="MR. KHAN — return to homepage"
             >
               <img
                 src={logoImg}
-                alt="MR. KHAN logo"
-                className="h-16 sm:h-[72px] w-auto max-w-[180px] object-contain shrink-0"
+                alt="MR. KHAN Liverpool"
+                className="h-14 sm:h-16 md:h-18 w-auto max-w-[260px] sm:max-w-[320px] object-contain shrink-0 transition-transform duration-200 hover:scale-[1.02]"
                 loading="eager"
               />
-              <div className="hidden sm:block">
-                <div className="font-display font-extrabold text-[22px] leading-tight text-[#111318] tracking-tight">
-                  {business.name}
-                </div>
-                <div className="text-[11px] text-[#5f6670] font-semibold tracking-wide leading-tight">
-                  Mobile Repairs · Liverpool
-                </div>
-              </div>
             </Link>
 
             {/* Right: Contact + CTAs (desktop only) */}
             <div className="hidden lg:flex items-center gap-3">
               <a
                 href={telLink()}
-                className="flex items-center gap-2 text-[#111318] font-semibold text-sm hover:text-[#e21b23] transition-colors"
+                className="flex items-center gap-2 text-[#111318] font-semibold text-sm hover:text-brand transition-colors"
                 aria-label={`Call MR. KHAN on ${business.phone}`}
               >
-                <Phone className="h-4 w-4 text-[#e21b23]" />
+                <Phone className="h-4 w-4 text-brand" />
                 Need help? {business.phone}
               </a>
               <span className="w-px h-5 bg-[#e3e5e8]" aria-hidden="true" />
@@ -123,7 +115,7 @@ export function SiteHeader() {
               </a>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[8px] bg-[#e21b23] text-white text-sm font-semibold hover:bg-[#c41018] transition-colors min-h-[44px]"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[8px] bg-brand text-white text-sm font-semibold hover:bg-brand-hover transition-colors min-h-[44px]"
               >
                 Get a Repair Quote
               </Link>
@@ -182,7 +174,7 @@ export function SiteHeader() {
                       {link.label}
                       {active && (
                         <span
-                          className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#e21b23] rounded-full"
+                          className="absolute bottom-0 left-3 right-3 h-0.5 bg-brand rounded-full"
                           aria-hidden="true"
                         />
                       )}
@@ -206,17 +198,14 @@ export function SiteHeader() {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center gap-2.5 shrink-0"
+              className="flex items-center shrink-0"
               aria-label="MR. KHAN — return to homepage"
             >
               <img
                 src={logoImg}
-                alt="MR. KHAN logo"
-                className="h-11 w-auto max-w-[120px] object-contain shrink-0"
+                alt="MR. KHAN Liverpool"
+                className="h-10 sm:h-11 w-auto max-w-[180px] object-contain shrink-0"
               />
-              <span className="font-display font-extrabold text-[17px] text-[#111318] tracking-tight">
-                {business.name}
-              </span>
             </Link>
 
             {/* Desktop nav (compact) */}
@@ -240,7 +229,7 @@ export function SiteHeader() {
                     {link.label}
                     {active && (
                       <span
-                        className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#e21b23] rounded-full"
+                        className="absolute bottom-0 left-2 right-2 h-0.5 bg-brand rounded-full"
                         aria-hidden="true"
                       />
                     )}
@@ -262,7 +251,7 @@ export function SiteHeader() {
               </a>
               <Link
                 to="/contact"
-                className="inline-flex items-center px-4 py-2 rounded-[8px] bg-[#e21b23] text-white text-sm font-semibold hover:bg-[#c41018] transition-colors min-h-[40px]"
+                className="inline-flex items-center px-4 py-2 rounded-[8px] bg-brand text-white text-sm font-semibold hover:bg-brand-hover transition-colors min-h-[40px]"
               >
                 Get a Quote
               </Link>
@@ -351,7 +340,7 @@ export function SiteHeader() {
                     aria-current={active ? "page" : undefined}
                     className={`flex items-center px-4 py-3.5 rounded-xl text-base font-semibold mb-1 transition-colors min-h-[52px] ${
                       active
-                        ? "bg-[#f7f7f5] text-[#111318] border-l-2 border-[#e21b23]"
+                        ? "bg-[#f7f7f5] text-[#111318] border-l-2 border-brand"
                         : "text-[#111318] hover:bg-[#f7f7f5]"
                     }`}
                   >
@@ -366,7 +355,7 @@ export function SiteHeader() {
               <Link
                 to="/contact"
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-center w-full px-5 py-3.5 rounded-[8px] bg-[#e21b23] text-white text-base font-semibold hover:bg-[#c41018] transition-colors min-h-[52px]"
+                className="flex items-center justify-center w-full px-5 py-3.5 rounded-[8px] bg-brand text-white text-base font-semibold hover:bg-brand-hover transition-colors min-h-[52px]"
               >
                 Get a Repair Quote
               </Link>
@@ -385,9 +374,9 @@ export function SiteHeader() {
             <div className="px-5 py-4 bg-[#f7f7f5] border-t border-[#e3e5e8]">
               <a
                 href={telLink()}
-                className="flex items-center gap-2 text-sm font-semibold text-[#111318] hover:text-[#e21b23] transition-colors"
+                className="flex items-center gap-2 text-sm font-semibold text-[#111318] hover:text-brand transition-colors"
               >
-                <Phone className="h-4 w-4 text-[#e21b23]" />
+                <Phone className="h-4 w-4 text-brand" />
                 {business.phone}
               </a>
               <p className="mt-1 text-xs text-[#5f6670]">

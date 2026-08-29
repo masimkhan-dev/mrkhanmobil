@@ -91,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome at London Road, Liverpool Post Office.",
       },
       { name: "author", content: "MR. KHAN Mobile Repair" },
-      { name: "theme-color", content: "#171717" },
+      { name: "theme-color", content: "#FC4B01" },
       { property: "og:site_name", content: "MR. KHAN Mobile Repair" },
       { property: "og:locale", content: "en_GB" },
       { property: "og:type", content: "website" },

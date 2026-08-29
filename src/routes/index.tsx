@@ -145,7 +145,7 @@ function Hero() {
         </div>
 
         {/* Eyebrow */}
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#e21b23] mb-3">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand mb-3">
           Mobile Repairs in Liverpool
         </p>
 
@@ -165,7 +165,7 @@ function Hero() {
           <Link
             to="/contact"
             onClick={() => trackFunnelEvent("book_click", { location: "hero" })}
-            className="inline-flex items-center justify-center px-7 py-3.5 rounded-[8px] bg-[#e21b23] text-white font-semibold text-base hover:bg-[#c41018] transition-colors min-h-[52px] w-full sm:w-auto"
+            className="inline-flex items-center justify-center px-7 py-3.5 rounded-[8px] bg-brand text-white font-semibold text-base hover:bg-brand-hover transition-colors min-h-[52px] w-full sm:w-auto"
           >
             Get a Repair Quote
           </Link>
@@ -186,11 +186,11 @@ function Hero() {
             href={telLink()}
             className="flex items-center gap-2 hover:text-white transition-colors"
           >
-            <Phone className="h-4 w-4 text-[#e21b23] shrink-0" />
+            <Phone className="h-4 w-4 text-brand shrink-0" />
             Or call {business.phone}
           </a>
           <span className="flex items-center gap-2 text-slate-400">
-            <MapPin className="h-4 w-4 text-[#e21b23] shrink-0" />
+            <MapPin className="h-4 w-4 text-brand shrink-0" />
             {business.address.line1}, {business.address.city} {business.address.postcode}
           </span>
         </div>
@@ -212,7 +212,7 @@ function BrandsStrip() {
           {brands.map((b) => (
             <div
               key={b}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-[#e3e5e8] text-[#111318] hover:border-[#e21b23]/30 hover:bg-[#f7f7f5] transition-colors cursor-default min-h-[44px]"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-[#e3e5e8] text-[#111318] hover:border-brand/30 hover:bg-[#f7f7f5] transition-colors cursor-default min-h-[44px]"
             >
               <BrandLogo name={b} className="h-5 w-5 shrink-0" />
               <span className="text-sm font-semibold">{b}</span>
@@ -267,11 +267,13 @@ function RepairFinder() {
                   onClick={() => setSelectedDevice(d.label)}
                   className={`flex items-center gap-2 px-5 py-2.5 rounded-[10px] font-semibold text-sm transition-all min-h-[46px] border ${
                     isSelected
-                      ? "bg-[#e21b23] text-white border-[#e21b23] shadow-sm ring-2 ring-[#e21b23]/20"
-                      : "bg-white text-[#111318] border-[#e3e5e8] hover:border-[#e21b23]/40 hover:bg-white"
+                      ? "bg-brand text-white border-brand shadow-sm ring-2 ring-brand/20"
+                      : "bg-white text-[#111318] border-[#e3e5e8] hover:border-brand/40 hover:bg-white"
                   }`}
                 >
-                  <Smartphone className={`h-4 w-4 ${isSelected ? "text-white" : "text-[#5f6670]"}`} />
+                  <Smartphone
+                    className={`h-4 w-4 ${isSelected ? "text-white" : "text-[#5f6670]"}`}
+                  />
                   {d.label}
                 </button>
               );
@@ -282,7 +284,8 @@ function RepairFinder() {
         {/* Step 2: Repair services list with prices and WhatsApp quote */}
         <div className="mt-10">
           <div className="text-center text-xs font-bold uppercase tracking-wider text-[#5f6670] mb-4">
-            Step 2 — Selected for <span className="text-[#e21b23] underline font-extrabold">{selectedDevice}</span>:
+            Step 2 — Selected for{" "}
+            <span className="text-brand underline font-extrabold">{selectedDevice}</span>:
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -304,7 +307,7 @@ function RepairFinder() {
           </div>
           <a
             href={whatsappLink(
-              `Hi MR. KHAN, I need a repair quote for my ${selectedDevice}. Could you please check availability and pricing?`
+              `Hi MR. KHAN, I need a repair quote for my ${selectedDevice}. Could you please check availability and pricing?`,
             )}
             target="_blank"
             rel="noopener noreferrer"
@@ -362,7 +365,7 @@ function ServiceOptions() {
               className="flex flex-col p-6 rounded-[14px] border border-[#e3e5e8] bg-white"
             >
               <div className="h-11 w-11 rounded-[10px] bg-[#f7f7f5] border border-[#e3e5e8] grid place-items-center mb-4">
-                <o.icon className="h-5 w-5 text-[#e21b23]" />
+                <o.icon className="h-5 w-5 text-brand" />
               </div>
               <h3 className="font-display font-bold text-[18px] text-[#111318]">{o.title}</h3>
               <p className="mt-2 text-[15px] text-[#5f6670] leading-relaxed flex-1">{o.desc}</p>
@@ -371,7 +374,7 @@ function ServiceOptions() {
                 onClick={() =>
                   trackFunnelEvent("book_click", { location: "service_options", service: o.title })
                 }
-                className="mt-5 inline-flex items-center gap-1.5 text-[#e21b23] font-semibold text-sm hover:underline min-h-[44px]"
+                className="mt-5 inline-flex items-center gap-1.5 text-brand font-semibold text-sm hover:underline min-h-[44px]"
               >
                 {o.cta} <ChevronRight className="h-4 w-4" />
               </Link>
@@ -407,8 +410,8 @@ function LocalTrust() {
           {/* Address badge */}
           <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto bg-white border border-[#e3e5e8] rounded-[12px] p-4 shadow-md max-w-[calc(100%-2rem)]">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-[#e21b23]/10 grid place-items-center shrink-0">
-                <MapPin className="h-5 w-5 text-[#e21b23]" />
+              <div className="h-10 w-10 rounded-full bg-brand-subtle grid place-items-center shrink-0">
+                <MapPin className="h-5 w-5 text-brand" />
               </div>
               <div>
                 <div className="font-bold text-sm text-[#111318]">{business.address.line1}</div>
@@ -421,7 +424,7 @@ function LocalTrust() {
         </div>
 
         <div className="space-y-5">
-          <p className="text-xs uppercase tracking-[0.16em] text-[#e21b23] font-bold">
+          <p className="text-xs uppercase tracking-[0.16em] text-brand font-bold">
             Liverpool Phone Repair Shop
           </p>
           <h2 className="font-display font-extrabold text-[1.9rem] sm:text-[2.4rem] text-[#111318] tracking-tight leading-tight">
@@ -434,7 +437,7 @@ function LocalTrust() {
           <ul className="grid gap-3 pt-1">
             {benefits.map((b) => (
               <li key={b} className="flex items-start gap-3 text-[15px] text-[#111318]">
-                <CheckCircle2 className="h-5 w-5 text-[#e21b23] shrink-0 mt-0.5" />
+                <CheckCircle2 className="h-5 w-5 text-brand shrink-0 mt-0.5" />
                 <span>{b}</span>
               </li>
             ))}
@@ -443,7 +446,7 @@ function LocalTrust() {
             <Link
               to="/contact"
               onClick={() => trackFunnelEvent("book_click", { location: "local_trust" })}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-[8px] bg-[#e21b23] text-white font-semibold text-sm hover:bg-[#c41018] transition-colors min-h-[48px]"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-[8px] bg-brand text-white font-semibold text-sm hover:bg-brand-hover transition-colors min-h-[48px]"
             >
               Contact the Shop
             </Link>
@@ -451,7 +454,7 @@ function LocalTrust() {
               href={telLink()}
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[8px] border border-[#e3e5e8] bg-white text-[#111318] font-semibold text-sm hover:bg-[#f7f7f5] transition-colors min-h-[48px]"
             >
-              <Phone className="h-4 w-4 text-[#e21b23]" />
+              <Phone className="h-4 w-4 text-brand" />
               Call {business.phone}
             </a>
           </div>
@@ -502,7 +505,7 @@ function HowItWorks() {
                   aria-hidden="true"
                 />
               )}
-              <div className="text-[2.2rem] font-mono font-extrabold text-[#e21b23] leading-none mb-4">
+              <div className="text-[2.2rem] font-mono font-extrabold text-brand leading-none mb-4">
                 {s.n}
               </div>
               <h3 className="font-display font-bold text-[17px] text-[#111318]">{s.title}</h3>
@@ -514,7 +517,7 @@ function HowItWorks() {
           <Link
             to="/contact"
             onClick={() => trackFunnelEvent("book_click", { location: "how_it_works" })}
-            className="inline-flex items-center justify-center px-7 py-3 rounded-[8px] bg-[#e21b23] text-white font-semibold text-sm hover:bg-[#c41018] transition-colors min-h-[48px]"
+            className="inline-flex items-center justify-center px-7 py-3 rounded-[8px] bg-brand text-white font-semibold text-sm hover:bg-brand-hover transition-colors min-h-[48px]"
           >
             Contact the Shop
           </Link>
@@ -543,7 +546,7 @@ function ReviewsSection() {
             href={business.googleReviewUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-[8px] border border-[#e3e5e8] bg-white text-[#111318] font-semibold text-sm hover:bg-[#f7f7f5] hover:border-[#e21b23]/40 transition-colors min-h-[48px]"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-[8px] border border-[#e3e5e8] bg-white text-[#111318] font-semibold text-sm hover:bg-[#f7f7f5] hover:border-brand/40 transition-colors min-h-[48px]"
           >
             <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
             Read All Google Reviews
@@ -588,11 +591,11 @@ function ServicesOverview() {
             <Link
               key={c.title}
               to={c.to}
-              className="group flex flex-col p-5 rounded-[12px] border border-[#e3e5e8] bg-[#f7f7f5] hover:border-[#e21b23]/30 hover:bg-white transition-all"
+              className="group flex flex-col p-5 rounded-[12px] border border-[#e3e5e8] bg-[#f7f7f5] hover:border-brand/30 hover:bg-white transition-all"
             >
               <h3 className="font-display font-bold text-[16px] text-[#111318]">{c.title}</h3>
               <p className="mt-2 text-sm text-[#5f6670] leading-snug flex-1">{c.desc}</p>
-              <span className="mt-4 flex items-center gap-1 text-[#e21b23] font-semibold text-xs group-hover:gap-2 transition-all">
+              <span className="mt-4 flex items-center gap-1 text-brand font-semibold text-xs group-hover:gap-2 transition-all">
                 Learn more <ChevronRight className="h-3.5 w-3.5" />
               </span>
             </Link>
@@ -638,7 +641,7 @@ function MapSection() {
         <div className="mt-8 sm:mt-10 flex flex-col md:block relative rounded-[18px] overflow-hidden border border-[#e3e5e8] min-h-[380px] md:aspect-[16/7]">
           {/* Info card */}
           <div className="p-5 rounded-[14px] bg-white border border-[#e3e5e8] shadow-md max-w-sm z-10 space-y-3 m-4 md:m-0 md:absolute md:top-5 md:left-5">
-            <div className="flex items-center gap-2 text-[#e21b23] font-bold text-xs uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-brand font-bold text-xs uppercase tracking-wider">
               <MapPin className="h-4 w-4 shrink-0" /> Liverpool Repair Shop
             </div>
             <div>
@@ -650,8 +653,8 @@ function MapSection() {
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs font-semibold text-[#111318] pt-1 border-t border-[#e3e5e8]">
-              <Phone className="h-3.5 w-3.5 text-[#e21b23] shrink-0" />
-              <a href={telLink()} className="hover:text-[#e21b23] transition-colors">
+              <Phone className="h-3.5 w-3.5 text-brand shrink-0" />
+              <a href={telLink()} className="hover:text-brand transition-colors">
                 {business.phone}
               </a>
             </div>
@@ -660,7 +663,7 @@ function MapSection() {
                 href={directionsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#e21b23] text-white text-xs font-semibold hover:bg-[#c41018] transition-colors min-h-[40px]"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-brand text-white text-xs font-semibold hover:bg-brand-hover transition-colors min-h-[40px]"
               >
                 <Navigation className="h-3.5 w-3.5" />
                 Get Directions
@@ -669,7 +672,7 @@ function MapSection() {
                 href={telLink()}
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] border border-[#e3e5e8] bg-white text-[#111318] text-xs font-semibold hover:bg-[#f7f7f5] transition-colors min-h-[40px]"
               >
-                <Phone className="h-3.5 w-3.5 text-[#e21b23]" />
+                <Phone className="h-3.5 w-3.5 text-brand" />
                 Call
               </a>
             </div>
@@ -705,7 +708,7 @@ function FinalCtaSection() {
           <Link
             to="/contact"
             onClick={() => trackFunnelEvent("book_click", { location: "final_cta" })}
-            className="inline-flex items-center justify-center px-8 py-3.5 rounded-[8px] bg-[#e21b23] text-white font-semibold text-base hover:bg-[#c41018] transition-colors min-h-[52px] w-full sm:w-auto"
+            className="inline-flex items-center justify-center px-8 py-3.5 rounded-[8px] bg-brand text-white font-semibold text-base hover:bg-brand-hover transition-colors min-h-[52px] w-full sm:w-auto"
           >
             Get a Repair Quote
           </Link>
@@ -723,7 +726,7 @@ function FinalCtaSection() {
           Or call us on{" "}
           <a
             href={telLink()}
-            className="text-white font-semibold hover:text-[#e21b23] transition-colors"
+            className="text-white font-semibold hover:text-brand transition-colors"
           >
             {business.phone}
           </a>
@@ -747,9 +750,7 @@ function SectionHeader({
   return (
     <div className="text-center max-w-2xl mx-auto">
       {eyebrow && (
-        <p className="text-xs uppercase tracking-[0.16em] font-bold text-[#e21b23] mb-3">
-          {eyebrow}
-        </p>
+        <p className="text-xs uppercase tracking-[0.16em] font-bold text-brand mb-3">{eyebrow}</p>
       )}
       <h2 className="font-display font-extrabold text-[1.8rem] sm:text-[2.2rem] lg:text-[2.6rem] tracking-tight text-[#111318]">
         {title}
@@ -760,4 +761,3 @@ function SectionHeader({
     </div>
   );
 }
-

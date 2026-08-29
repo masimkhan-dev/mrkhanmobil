@@ -29,8 +29,7 @@ function NotFoundPage() {
           </Button>
           <Button asChild variant="outline" size="lg" className="rounded-full px-6 font-semibold">
             <a href={telLink()}>
-              <Phone className="h-4 w-4 mr-2 text-indigo-600 dark:text-indigo-400" /> Call{" "}
-              {business.phone}
+              <Phone className="h-4 w-4 mr-2 text-brand" /> Call {business.phone}
             </a>
           </Button>
         </div>

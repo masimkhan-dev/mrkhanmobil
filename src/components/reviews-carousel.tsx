@@ -63,7 +63,7 @@ export function ReviewsCarousel() {
             href={business.googleReviewUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-semibold shadow-md transition-all"
           >
             <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
             Read Verified Reviews on Google →

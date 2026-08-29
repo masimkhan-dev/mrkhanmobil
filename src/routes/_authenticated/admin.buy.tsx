@@ -1284,7 +1284,7 @@ function AddPhoneToStockPage() {
           </div>
           <Link
             to="/admin/invoices"
-            className="inline-flex items-center gap-1 text-[12px] font-bold text-[var(--kimi-accent)] bg-white px-3 py-1.5 rounded-lg border border-blue-200 shadow-2xs hover:bg-blue-50 shrink-0"
+            className="inline-flex items-center gap-1 text-[12px] font-bold text-[var(--kimi-accent)] bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs hover:bg-brand-subtle shrink-0"
           >
             <Eye className="h-3.5 w-3.5" /> View Purchase Invoice
           </Link>
@@ -1417,7 +1417,7 @@ function AddPhoneToStockPage() {
                           key={s.id}
                           type="button"
                           onMouseDown={() => handleSelectSeller(s)}
-                          className="flex w-full items-center justify-between px-3 py-2 text-left text-[12px] hover:bg-blue-50"
+                          className="flex w-full items-center justify-between px-3 py-2 text-left text-[12px] hover:bg-brand-subtle"
                         >
                           <span className="font-semibold text-slate-800">{s.name}</span>
                           <span className="text-slate-400 font-mono text-[11px]">{s.phone}</span>
@@ -1686,7 +1686,7 @@ function AddPhoneToStockPage() {
                         key={idx}
                         type="button"
                         onMouseDown={() => handleSelectModel(m)}
-                        className="flex w-full items-center justify-between px-3 py-1.5 text-left text-[12px] font-medium hover:bg-blue-50"
+                        className="flex w-full items-center justify-between px-3 py-1.5 text-left text-[12px] font-medium hover:bg-brand-subtle"
                       >
                         <span>{m}</span>
                         <span className="text-[10px] font-bold uppercase text-slate-400">

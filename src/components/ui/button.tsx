@@ -10,15 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-indigo-500 text-white shadow-md shadow-indigo-500/25 hover:shadow-indigo-500/40 border border-indigo-400/30",
+          "bg-brand text-white shadow-md shadow-brand/25 hover:bg-brand-hover hover:shadow-brand/35 border border-brand/30",
         uiverse:
-          "bg-indigo-500 text-white shadow-md shadow-indigo-500/25 hover:shadow-indigo-500/40 border border-indigo-400/30",
+          "bg-brand text-white shadow-md shadow-brand/25 hover:bg-brand-hover hover:shadow-brand/35 border border-brand/30",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-indigo-500/10 hover:text-indigo-600 hover:border-indigo-500/40 dark:hover:text-indigo-400",
+          "border border-input bg-background shadow-sm hover:bg-brand-subtle hover:text-brand hover:border-brand/40",
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-indigo-400",
-        link: "text-indigo-600 dark:text-indigo-400 underline-offset-4 hover:underline",
+        ghost: "hover:bg-brand-subtle hover:text-brand",
+        link: "text-brand underline-offset-4 hover:underline hover:text-brand-hover",
       },
       size: {
         default: "h-11 px-6 py-2.5 min-h-[44px]",
@@ -42,15 +42,15 @@ export interface ButtonProps
 const UiverseDecoration = () => (
   <>
     {/* Corner fold top-right */}
-    <span className="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-mr-4 group-hover:-mt-4 pointer-events-none z-10">
+    <span className="absolute top-0 right-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-brand-active rounded group-hover:-mr-4 group-hover:-mt-4 pointer-events-none z-10">
       <span className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white" />
     </span>
     {/* Corner fold bottom-left */}
-    <span className="absolute bottom-0 rotate-180 left-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-indigo-700 rounded group-hover:-ml-4 group-hover:-mb-4 pointer-events-none z-10">
+    <span className="absolute bottom-0 rotate-180 left-0 inline-block w-4 h-4 transition-all duration-500 ease-in-out bg-brand-active rounded group-hover:-ml-4 group-hover:-mb-4 pointer-events-none z-10">
       <span className="absolute top-0 right-0 w-5 h-5 rotate-45 translate-x-1/2 -translate-y-1/2 bg-white" />
     </span>
     {/* Slide-in fill background */}
-    <span className="absolute bottom-0 left-0 w-full h-full transition-all duration-500 ease-in-out delay-200 -translate-x-full bg-indigo-600 rounded-md group-hover:translate-x-0 pointer-events-none z-0" />
+    <span className="absolute bottom-0 left-0 w-full h-full transition-all duration-500 ease-in-out delay-200 -translate-x-full bg-brand-hover rounded-md group-hover:translate-x-0 pointer-events-none z-0" />
   </>
 );
 

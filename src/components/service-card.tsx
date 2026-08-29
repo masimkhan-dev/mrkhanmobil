@@ -26,13 +26,13 @@ export function ServiceCard({
 
   return (
     <div
-      className={`flex flex-col justify-between p-5 sm:p-6 rounded-[14px] bg-white border border-[#e3e5e8] hover:border-[#e21b23]/40 hover:shadow-md transition-all ${className}`}
+      className={`flex flex-col justify-between p-5 sm:p-6 rounded-[14px] bg-white border border-[#e3e5e8] hover:border-brand/40 hover:shadow-md transition-all ${className}`}
     >
       <div>
         {/* Icon & Title */}
         <div className="flex items-start gap-3.5 mb-3">
           <div className="h-11 w-11 rounded-[10px] bg-[#f7f7f5] border border-[#e3e5e8] grid place-items-center shrink-0">
-            <Icon className="h-5 w-5 text-[#e21b23]" />
+            <Icon className="h-5 w-5 text-brand" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-display font-bold text-[17px] text-[#111318] leading-snug">
@@ -90,7 +90,7 @@ export function ServiceCard({
           <Link
             to="/services/$slug"
             params={{ slug: service.slug }}
-            className="inline-flex items-center gap-1 text-xs text-[#5f6670] hover:text-[#e21b23] font-medium py-1 transition-colors"
+            className="inline-flex items-center gap-1 text-xs text-[#5f6670] hover:text-brand font-medium py-1 transition-colors"
           >
             View repair details <ChevronRight className="h-3 w-3" />
           </Link>

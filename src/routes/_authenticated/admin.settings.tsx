@@ -46,7 +46,9 @@ function SettingsPage() {
 
   // Print settings
   const [printerFormat, setPrinterFormat] = useState<"80MM" | "A4">(getSavedPrinterFormat());
-  const [printShopNote, setPrintShopNote] = useState("Thank you for choosing MR. KHAN. Professional Mobile Repairs, Sales & Accessories");
+  const [printShopNote, setPrintShopNote] = useState(
+    "Thank you for choosing MR. KHAN. Professional Mobile Repairs, Sales & Accessories",
+  );
 
   // Warranty settings
   const [repairWarrantyDays, setRepairWarrantyDays] = useState("90");
@@ -274,7 +276,9 @@ function SettingsPage() {
                     <span className="font-bold text-[13px] text-slate-900 uppercase tracking-wide">
                       {STANDARD_TERMS.REPAIR.heading} (5 Points)
                     </span>
-                    <span className="text-[11px] font-mono text-slate-400">Standard Repair Terms</span>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      Standard Repair Terms
+                    </span>
                   </div>
                   <div className="space-y-1.5 text-[12px] text-slate-600 bg-white p-3 rounded-lg border border-slate-200">
                     {STANDARD_TERMS.REPAIR.points.map((p, i) => (
@@ -291,7 +295,9 @@ function SettingsPage() {
                     <span className="font-bold text-[13px] text-slate-900 uppercase tracking-wide">
                       {STANDARD_TERMS.SALE.heading} (5 Points)
                     </span>
-                    <span className="text-[11px] font-mono text-slate-400">Standard Phone Sale Terms</span>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      Standard Phone Sale Terms
+                    </span>
                   </div>
                   <div className="space-y-1.5 text-[12px] text-slate-600 bg-white p-3 rounded-lg border border-slate-200">
                     {STANDARD_TERMS.SALE.points.map((p, i) => (
@@ -308,7 +314,9 @@ function SettingsPage() {
                     <span className="font-bold text-[13px] text-slate-900 uppercase tracking-wide">
                       {STANDARD_TERMS.PURCHASE.heading} (5 Points)
                     </span>
-                    <span className="text-[11px] font-mono text-slate-400">Trade-in &amp; Purchase Declaration</span>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      Trade-in &amp; Purchase Declaration
+                    </span>
                   </div>
                   <div className="space-y-1.5 text-[12px] text-slate-600 bg-white p-3 rounded-lg border border-slate-200">
                     {STANDARD_TERMS.PURCHASE.points.map((p, i) => (
@@ -379,7 +387,7 @@ function SettingsPage() {
                       Full access to phone costs, profits, business reports and invoice voids.
                     </p>
                   </div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-1 rounded">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-brand bg-brand-subtle px-2 py-1 rounded">
                     Full Access
                   </span>
                 </div>

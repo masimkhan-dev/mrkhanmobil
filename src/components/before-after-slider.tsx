@@ -53,18 +53,18 @@ export function BeforeAfterSlider() {
       <div className="container-x">
         <div className="relative rounded-3xl bg-gradient-to-b from-[#07101d] via-[#0b1728] to-[#07101d] text-white p-6 sm:p-10 lg:p-12 border border-slate-800/80 shadow-xl overflow-hidden">
           {/* Background Lighting */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-red-600/10 blur-[140px] pointer-events-none rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-brand/15 blur-[140px] pointer-events-none rounded-full" />
 
           <div className="relative text-center max-w-2xl mx-auto mb-8 sm:mb-10">
             <Badge
               variant="secondary"
-              className="mb-3 rounded-full py-1 px-3.5 bg-red-500/10 text-[#e21b23] border border-red-500/20 gap-1.5 font-bold"
+              className="mb-3 rounded-full py-1 px-3.5 bg-brand-subtle text-brand border border-brand/30 gap-1.5 font-bold"
             >
               <Sparkles className="h-3.5 w-3.5" />
               Before &amp; After Quality
             </Badge>
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl tracking-tight text-white">
-              See the difference a <span className="text-[#e21b23]">professional repair</span> makes
+              See the difference a <span className="text-brand">professional repair</span> makes
             </h2>
             <p className="mt-2 text-slate-300 text-sm sm:text-base">
               Drag the slider to compare genuine-grade glass finish before and after repair.
@@ -81,7 +81,7 @@ export function BeforeAfterSlider() {
               aria-valuemin={0}
               aria-valuemax={100}
               onKeyDown={handleKeyDown}
-              className="relative h-[280px] sm:h-[380px] md:h-[440px] rounded-2xl overflow-hidden select-none cursor-ew-resize border border-white/10 shadow-2xl bg-slate-900 touch-pan-y focus:outline-none focus:ring-2 focus:ring-[#e21b23]"
+              className="relative h-[280px] sm:h-[380px] md:h-[440px] rounded-2xl overflow-hidden select-none cursor-ew-resize border border-white/10 shadow-2xl bg-slate-900 touch-pan-y focus:outline-none focus:ring-2 focus:ring-brand"
               onMouseDown={(e) => {
                 setIsDragging(true);
                 handleMove(e.clientX);
@@ -123,8 +123,8 @@ export function BeforeAfterSlider() {
                 className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_10px_rgba(0,0,0,0.5)] cursor-ew-resize z-20"
                 style={{ left: `${sliderPosition}%` }}
               >
-                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white text-[#111318] shadow-lg flex items-center justify-center border-2 border-[#e21b23]">
-                  <ArrowLeftRight className="w-4 h-4 text-[#e21b23]" />
+                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white text-[#111318] shadow-lg flex items-center justify-center border-2 border-brand">
+                  <ArrowLeftRight className="w-4 h-4 text-brand" />
                 </div>
               </div>
 
@@ -132,14 +132,14 @@ export function BeforeAfterSlider() {
               <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full pointer-events-none z-10 border border-white/10">
                 BEFORE
               </div>
-              <div className="absolute top-4 right-4 bg-[#e21b23]/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full pointer-events-none z-10 border border-white/10">
+              <div className="absolute top-4 right-4 bg-brand/90 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full pointer-events-none z-10 border border-white/10">
                 AFTER
               </div>
             </div>
 
             <div className="mt-4 text-center">
               <span className="text-xs text-slate-400 font-medium inline-flex items-center gap-1.5">
-                <ArrowLeftRight className="w-3.5 h-3.5 text-[#e21b23]" />
+                <ArrowLeftRight className="w-3.5 h-3.5 text-brand" />
                 Drag slider or use arrow keys to inspect screen quality
               </span>
             </div>

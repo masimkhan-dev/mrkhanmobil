@@ -463,13 +463,13 @@ function CounterHomeScreen({ me }: { me: { isAdmin: boolean } | undefined }) {
         {/* Card 1: Create Repair Invoice */}
         <Link
           to="/admin/repair"
-          className="group relative flex flex-col justify-between rounded-[var(--kimi-radius-card)] border-2 border-blue-100 bg-white p-6 shadow-sm transition-all hover:border-[var(--kimi-accent)] hover:shadow-md min-h-[140px]"
+          className="group relative flex flex-col justify-between rounded-[var(--kimi-radius-card)] border-2 border-brand/20 bg-white p-6 shadow-sm transition-all hover:border-[var(--kimi-accent)] hover:shadow-md min-h-[140px]"
         >
           <div className="flex items-start justify-between">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-[var(--kimi-accent)]">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-subtle text-[var(--kimi-accent)]">
               <Wrench className="h-6 w-6" />
             </div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-brand bg-brand-subtle px-2.5 py-1 rounded-full">
               45s Entry
             </span>
           </div>

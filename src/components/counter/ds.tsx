@@ -132,9 +132,9 @@ const badgeConfig = {
   IN_STOCK: { label: "In stock", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
   SOLD: { label: "Sold", className: "bg-slate-100 text-slate-500 border-slate-200" },
   REMOVED: { label: "Removed", className: "bg-red-50 text-red-600 border-red-200" },
-  REPAIR: { label: "Repair", className: "bg-blue-50 text-blue-700 border-blue-200" },
-  SALE: { label: "Sale", className: "bg-violet-50 text-violet-700 border-violet-200" },
-  PURCHASE: { label: "Purchase", className: "bg-orange-50 text-orange-700 border-orange-200" },
+  REPAIR: { label: "Repair", className: "bg-brand-subtle text-brand border-brand/20" },
+  SALE: { label: "Sale", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  PURCHASE: { label: "Purchase", className: "bg-brand-subtle text-brand border-brand/20" },
 } as const;
 
 type BadgeKey = keyof typeof badgeConfig;

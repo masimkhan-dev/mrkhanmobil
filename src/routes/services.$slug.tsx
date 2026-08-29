@@ -36,9 +36,7 @@ export const Route = createFileRoute("/services/$slug")({
         priceFrom: dbService.price_from || "",
         category: dbService.category,
         icon:
-          typeof dbService.icon === "string"
-            ? getIconComponent(dbService.icon)
-            : dbService.icon,
+          typeof dbService.icon === "string" ? getIconComponent(dbService.icon) : dbService.icon,
         features: Array.isArray(dbService.features)
           ? (dbService.features as string[])
           : typeof dbService.features === "string"
@@ -51,9 +49,7 @@ export const Route = createFileRoute("/services/$slug")({
     return s;
   },
   head: ({ loaderData, params }) => {
-    const formattedSlug = params.slug
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (l) => l.toUpperCase());
+    const formattedSlug = params.slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
     const pageTitle = `${formattedSlug} Repair Liverpool | MR. KHAN`;
     const pageDescription = `${formattedSlug} repair in Liverpool. Clear advice before we begin. 12-month warranty. Visit our London Road shop or message us on WhatsApp.`;
 
@@ -162,8 +158,8 @@ function ServiceDetail() {
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               {/* Icon */}
-              <div className="h-14 w-14 rounded-[12px] bg-[#e21b23]/15 border border-[#e21b23]/30 grid place-items-center mb-6">
-                <Icon className="h-7 w-7 text-[#e21b23]" />
+              <div className="h-14 w-14 rounded-[12px] bg-brand-subtle border border-brand/30 grid place-items-center mb-6">
+                <Icon className="h-7 w-7 text-brand" />
               </div>
               {/* Title */}
               <h1 className="font-display font-extrabold text-[2.2rem] sm:text-[2.8rem] lg:text-[3.2rem] tracking-tight text-white leading-tight">
@@ -181,7 +177,7 @@ function ServiceDetail() {
             <div className="flex flex-col sm:flex-row lg:flex-col gap-3 lg:items-stretch min-w-[220px]">
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center px-6 py-3.5 rounded-[8px] bg-[#e21b23] text-white font-semibold text-sm hover:bg-[#c41018] transition-colors min-h-[52px]"
+                className="inline-flex items-center justify-center px-6 py-3.5 rounded-[8px] bg-brand text-white font-semibold text-sm hover:bg-brand-hover transition-colors min-h-[52px]"
               >
                 Contact Us About This Repair
               </Link>
@@ -190,7 +186,7 @@ function ServiceDetail() {
                   buildRepairQuoteMessage({
                     service: s.title,
                     price: String(s.priceFrom || "Price on assessment"),
-                  })
+                  }),
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -213,12 +209,17 @@ function ServiceDetail() {
           {/* Stats row */}
           <div className="mt-10 max-w-xl">
             <div className="grid grid-cols-3 gap-3">
-              <StatCard icon={Tag} label="Estimated Price" value={String(s.priceFrom || "Price on assessment")} />
+              <StatCard
+                icon={Tag}
+                label="Estimated Price"
+                value={String(s.priceFrom || "Price on assessment")}
+              />
               <StatCard icon={Clock} label="Turnaround" value={s.turnaround || "Same day"} />
               <StatCard icon={ShieldCheck} label="Warranty" value="12 months" />
             </div>
             <p className="mt-3 text-xs text-slate-400 leading-snug">
-              Final price depends on the device model, part option and condition. We’ll confirm before repair.
+              Final price depends on the device model, part option and condition. We’ll confirm
+              before repair.
             </p>
           </div>
         </div>
@@ -237,7 +238,7 @@ function ServiceDetail() {
                   key={f}
                   className="flex items-start gap-3 p-4 rounded-[12px] bg-[#f7f7f5] border border-[#e3e5e8]"
                 >
-                  <CheckCircle2 className="h-5 w-5 text-[#e21b23] shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-brand shrink-0 mt-0.5" />
                   <span className="text-[15px] text-[#111318] leading-snug">{f}</span>
                 </li>
               ))}
@@ -259,8 +260,7 @@ function ServiceDetail() {
                 Ready to get this repaired?
               </div>
               <p className="text-sm text-[#5f6670] mt-1">
-                Visit us at {business.address.line1}, {business.address.city} or contact us
-                first.
+                Visit us at {business.address.line1}, {business.address.city} or contact us first.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2.5 shrink-0">
@@ -268,7 +268,7 @@ function ServiceDetail() {
                 href={telLink()}
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-[8px] border border-[#e3e5e8] bg-white text-[#111318] font-semibold text-sm hover:bg-[#f7f7f5] transition-colors min-h-[48px]"
               >
-                <Phone className="h-4 w-4 text-[#e21b23]" />
+                <Phone className="h-4 w-4 text-brand" />
                 {business.phone}
               </a>
               <a
@@ -276,7 +276,7 @@ function ServiceDetail() {
                   buildRepairQuoteMessage({
                     service: s.title,
                     price: String(s.priceFrom || "Price on assessment"),
-                  })
+                  }),
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -313,10 +313,10 @@ function ServiceDetail() {
                     key={r.slug}
                     to="/services/$slug"
                     params={{ slug: r.slug }}
-                    className="group flex items-center gap-4 p-4 rounded-[12px] border border-[#e3e5e8] bg-[#f7f7f5] hover:border-[#e21b23]/30 hover:bg-white transition-all"
+                    className="group flex items-center gap-4 p-4 rounded-[12px] border border-[#e3e5e8] bg-[#f7f7f5] hover:border-brand/30 hover:bg-white transition-all"
                   >
-                    <div className="h-10 w-10 rounded-[8px] bg-white border border-[#e3e5e8] grid place-items-center shrink-0 group-hover:bg-[#e21b23]/10 group-hover:border-[#e21b23]/20 transition-colors">
-                      <RelIcon className="h-4.5 w-4.5 text-[#5f6670] group-hover:text-[#e21b23] transition-colors" />
+                    <div className="h-10 w-10 rounded-[8px] bg-white border border-[#e3e5e8] grid place-items-center shrink-0 group-hover:bg-brand-subtle group-hover:border-brand/30 transition-colors">
+                      <RelIcon className="h-4.5 w-4.5 text-[#5f6670] group-hover:text-brand transition-colors" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-[15px] text-[#111318]">{r.title}</div>
@@ -324,7 +324,7 @@ function ServiceDetail() {
                         From {r.priceFrom || "£25"}
                       </div>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-[#5f6670] group-hover:text-[#e21b23] shrink-0 transition-colors" />
+                    <ChevronRight className="h-4 w-4 text-[#5f6670] group-hover:text-brand shrink-0 transition-colors" />
                   </Link>
                 );
               })}
@@ -349,7 +349,7 @@ function StatCard({
 }) {
   return (
     <div className="p-4 rounded-[12px] bg-white/10 border border-white/15 backdrop-blur-sm">
-      <Icon className="h-4 w-4 text-[#e21b23]" />
+      <Icon className="h-4 w-4 text-brand" />
       <div className="mt-2 text-[10px] uppercase tracking-wider text-slate-400 font-bold">
         {label}
       </div>

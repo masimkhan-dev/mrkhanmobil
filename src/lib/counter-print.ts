@@ -259,14 +259,14 @@ function generateA4InvoiceHtml(ctx: {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      border-bottom: 2px solid #0f4c75;
+      border-bottom: 2px solid #FC4B01;
       padding-bottom: 16px;
       margin-bottom: 18px;
     }
     .brand-title {
       font-size: 24px;
       font-weight: 900;
-      color: #0f4c75;
+      color: #FC4B01;
       letter-spacing: -0.5px;
       line-height: 1.1;
     }
@@ -290,8 +290,8 @@ function generateA4InvoiceHtml(ctx: {
     }
     .doc-badge {
       display: inline-block;
-      background: #e8f0fe;
-      color: #0f4c75;
+      background: #FFF1EB;
+      color: #FC4B01;
       font-weight: 800;
       font-size: 11px;
       letter-spacing: 1px;
@@ -359,7 +359,7 @@ function generateA4InvoiceHtml(ctx: {
     table.items-table th {
       background: #f3f4f6;
       border-top: 1px solid #e5e7eb;
-      border-bottom: 2px solid #0f4c75;
+      border-bottom: 2px solid #FC4B01;
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
@@ -408,12 +408,12 @@ function generateA4InvoiceHtml(ctx: {
       color: #4b5563;
     }
     .sum-row.total-row {
-      border-top: 2px solid #0f4c75;
+      border-top: 2px solid #FC4B01;
       padding-top: 6px;
       margin-top: 5px;
       font-size: 15px;
       font-weight: 800;
-      color: #0f4c75;
+      color: #FC4B01;
     }
     .sum-row.balance-row {
       border-top: 1px solid #e5e7eb;
@@ -896,7 +896,7 @@ export function buildStatementHtml(
       line-height: 1.45;
     }
     .header {
-      border-bottom: 2px solid #0f4c75;
+      border-bottom: 2px solid #FC4B01;
       padding-bottom: 14px;
       margin-bottom: 18px;
       display: flex;
@@ -906,7 +906,7 @@ export function buildStatementHtml(
     .title {
       font-size: 22px;
       font-weight: 900;
-      color: #0f4c75;
+      color: #FC4B01;
     }
     .meta {
       text-align: right;
@@ -933,7 +933,7 @@ export function buildStatementHtml(
     }
     th {
       background: #f3f4f6;
-      border-bottom: 2px solid #0f4c75;
+      border-bottom: 2px solid #FC4B01;
       padding: 8px 8px;
       text-align: left;
       font-weight: 700;

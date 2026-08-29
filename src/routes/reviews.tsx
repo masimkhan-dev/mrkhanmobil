@@ -49,7 +49,7 @@ export const Route = createFileRoute("/reviews")({
           <Button
             asChild
             size="lg"
-            className="rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold"
+            className="rounded-xl bg-brand hover:bg-brand-hover text-white font-semibold"
           >
             <a href={business.googleReviewUrl} target="_blank" rel="noreferrer">
               <Star className="mr-2 h-4 w-4 fill-amber-400 text-amber-400" /> Leave a Google Review

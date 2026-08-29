@@ -22,7 +22,7 @@ export function MobileStickyCTA() {
       </a>
       <a
         href={telLink()}
-        className="flex-1 flex items-center justify-center gap-2 bg-[#e21b23] text-white font-semibold text-sm active:opacity-90 transition-opacity min-h-[44px]"
+        className="flex-1 flex items-center justify-center gap-2 bg-brand text-white font-semibold text-sm active:bg-brand-active transition-colors min-h-[44px]"
         aria-label="Call MR. KHAN"
       >
         <Phone className="w-5 h-5 text-white" />
