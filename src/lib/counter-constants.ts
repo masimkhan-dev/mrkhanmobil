@@ -161,6 +161,9 @@ export function inferBrand(model: string, fallbackBrand = "Apple"): string {
 
 export const TERMS_VERSION = "MRK-TC-1.0-2026-08-24";
 
+export const REPAIR_WARRANTY_EXCLUSION_TEXT =
+  "Warranty does not cover accidental or physical damage, liquid/water damage, misuse, further damage after repair, or any repair/opening carried out by another repairer.";
+
 export const STANDARD_TERMS = {
   REPAIR: {
     heading: "Repair & Warranty Information",

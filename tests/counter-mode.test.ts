@@ -9,7 +9,11 @@ import {
   InternalStockInput,
 } from "../src/lib/counter.functions.ts";
 import { buildCounterInvoiceHtml } from "../src/lib/counter-print.ts";
-import { STANDARD_TERMS, TERMS_VERSION } from "../src/lib/counter-constants.ts";
+import {
+  REPAIR_WARRANTY_EXCLUSION_TEXT,
+  STANDARD_TERMS,
+  TERMS_VERSION,
+} from "../src/lib/counter-constants.ts";
 import type { InvoiceDetail } from "../src/lib/counter.types.ts";
 
 test("GBP input converts to integer pennies without floating point arithmetic", () => {
@@ -174,13 +178,42 @@ test("Custom warranty and terms snapshot survive invoice print generation", () =
   assert.match(a4Html, /Special 45-day battery health guarantee/);
   assert.match(thermalHtml, /Special 45-day battery health guarantee/);
 
-  // Verify Additional Agreement is printed
-  assert.match(a4Html, /Customer agrees to charge cycle test at home/);
-  assert.match(thermalHtml, /Customer agrees to charge cycle test at home/);
+  // Verify Repair Warranty Exclusion line is printed under warranty message
+  assert.match(
+    a4Html,
+    new RegExp(REPAIR_WARRANTY_EXCLUSION_TEXT.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+  );
+  assert.match(
+    thermalHtml,
+    new RegExp(REPAIR_WARRANTY_EXCLUSION_TEXT.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+  );
+});
 
-  // Verify Terms Version
-  assert.match(a4Html, new RegExp(TERMS_VERSION));
-  assert.match(thermalHtml, new RegExp(TERMS_VERSION));
+test("Repair invoice without warranty does not show warranty exclusion line", () => {
+  const mockNoWarranty: InvoiceDetail = {
+    id: "e0000000-0000-0000-0000-000000000006",
+    invoice_number: "REP-000043",
+    created_at: new Date().toISOString(),
+    status: "FINAL",
+    customer_name: "John Doe",
+    customer_phone: "07700900111",
+    device_make: "Apple",
+    device_model: "iPhone 11",
+    problem: "Liquid Damage Diagnostic",
+    subtotal_pence: 2000,
+    discount_pence: 0,
+    total_pence: 2000,
+    paid_pence: 2000,
+    balance_pence: 0,
+    payment_method: "CASH",
+    warranty_days: 0,
+  };
+
+  const a4Html = buildCounterInvoiceHtml("REPAIR", mockNoWarranty, "A4");
+  const thermalHtml = buildCounterInvoiceHtml("REPAIR", mockNoWarranty, "80MM");
+
+  assert.ok(!a4Html.includes(REPAIR_WARRANTY_EXCLUSION_TEXT));
+  assert.ok(!thermalHtml.includes(REPAIR_WARRANTY_EXCLUSION_TEXT));
 });
 
 test("Purchase receipt renders seller signature fields on both A4 and 80mm thermal", () => {
@@ -274,7 +307,17 @@ test("Edit Stock business logic enforces field whitelisting and seller lock inte
   };
 
   // Helper verifying edit permissions logic
-  function checkEditPermissions(existing: typeof directStock, changes: Record<string, unknown>) {
+  function checkEditPermissions(
+    existing: {
+      status: string;
+      purchase_invoice_id: string | null;
+      device_make: string;
+      purchase_price_pence: number;
+      imei: string | null;
+      [key: string]: unknown;
+    },
+    changes: Record<string, unknown>,
+  ) {
     if (existing.status !== "IN_STOCK") {
       throw new Error(`Cannot edit stock item with status ${existing.status}`);
     }

@@ -2,7 +2,11 @@ import { business } from "../config/business.ts";
 import type { InvoiceDetail, InvoiceKind, PartyStatement } from "./counter.types.ts";
 import { formatPence } from "./money.ts";
 import { generateCode128BarcodeSvg } from "./code128.ts";
-import { STANDARD_TERMS, TERMS_VERSION } from "./counter-constants.ts";
+import {
+  REPAIR_WARRANTY_EXCLUSION_TEXT,
+  STANDARD_TERMS,
+  TERMS_VERSION,
+} from "./counter-constants.ts";
 
 function escapeHtml(value: unknown): string {
   return String(value ?? "")
@@ -563,6 +567,11 @@ function generateA4InvoiceHtml(ctx: {
         ${networkStatus ? `<div class="info-row"><span>Network:</span> <strong>${escapeHtml(networkStatus)}</strong></div>` : ""}
         ${accessories ? `<div class="info-row"><span>Accessories:</span> <strong>${escapeHtml(accessories)}</strong></div>` : ""}
         ${kind !== "PURCHASE" ? `<div class="info-row"><span>Warranty:</span> <strong>${escapeHtml(warrantyDays)}</strong></div>` : ""}
+        ${
+          kind === "REPAIR" && hasWarranty
+            ? `<div style="font-size: 10px; color: #6b7280; margin-top: 4px; padding-top: 4px; border-top: 1px dashed #e5e7eb; line-height: 1.35;">${escapeHtml(REPAIR_WARRANTY_EXCLUSION_TEXT)}</div>`
+            : ""
+        }
       </div>
     </div>
 
@@ -827,6 +836,11 @@ function generate80mmThermalHtml(ctx: {
   ${networkStatus80 && kind === "PURCHASE" ? `<div class="row"><span>Network:</span><strong class="text-right">${escapeHtml(networkStatus80)}</strong></div>` : ""}
   ${accessories80 && kind === "PURCHASE" ? `<div class="row"><span>Accessories:</span><strong class="text-right">${escapeHtml(accessories80)}</strong></div>` : ""}
   ${kind !== "PURCHASE" ? `<div class="row"><span>Warranty:</span><strong class="text-right">${escapeHtml(warrantyDays)}</strong></div>` : ""}
+  ${
+    kind === "REPAIR" && hasWarranty
+      ? `<div style="font-size: 8.5px; color: #333; margin-top: 2px; line-height: 1.3;">${escapeHtml(REPAIR_WARRANTY_EXCLUSION_TEXT)}</div>`
+      : ""
+  }
 
   <div class="divider-solid"></div>
 

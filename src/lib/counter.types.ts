@@ -64,7 +64,7 @@ export type InvoiceSummary = {
   created_at: string;
 };
 
-export type InvoiceDetail = Record<string, string | number | null> & {
+export type InvoiceDetail = Record<string, unknown> & {
   id: string;
   invoice_number: string;
   status: "FINAL" | "VOID";
