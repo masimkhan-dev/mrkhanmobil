@@ -104,10 +104,16 @@ export type InvoiceDetail = {
     | string
     | {
         heading?: string;
-        points?: Array<{ title: string; body: string }>;
+        points?:
+          | ReadonlyArray<{ readonly title?: string; readonly body?: string }>
+          | Array<{ title?: string; body?: string }>;
         version?: string;
         additional_agreement?: string;
-        [key: string]: string | Array<{ title: string; body: string }> | undefined;
+        [key: string]:
+          | string
+          | ReadonlyArray<{ readonly title?: string; readonly body?: string }>
+          | Array<{ title?: string; body?: string }>
+          | undefined;
       }
     | null;
   additional_agreement?: string | null;
