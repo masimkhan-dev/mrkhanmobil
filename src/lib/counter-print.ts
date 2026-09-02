@@ -334,11 +334,11 @@ function generateA4InvoiceHtml(ctx: {
       margin-bottom: 16px;
     }
     .invoice-logo {
-      height: 44px;
+      height: 64px;
       width: auto;
-      max-width: 190px;
+      max-width: 260px;
       object-fit: contain;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       display: block;
     }
     .brand-legal {
@@ -973,11 +973,11 @@ export function buildStatementHtml(
       align-items: flex-start;
     }
     .statement-logo {
-      height: 42px;
+      height: 64px;
       width: auto;
-      max-width: 180px;
+      max-width: 260px;
       object-fit: contain;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       display: block;
     }
     .title {

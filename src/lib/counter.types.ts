@@ -64,11 +64,58 @@ export type InvoiceSummary = {
   created_at: string;
 };
 
-export type InvoiceDetail = Record<string, unknown> & {
+export type InvoiceDetail = {
   id: string;
   invoice_number: string;
   status: "FINAL" | "VOID";
   created_at: string;
+  customer_name?: string | null;
+  customer_phone?: string | null;
+  supplier_name?: string | null;
+  supplier_phone?: string | null;
+  supplier_email?: string | null;
+  supplier_address?: string | null;
+  party_name?: string | null;
+  party_phone?: string | null;
+  device_make?: string | null;
+  device_model?: string | null;
+  storage?: string | null;
+  colour?: string | null;
+  imei?: string | null;
+  serial?: string | null;
+  imei_serial?: string | null;
+  device_condition?: string | null;
+  battery_health?: string | number | null;
+  network_status?: string | null;
+  accessories?: string | null;
+  problem?: string | null;
+  repair_work?: string | null;
+  subtotal_pence?: number | null;
+  discount_pence?: number | null;
+  total_pence?: number | null;
+  paid_pence?: number | null;
+  balance_pence?: number | null;
+  purchase_price_pence?: number | null;
+  selling_price_pence?: number | null;
+  warranty_days?: number | string | null;
+  warranty_notes?: string | null;
+  payment_method?: string | null;
+  terms_snapshot?:
+    | string
+    | {
+        heading?: string;
+        points?: Array<{ title: string; body: string }>;
+        version?: string;
+        additional_agreement?: string;
+        [key: string]: string | Array<{ title: string; body: string }> | undefined;
+      }
+    | null;
+  additional_agreement?: string | null;
+  custom_terms?: string | null;
+  shop_note?: string | null;
+  purchase_date?: string | null;
+  id_reference?: string | null;
+  notes?: string | null;
 };
 
 export type LedgerEntry = {
