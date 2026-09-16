@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Menu, MessageCircle, Phone, X } from "lucide-react";
 import { business, telLink, whatsappLink } from "@/config/business";
-import logoImg from "@/assets/logo.png";
+import logoImg from "@/assets/logo.webp";
 
 const navLinks = [
   { to: "/", label: "Home", exact: true },
@@ -87,6 +87,8 @@ export function SiteHeader() {
               <img
                 src={logoImg}
                 alt="MR. KHAN Liverpool"
+                width={260}
+                height={72}
                 className="h-14 sm:h-16 md:h-18 w-auto max-w-[260px] sm:max-w-[320px] object-contain shrink-0 transition-transform duration-200 hover:scale-[1.02]"
                 loading="eager"
               />
@@ -204,6 +206,8 @@ export function SiteHeader() {
               <img
                 src={logoImg}
                 alt="MR. KHAN Liverpool"
+                width={180}
+                height={44}
                 className="h-10 sm:h-11 w-auto max-w-[180px] object-contain shrink-0"
               />
             </Link>

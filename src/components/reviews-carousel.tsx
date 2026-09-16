@@ -7,18 +7,20 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { listPublicReviews } from "@/lib/cms.functions";
 import { business } from "@/config/business";
+import { REAL_GOOGLE_REVIEWS } from "@/config/reviews";
 
-export function ReviewsCarousel() {
-  const getReviews = useServerFn(listPublicReviews);
-  const { data: dbReviews, isLoading } = useQuery({
+export const reviewsQueryOptions = () =>
+  queryOptions({
     queryKey: ["public-reviews"],
-    queryFn: () => getReviews(),
+    queryFn: () => listPublicReviews(),
     staleTime: 1000 * 60 * 10,
   });
+
+export function ReviewsCarousel() {
+  const { data: dbReviews, isLoading } = useQuery(reviewsQueryOptions());
 
   if (isLoading) {
     return (
@@ -28,7 +30,9 @@ export function ReviewsCarousel() {
     );
   }
 
-  const items = (dbReviews ?? []).map((r) => ({
+  const sourceReviews = dbReviews && dbReviews.length > 0 ? dbReviews : REAL_GOOGLE_REVIEWS;
+
+  const items = sourceReviews.map((r) => ({
     name:
       (r as { author?: string; name?: string }).author ||
       (r as { author?: string; name?: string }).name ||
@@ -36,7 +40,7 @@ export function ReviewsCarousel() {
     city:
       (r as { location?: string | null; city?: string }).location ||
       (r as { location?: string | null; city?: string }).city ||
-      "UK",
+      "Liverpool",
     stars: typeof r.rating === "number" ? r.rating : 5,
     text:
       (r as { body?: string; text?: string }).body ||

@@ -22,7 +22,7 @@ export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
       {
-        title: "Mobile Repair Services Liverpool | Screen, Battery, Water Damage | MR. KHAN",
+        title: "Mobile Repair Services Liverpool | MR. KHAN",
       },
       {
         name: "description",
@@ -138,7 +138,7 @@ function ServicesPage() {
             Our Services
           </p>
           <h1 className="font-display font-extrabold text-[2.4rem] sm:text-[3.2rem] tracking-tight text-white">
-            Every repair, one warranty.
+            Mobile Repair Services in Liverpool
           </h1>
           <p className="mt-4 text-lg text-slate-300 leading-relaxed max-w-xl mx-auto">
             Choose your device or the problem — get a clear price before any work begins.

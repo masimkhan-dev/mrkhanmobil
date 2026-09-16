@@ -9,19 +9,23 @@ interface ServiceCardProps {
   service: Service;
   selectedDevice?: string;
   className?: string;
+  hidePricing?: boolean;
 }
 
 export function ServiceCard({
   service,
   selectedDevice = "Apple iPhone",
   className = "",
+  hidePricing = false,
 }: ServiceCardProps) {
   const Icon = service.icon;
-  const waMessage = buildRepairQuoteMessage({
-    device: selectedDevice,
-    service: service.title,
-    price: service.priceFrom,
-  });
+  const waMessage = hidePricing
+    ? `Hi MR. KHAN, I'd like a repair quote.\nDevice: ${selectedDevice}\nService: ${service.title}\nPlease confirm the price and availability.`
+    : buildRepairQuoteMessage({
+        device: selectedDevice,
+        service: service.title,
+        price: service.priceFrom,
+      });
   const waLink = whatsappLink(waMessage);
 
   return (
@@ -45,24 +49,26 @@ export function ServiceCard({
         {/* Short Description */}
         <p className="text-sm text-[#5f6670] leading-relaxed mb-4">{service.short}</p>
 
-        {/* Price Section */}
-        <div className="pt-3 pb-2 border-t border-[#e3e5e8]">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] uppercase tracking-wider text-[#5f6670] font-semibold">
-              Estimated Pricing
-            </span>
-            <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-              inc. VAT &amp; fitting
-            </span>
+        {/* Price Section — hidden when hidePricing is true */}
+        {!hidePricing && (
+          <div className="pt-3 pb-2 border-t border-[#e3e5e8]">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] uppercase tracking-wider text-[#5f6670] font-semibold">
+                Estimated Pricing
+              </span>
+              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                inc. VAT &amp; fitting
+              </span>
+            </div>
+            <div className="font-display font-extrabold text-[1.4rem] text-[#111318] leading-tight mt-1">
+              {service.priceFrom}
+            </div>
+            {/* Price-transparency Note */}
+            <p className="mt-1 text-[11px] text-[#5f6670] leading-snug">
+              Final price depends on device model and part choice — confirmed before repair.
+            </p>
           </div>
-          <div className="font-display font-extrabold text-[1.4rem] text-[#111318] leading-tight mt-1">
-            {service.priceFrom}
-          </div>
-          {/* Price-transparency Note */}
-          <p className="mt-1 text-[11px] text-[#5f6670] leading-snug">
-            Final price depends on device model and part choice — confirmed before repair.
-          </p>
-        </div>
+        )}
       </div>
 
       {/* Actions: Get Quote on WhatsApp + Details link */}

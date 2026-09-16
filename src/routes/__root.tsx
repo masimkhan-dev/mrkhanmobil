@@ -88,18 +88,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome at London Road, Liverpool Post Office.",
+          "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome at 83-85 London Road.",
       },
-      { name: "author", content: "MR. KHAN Mobile Repair" },
+      { name: "author", content: "MR. KHAN" },
       { name: "theme-color", content: "#FC4B01" },
-      { property: "og:site_name", content: "MR. KHAN Mobile Repair" },
+      { property: "og:site_name", content: business.name },
       { property: "og:locale", content: "en_GB" },
       { property: "og:type", content: "website" },
       { property: "og:title", content: "Phone Repair Liverpool | Same-Day Fix | MR. KHAN" },
       {
         property: "og:description",
         content:
-          "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome.",
+          "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome at 83-85 London Road.",
       },
       { property: "og:image", content: `${business.url}/og-home.png` },
       { property: "og:url", content: `${business.url}/` },
@@ -112,19 +112,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "twitter:description",
         content:
-          "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome.",
+          "Fast iPhone, Samsung & phone repairs in Liverpool. Free diagnosis. 12-month warranty. Walk-ins welcome at 83-85 London Road.",
       },
       { name: "twitter:image", content: `${business.url}/og-home.png` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
-      { rel: "canonical", href: `${business.url}/` },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap",
       },
     ],
     scripts: [
@@ -132,24 +131,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "MobilePhoneStore",
-          name: "MR. KHAN Mobile Repair",
+          "@type": ["MobilePhoneRepairShop", "MobilePhoneStore"],
+          "@id": "https://www.mrkhanmobiles.co.uk/#organization",
+          name: business.name,
+          legalName: business.legalName,
+          alternateName: [business.legalName, "MR. KHAN Mobile Repair"],
+          url: business.url,
           image: `${business.url}/og-home.png`,
-          "@id": "https://www.mrkhanmobiles.co.uk",
-          url: "https://www.mrkhanmobiles.co.uk",
-          telephone: "+447707733038",
+          telephone: business.phoneRaw,
           priceRange: "££",
+          hasMap: business.social.google,
+          sameAs: [
+            business.social.google,
+            business.social.facebook,
+            business.social.instagram,
+            business.social.tiktok,
+          ].filter(Boolean),
           address: {
             "@type": "PostalAddress",
-            streetAddress: "83-85 London Road, Liverpool Post Office",
-            addressLocality: "Liverpool",
-            postalCode: "L3 8JA",
+            streetAddress: business.address.line1,
+            addressLocality: business.address.city,
+            addressRegion: business.address.region,
+            postalCode: business.address.postcode,
             addressCountry: "GB",
           },
           geo: {
             "@type": "GeoCoordinates",
-            latitude: "53.4106",
-            longitude: "-2.9779",
+            latitude: business.geo.latitude,
+            longitude: business.geo.longitude,
           },
           openingHoursSpecification: [
             {
@@ -165,10 +174,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               closes: "21:00",
             },
           ],
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: "4.9",
-          },
           areaServed: {
             "@type": "City",
             name: "Liverpool",

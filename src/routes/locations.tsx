@@ -32,6 +32,29 @@ export const Route = createFileRoute("/locations")({
         { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/locations" },
       ],
       links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/locations" }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://www.mrkhanmobiles.co.uk/",
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Locations",
+                item: "https://www.mrkhanmobiles.co.uk/locations",
+              },
+            ],
+          }),
+        },
+      ],
     };
   },
   component: LocationsPage,
@@ -45,7 +68,7 @@ function LocationsPage() {
         <div className="container-x text-center max-w-3xl mx-auto">
           <p className="text-xs uppercase tracking-widest text-accent font-semibold">Locations</p>
           <h1 className="mt-3 font-display font-bold text-4xl md:text-6xl">
-            We repair across the North West
+            Mobile Phone Repair Locations | Liverpool &amp; North West
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
             Walk-in, home service or mail-in — trusted repairs where you need them.
@@ -59,7 +82,7 @@ function LocationsPage() {
               <Card className="h-full hover:border-accent/40 hover:shadow-[var(--shadow-elegant)] transition">
                 <CardContent className="p-6">
                   <MapPin className="h-6 w-6 text-accent" />
-                  <h3 className="mt-4 font-display font-semibold text-xl">Repairs in {c.name}</h3>
+                  <h2 className="mt-4 font-display font-semibold text-xl">Repairs in {c.name}</h2>
                   <p className="text-xs text-muted-foreground mt-1">{c.postcodes}</p>
                   <p className="text-sm mt-3 text-foreground/80">{c.intro}</p>
                 </CardContent>

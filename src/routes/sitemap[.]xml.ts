@@ -17,12 +17,11 @@ const staticPaths = [
   "/warranty",
   "/reviews",
   "/gallery",
-  "/blog",
   "/faq",
   "/about",
   "/contact",
-  "/track",
-  "/book",
+  "/buy-sell",
+  "/blog",
   "/privacy",
   "/terms",
   "/refunds",
@@ -37,8 +36,8 @@ export const Route = createFileRoute("/sitemap.xml")({
         const entries: { path: string; priority?: string; changefreq?: string }[] = [
           ...staticPaths.map((p) => ({
             path: p,
-            changefreq: "weekly",
-            priority: p === "/" ? "1.0" : "0.7",
+            changefreq: p === "/" || p === "/services" ? "weekly" : "monthly",
+            priority: p === "/" ? "1.0" : p === "/services" ? "0.9" : "0.7",
           })),
           ...services.map((s) => ({
             path: `/services/${s.slug}`,
@@ -49,11 +48,6 @@ export const Route = createFileRoute("/sitemap.xml")({
             path: `/repairs/${c.slug}`,
             changefreq: "monthly",
             priority: "0.8",
-          })),
-          ...blogPosts.map((p) => ({
-            path: `/blog/${p.slug}`,
-            changefreq: "monthly",
-            priority: "0.6",
           })),
         ];
 

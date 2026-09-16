@@ -25,7 +25,7 @@ export const Route = createFileRoute("/buy-sell")({
   head: () => ({
     meta: [
       {
-        title: "Mobile Phones, Accessories & Electronics Liverpool | Buy, Sell & Shop | MR. KHAN",
+        title: "Buy & Sell Phones, Accessories & Electronics | MR. KHAN Liverpool",
       },
       {
         name: "description",
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/buy-sell")({
       },
       {
         property: "og:title",
-        content: "Mobile Phones, Accessories & Electronics Liverpool | MR. KHAN",
+        content: "Buy & Sell Phones, Accessories & Electronics | MR. KHAN Liverpool",
       },
       {
         property: "og:description",
@@ -45,6 +45,29 @@ export const Route = createFileRoute("/buy-sell")({
       { property: "og:url", content: `${business.url}/buy-sell` },
     ],
     links: [{ rel: "canonical", href: `${business.url}/buy-sell` }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://www.mrkhanmobiles.co.uk/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Buy & Sell",
+              item: "https://www.mrkhanmobiles.co.uk/buy-sell",
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: BuySellPage,
 });
@@ -98,7 +121,8 @@ function BuySellPage() {
 
           {/* Headline */}
           <h1 className="text-[2.3rem] sm:text-[3.2rem] lg:text-[3.8rem] font-display font-extrabold leading-[1.12] tracking-tight text-white">
-            Buy, sell and shop with <span className="text-white">MR. KHAN</span>
+            Buy, Sell &amp; Shop Mobile Phones &amp; Accessories —{" "}
+            <span className="text-white">MR. KHAN</span>
           </h1>
 
           {/* Subtext */}

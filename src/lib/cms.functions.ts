@@ -35,14 +35,22 @@ export const listPublicServices = createServerFn({ method: "GET" }).handler(asyn
 });
 
 export const listPublicReviews = createServerFn({ method: "GET" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
-    .from("reviews")
-    .select("*")
-    .eq("published", true)
-    .order("sort_order");
-  if (error) throw new Error(error.message);
-  return data ?? [];
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("reviews")
+      .select("*")
+      .eq("published", true)
+      .order("sort_order");
+    if (error || !data || data.length === 0) {
+      const { REAL_GOOGLE_REVIEWS } = await import("@/config/reviews");
+      return REAL_GOOGLE_REVIEWS;
+    }
+    return data;
+  } catch {
+    const { REAL_GOOGLE_REVIEWS } = await import("@/config/reviews");
+    return REAL_GOOGLE_REVIEWS;
+  }
 });
 
 export const listPublicFaqs = createServerFn({ method: "GET" }).handler(async () => {

@@ -77,9 +77,14 @@ export const Route = createFileRoute("/repairs/$city")({
               children: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "MobilePhoneRepairShop",
-                name: `${business.name} — ${loaderData.name}`,
-                areaServed: loaderData.name,
+                "@id": "https://www.mrkhanmobiles.co.uk/#organization",
+                name: business.name,
+                url: business.url,
                 telephone: business.phoneRaw,
+                areaServed: {
+                  "@type": "City",
+                  name: loaderData.name,
+                },
               }),
             },
           ]

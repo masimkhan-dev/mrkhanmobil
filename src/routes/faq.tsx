@@ -5,16 +5,44 @@ import { business } from "@/config/business";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: `FAQ | ${business.name}` },
+      { title: "Phone Repair FAQs | MR. KHAN Liverpool" },
       {
         name: "description",
         content:
-          "Common questions on turnaround, warranty, parts, data safety, mail-in and home repair.",
+          "Common questions about mobile phone repairs in Liverpool. Turnaround times, 12-month warranty, replacement parts, data safety, and pricing answered.",
       },
-      { property: "og:url", content: "/faq" },
+      { property: "og:title", content: "Phone Repair FAQs | MR. KHAN Liverpool" },
+      {
+        property: "og:description",
+        content:
+          "Common questions about mobile phone repairs in Liverpool. Turnaround times, 12-month warranty, replacement parts, data safety, and pricing answered.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/faq" },
     ],
-    links: [{ rel: "canonical", href: "/faq" }],
+    links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/faq" }],
     scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://www.mrkhanmobiles.co.uk/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "FAQs",
+              item: "https://www.mrkhanmobiles.co.uk/faq",
+            },
+          ],
+        }),
+      },
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -34,7 +62,7 @@ export const Route = createFileRoute("/faq")({
       <div className="container-x max-w-3xl">
         <p className="text-xs uppercase tracking-widest text-accent font-semibold">Support</p>
         <h1 className="mt-2 font-display font-bold text-4xl md:text-5xl">
-          Frequently asked questions
+          Frequently Asked Questions — Phone Repair Liverpool
         </h1>
         <div className="mt-10">
           <FaqAccordion />

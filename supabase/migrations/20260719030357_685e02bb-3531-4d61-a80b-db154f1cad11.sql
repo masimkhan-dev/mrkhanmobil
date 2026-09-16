@@ -279,11 +279,14 @@ INSERT INTO public.services (slug, title, short, description, category, icon, pr
 
 -- Seed reviews
 INSERT INTO public.reviews (author, rating, body, location, source, featured, sort_order) VALUES
-  ('Sarah T.',5,'Cracked my iPhone 14 Pro screen — MR KHAN had me sorted in under an hour. Genuine-quality screen, perfect finish and 12-month warranty. Highly recommended!','Liverpool','google',true,10),
-  ('James O.',5,'Battery replacement on my Samsung S22 was quick and honest. Told me the exact price upfront, no surprises. Great local business.','Manchester','google',true,20),
-  ('Amina K.',5,'They fixed my son''s Pixel 7 after a water damage nightmare — thought it was gone forever. Amazing service and fair pricing.','Wirral','google',true,30),
-  ('Daniel P.',5,'Booked a home visit for my nan''s iPhone. The technician was polite, on time and fixed the charging port in her living room. 10/10.','Liverpool','google',false,40),
-  ('Rachel M.',5,'Best repair shop in the North West. Trusted them with three phones now — never let me down.','Southport','google',false,50);
+  ('Luan Delacruz',5,'Amazing service front screen fixed in 20 minutes for cheap and even cleaned my camera for me without me having to ask! Amazing results thankyou','Liverpool','google',true,10),
+  ('Tyren Devine',5,'Amazing service, quick and easy and best prices going, best friendly staff anywhere in liverpool! highly recommend !!','Liverpool','google',true,20),
+  ('Sehrish Kabir',5,'Highly recommended very good and fast service and reasonable prices and quality products 💯💯❤️','Liverpool','google',true,30),
+  ('Vinay kumar',5,'Good quality ..expert repair','Liverpool','google',true,40),
+  ('Thu San',5,'Great service. Get the screen protection done for my tablet quickly.','Liverpool','google',true,50),
+  ('Zion Edwards',5,'Good and honest man, fast and cheap service.','Liverpool','google',false,60),
+  ('Milazim Beqa',5,'Amazing owner, lovely place','Liverpool','google',false,70),
+  ('Muhammad Asim Khan',5,'Well professional staff for each and everything. The services that they provide, highly recommend.','Liverpool','google',false,80);
 
 -- Seed FAQs
 INSERT INTO public.faqs (question, answer, category, sort_order) VALUES

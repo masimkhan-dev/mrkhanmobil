@@ -9,33 +9,73 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!p) throw notFound();
     return p;
   },
-  head: ({ loaderData, params }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.title} | ${business.name} Blog` },
-          { name: "description", content: loaderData.excerpt },
-          { property: "og:title", content: loaderData.title },
-          { property: "og:description", content: loaderData.excerpt },
-          { property: "og:type", content: "article" },
-          { property: "og:url", content: `/blog/${params.slug}` },
-        ]
-      : [],
-    links: [{ rel: "canonical", href: `/blog/${params.slug}` }],
-    scripts: loaderData
-      ? [
-          {
-            type: "application/ld+json",
-            children: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Article",
-              headline: loaderData.title,
-              datePublished: loaderData.date,
-              author: { "@type": "Organization", name: business.name },
-            }),
-          },
-        ]
-      : [],
-  }),
+  head: ({ loaderData, params }) => {
+    const postUrl = `https://www.mrkhanmobiles.co.uk/blog/${params.slug}`;
+    return {
+      meta: loaderData
+        ? [
+            { title: `${loaderData.title} | MR. KHAN Blog` },
+            { name: "description", content: loaderData.excerpt },
+            { property: "og:title", content: loaderData.title },
+            { property: "og:description", content: loaderData.excerpt },
+            { property: "og:type", content: "article" },
+            { property: "og:url", content: postUrl },
+            { name: "robots", content: "noindex, follow" },
+          ]
+        : [{ name: "robots", content: "noindex, follow" }],
+      links: [{ rel: "canonical", href: postUrl }],
+      scripts: loaderData
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Home",
+                    item: "https://www.mrkhanmobiles.co.uk/",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Blog",
+                    item: "https://www.mrkhanmobiles.co.uk/blog",
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: loaderData.title,
+                    item: postUrl,
+                  },
+                ],
+              }),
+            },
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Article",
+                headline: loaderData.title,
+                datePublished: (loaderData as { isoDate?: string }).isoDate || "2026-02-12",
+                author: {
+                  "@type": "Organization",
+                  "@id": "https://www.mrkhanmobiles.co.uk/#organization",
+                  name: business.name,
+                },
+                publisher: {
+                  "@type": "Organization",
+                  "@id": "https://www.mrkhanmobiles.co.uk/#organization",
+                  name: business.name,
+                },
+              }),
+            },
+          ]
+        : [],
+    };
+  },
   component: BlogPostPage,
   notFoundComponent: () => <div className="py-24 text-center">Post not found</div>,
 });

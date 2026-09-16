@@ -23,6 +23,24 @@ export const Route = createFileRoute("/mail-in")({
         { property: "og:url", content: `${siteUrl}/mail-in` },
       ],
       links: [{ rel: "canonical", href: `${siteUrl}/mail-in` }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Mail-in Repair",
+                item: `${siteUrl}/mail-in`,
+              },
+            ],
+          }),
+        },
+      ],
     };
   },
   component: () => (
@@ -30,9 +48,11 @@ export const Route = createFileRoute("/mail-in")({
       <section className="py-16 md:py-24 bg-surface border-b border-border">
         <div className="container-x max-w-3xl">
           <Package className="h-10 w-10 text-accent" />
-          <h1 className="mt-4 font-display font-bold text-4xl md:text-6xl">Mail-in repair</h1>
+          <h1 className="mt-4 font-display font-bold text-4xl md:text-6xl">
+            UK Mail-In Mobile Phone Repair
+          </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Anywhere in the UK. Free tracked & insured return delivery on every mail-in repair.
+            Anywhere in the UK. Free tracked &amp; insured return delivery on every mail-in repair.
           </p>
           <Button asChild size="lg" className="mt-8 rounded-full">
             <Link to="/contact">Contact us about mail-in repair</Link>
@@ -41,6 +61,9 @@ export const Route = createFileRoute("/mail-in")({
       </section>
       <section className="py-20">
         <div className="container-x max-w-4xl">
+          <h2 className="text-center font-display font-bold text-2xl md:text-3xl mb-12 text-[#111318]">
+            How our mail-in repair works
+          </h2>
           <ol className="grid gap-8 md:grid-cols-2">
             {[
               {

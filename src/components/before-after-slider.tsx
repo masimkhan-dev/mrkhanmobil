@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import screenBefore from "@/assets/screen_before.png";
-import screenAfter from "@/assets/screen_after.png";
+import screenBefore from "@/assets/screen_before.webp";
+import screenAfter from "@/assets/screen_after.webp";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, ArrowLeftRight } from "lucide-react";
 
@@ -100,6 +100,9 @@ export function BeforeAfterSlider() {
               <img
                 src={screenAfter}
                 alt="Repaired phone screen in pristine condition"
+                width={1200}
+                height={800}
+                loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                 draggable={false}
               />
@@ -112,6 +115,9 @@ export function BeforeAfterSlider() {
                 <img
                   src={screenBefore}
                   alt="Damaged phone screen before repair"
+                  width={1200}
+                  height={800}
+                  loading="lazy"
                   className="absolute inset-y-0 left-0 h-full object-cover max-w-none pointer-events-none"
                   style={{ width: containerWidth > 0 ? `${containerWidth}px` : "100%" }}
                   draggable={false}

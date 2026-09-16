@@ -20,12 +20,37 @@ export const Route = createFileRoute("/about")({
       { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/about" },
     ],
     links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/about" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://www.mrkhanmobiles.co.uk/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "About Us",
+              item: "https://www.mrkhanmobiles.co.uk/about",
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: () => (
     <section className="py-16 md:py-24">
       <div className="container-x max-w-3xl">
         <p className="text-xs uppercase tracking-widest text-accent font-semibold">About us</p>
-        <h1 className="mt-2 font-display font-bold text-4xl md:text-6xl">Repair, done properly.</h1>
+        <h1 className="mt-2 font-display font-bold text-4xl md:text-6xl">
+          About MR. KHAN — Phone Repair Liverpool
+        </h1>
         <div className="prose prose-lg mt-8 max-w-none text-foreground/85 leading-relaxed">
           <p>
             {business.name} started with a simple idea: mobile phone repair shouldn't be a gamble.

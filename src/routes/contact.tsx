@@ -21,6 +21,29 @@ export const Route = createFileRoute("/contact")({
       { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/contact" },
     ],
     links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/contact" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://www.mrkhanmobiles.co.uk/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Contact",
+              item: "https://www.mrkhanmobiles.co.uk/contact",
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: () => (
     <section className="py-16 md:py-24">
@@ -29,7 +52,9 @@ export const Route = createFileRoute("/contact")({
           <p className="text-xs uppercase tracking-widest text-accent font-semibold">
             Get in touch
           </p>
-          <h1 className="mt-2 font-display font-bold text-4xl md:text-5xl">We're here to help</h1>
+          <h1 className="mt-2 font-display font-bold text-4xl md:text-5xl">
+            Contact MR. KHAN — Phone Repair Liverpool
+          </h1>
           <p className="mt-4 text-muted-foreground">
             Reach us however works best — we usually reply within the hour during business hours.
           </p>

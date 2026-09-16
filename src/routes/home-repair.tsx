@@ -24,6 +24,24 @@ export const Route = createFileRoute("/home-repair")({
         { property: "og:url", content: `${siteUrl}/home-repair` },
       ],
       links: [{ rel: "canonical", href: `${siteUrl}/home-repair` }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Home Repair",
+                item: `${siteUrl}/home-repair`,
+              },
+            ],
+          }),
+        },
+      ],
     };
   },
   component: () => (
@@ -31,7 +49,9 @@ export const Route = createFileRoute("/home-repair")({
       <section className="py-16 md:py-24 bg-surface border-b border-border">
         <div className="container-x max-w-3xl">
           <Home className="h-10 w-10 text-accent" />
-          <h1 className="mt-4 font-display font-bold text-4xl md:text-6xl">Home repair service</h1>
+          <h1 className="mt-4 font-display font-bold text-4xl md:text-6xl">
+            Call-Out &amp; Home Mobile Phone Repair Liverpool
+          </h1>
           <p className="mt-4 text-lg text-muted-foreground">
             Book a certified engineer to come to your home. Repairs done at your kitchen table — no
             time off work, no travel.
@@ -42,22 +62,27 @@ export const Route = createFileRoute("/home-repair")({
         </div>
       </section>
       <section className="py-16">
-        <div className="container-x grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
-          <Feature
-            icon={MapPin}
-            title="North West coverage"
-            desc="Liverpool, Manchester, Wirral, Bootle, St Helens, Southport, Birkenhead."
-          />
-          <Feature
-            icon={Clock}
-            title="Same-day slots"
-            desc="Book by 12 noon for same-day; otherwise next-day guaranteed."
-          />
-          <Feature
-            icon={ShieldCheck}
-            title="12-month warranty"
-            desc="Same warranty as our in-store repairs — fully covered."
-          />
+        <div className="container-x max-w-4xl mx-auto">
+          <h2 className="text-center font-display font-bold text-2xl md:text-3xl mb-10 text-[#111318]">
+            Why choose our home repair visit
+          </h2>
+          <div className="grid gap-6 md:grid-cols-3">
+            <Feature
+              icon={MapPin}
+              title="North West coverage"
+              desc="Liverpool, Manchester, Wirral, Bootle, St Helens, Southport, Birkenhead."
+            />
+            <Feature
+              icon={Clock}
+              title="Same-day slots"
+              desc="Book by 12 noon for same-day; otherwise next-day guaranteed."
+            />
+            <Feature
+              icon={ShieldCheck}
+              title="12-month warranty"
+              desc="Same warranty as our in-store repairs — fully covered."
+            />
+          </div>
         </div>
       </section>
     </>

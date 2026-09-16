@@ -9,6 +9,7 @@ const posts = [
     excerpt:
       "The honest UK price guide — what genuine, OEM and aftermarket really mean, and how to avoid getting stung.",
     date: "12 Feb 2026",
+    isoDate: "2026-02-12",
     cat: "Guides",
   },
   {
@@ -16,6 +17,7 @@ const posts = [
     title: "Extend your phone battery life by 40% — 7 real tips",
     excerpt: "Simple habits (and one settings tweak) that dramatically extend battery lifespan.",
     date: "05 Feb 2026",
+    isoDate: "2026-02-05",
     cat: "Tips",
   },
   {
@@ -23,6 +25,7 @@ const posts = [
     title: "Dropped your phone in water? Do this immediately.",
     excerpt: "The five-minute rescue routine that saves most water-damaged phones.",
     date: "22 Jan 2026",
+    isoDate: "2026-01-22",
     cat: "Emergency",
   },
 ];
@@ -32,11 +35,19 @@ export const Route = createFileRoute("/blog")({
     const siteUrl = process.env.SITE_URL || business.url;
     return {
       meta: [
-        { title: `Repair Blog | ${business.name}` },
+        { title: "Phone Repair Guides & Advice | MR. KHAN Liverpool" },
         {
           name: "description",
-          content: "Repair guides, buying advice and honest tips from the workshop.",
+          content:
+            "Repair guides, smartphone maintenance tips, and honest advice from our Liverpool repair workshop.",
         },
+        { property: "og:title", content: "Phone Repair Guides & Advice | MR. KHAN Liverpool" },
+        {
+          property: "og:description",
+          content:
+            "Repair guides, smartphone maintenance tips, and honest advice from our Liverpool repair workshop.",
+        },
+        { property: "og:type", content: "website" },
         { property: "og:url", content: `${siteUrl}/blog` },
       ],
       links: [{ rel: "canonical", href: `${siteUrl}/blog` }],

@@ -1,25 +1,26 @@
 import { Link } from "@tanstack/react-router";
 import { business, telLink, whatsappLink } from "@/config/business";
 import { Phone, MessageCircle, MapPin, Mail, Navigation } from "lucide-react";
-import logoImg from "@/assets/logo.png";
+import logoImg from "@/assets/logo.webp";
 
 const repairLinks = [
   { label: "iPhone Repair", slug: "iphone-repair" },
   { label: "Samsung Repair", slug: "samsung-repair" },
-  { label: "Google Pixel Repair", slug: "google-pixel-repair" },
   { label: "Screen Replacement", slug: "screen-replacement" },
   { label: "Battery Replacement", slug: "battery-replacement" },
   { label: "Charging Port Repair", slug: "charging-port" },
-  { label: "Water Damage Repair", slug: "water-damage" },
 ] as const;
 
 const companyLinks = [
   { label: "About Us", to: "/about" },
-  { label: "Buy & Sell", to: "/buy-sell" },
-  { label: "Reviews", to: "/reviews" },
-  { label: "Gallery", to: "/gallery" },
-  { label: "Blog", to: "/blog" },
-  { label: "Contact", to: "/contact" },
+  { label: "Repair Warranty", to: "/warranty" },
+  { label: "Locations", to: "/locations" },
+  { label: "Call-Out / Home Visit", to: "/home-repair" },
+  { label: "Mail-In Repair", to: "/mail-in" },
+  { label: "Buy & Sell Phones", to: "/buy-sell" },
+  { label: "Customer Reviews", to: "/reviews" },
+  { label: "FAQs", to: "/faq" },
+  { label: "Contact Us", to: "/contact" },
 ] as const;
 
 export function SiteFooter() {
@@ -41,6 +42,8 @@ export function SiteFooter() {
               <img
                 src={logoImg}
                 alt="MR. KHAN Liverpool"
+                width={240}
+                height={64}
                 className="h-14 sm:h-16 w-auto max-w-[240px] object-contain shrink-0 transition-transform duration-200 group-hover:scale-[1.02]"
               />
             </Link>
@@ -87,7 +90,7 @@ export function SiteFooter() {
 
           {/* Column 2: Repairs */}
           <div className="space-y-4">
-            <h3 className="text-xs uppercase tracking-wider text-white/40 font-bold">Repairs</h3>
+            <p className="text-xs uppercase tracking-wider text-white/40 font-bold">Repairs</p>
             <ul className="space-y-2.5">
               {repairLinks.map((l) => (
                 <li key={l.slug}>
@@ -113,7 +116,7 @@ export function SiteFooter() {
 
           {/* Column 3: Company */}
           <div className="space-y-4">
-            <h3 className="text-xs uppercase tracking-wider text-white/40 font-bold">Company</h3>
+            <p className="text-xs uppercase tracking-wider text-white/40 font-bold">Explore</p>
             <ul className="space-y-2.5">
               {companyLinks.map((l) => (
                 <li key={l.to}>
@@ -130,7 +133,7 @@ export function SiteFooter() {
 
           {/* Column 4: Contact */}
           <div className="space-y-4">
-            <h3 className="text-xs uppercase tracking-wider text-white/40 font-bold">Contact</h3>
+            <p className="text-xs uppercase tracking-wider text-white/40 font-bold">Contact</p>
             <ul className="space-y-3">
               <li>
                 <a

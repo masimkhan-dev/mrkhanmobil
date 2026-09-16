@@ -19,6 +19,10 @@ export const business = {
     postcode: "L3 8JA",
     country: "United Kingdom",
   },
+  geo: {
+    latitude: 53.4094083,
+    longitude: -2.9742342,
+  },
   hours: [
     { day: "Monday", hours: "8:00 AM – 9:00 PM" },
     { day: "Tuesday", hours: "8:00 AM – 9:00 PM" },

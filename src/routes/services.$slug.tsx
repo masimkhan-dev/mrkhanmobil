@@ -49,9 +49,15 @@ export const Route = createFileRoute("/services/$slug")({
     return s;
   },
   head: ({ loaderData, params }) => {
-    const formattedSlug = params.slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
-    const pageTitle = `${formattedSlug} Repair Liverpool | MR. KHAN`;
-    const pageDescription = `${formattedSlug} repair in Liverpool. Clear advice before we begin. 12-month warranty. Visit our London Road shop or message us on WhatsApp.`;
+    const baseTitle =
+      loaderData?.title || params.slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+    const titleLower = baseTitle.toLowerCase();
+    const cleanTitle =
+      titleLower.includes("repair") || titleLower.includes("replacement")
+        ? baseTitle
+        : `${baseTitle} Repair`;
+    const pageTitle = `${cleanTitle} Liverpool | MR. KHAN`;
+    const pageDescription = `${cleanTitle} in Liverpool at 83-85 London Road. Same-day service, 12-month warranty & upfront pricing. Visit MR. KHAN or message on WhatsApp.`;
 
     return {
       meta: [
@@ -105,10 +111,29 @@ export const Route = createFileRoute("/services/$slug")({
               children: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "Service",
+                name: `${loaderData.title} in Liverpool`,
                 serviceType: loaderData.title,
-                provider: { "@type": "LocalBusiness", name: business.name },
-                areaServed: "United Kingdom",
                 description: loaderData.description || undefined,
+                provider: {
+                  "@type": "MobilePhoneRepairShop",
+                  "@id": "https://www.mrkhanmobiles.co.uk/#organization",
+                  name: business.name,
+                  telephone: business.phoneRaw,
+                  url: business.url,
+                },
+                areaServed: {
+                  "@type": "City",
+                  name: "Liverpool",
+                },
+                ...("fromPricePence" in loaderData && typeof loaderData.fromPricePence === "number"
+                  ? {
+                      offers: {
+                        "@type": "Offer",
+                        price: (loaderData.fromPricePence / 100).toFixed(2),
+                        priceCurrency: "GBP",
+                      },
+                    }
+                  : {}),
               }),
             },
           ]
@@ -163,7 +188,7 @@ function ServiceDetail() {
               </div>
               {/* Title */}
               <h1 className="font-display font-extrabold text-[2.2rem] sm:text-[2.8rem] lg:text-[3.2rem] tracking-tight text-white leading-tight">
-                {s.title}
+                {s.title} in Liverpool
               </h1>
               {/* Description */}
               {s.description && (

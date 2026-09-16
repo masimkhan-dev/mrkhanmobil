@@ -24,12 +24,37 @@ export const Route = createFileRoute("/warranty")({
       { property: "og:url", content: "https://www.mrkhanmobiles.co.uk/warranty" },
     ],
     links: [{ rel: "canonical", href: "https://www.mrkhanmobiles.co.uk/warranty" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://www.mrkhanmobiles.co.uk/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Warranty",
+              item: "https://www.mrkhanmobiles.co.uk/warranty",
+            },
+          ],
+        }),
+      },
+    ],
   }),
   component: () => (
     <section className="py-16 md:py-24">
       <div className="container-x max-w-3xl">
         <ShieldCheck className="h-12 w-12 text-accent" />
-        <h1 className="mt-4 font-display font-bold text-4xl md:text-6xl">12-month warranty</h1>
+        <h1 className="mt-4 font-display font-bold text-4xl md:text-6xl">
+          12-Month Phone Repair Warranty | Liverpool
+        </h1>
         <p className="mt-4 text-lg text-muted-foreground">
           Every repair carried out by {business.name} is covered for 12 months, parts and labour.
         </p>
